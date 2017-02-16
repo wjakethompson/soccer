@@ -1,0 +1,12 @@
+bookdown::gitbook:
+  css: style.css
+  config:
+    toc:
+      before: |
+        <li><strong><a href="./">Soccer Predictions</a></strong></li>
+    edit: https://github.com/wjakethompson/soccer/edit/master/%s
+    sharing:
+      twitter: yes
+      facebook: yes
+      google: yes
+      all: null
