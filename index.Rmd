@@ -5,14 +5,14 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [book.bib, packages.bib]
+bibliography: [packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: wjakethompson/soccer
 description: "A tutorial for creating a ranking system for soccer teams and making predictions."
 ---
 
-# Preface
+# Preface {-}
 
 This document was created in partial fulfillment of the requirements for the comprehensive examination for the [Educational Psychology and Research](http://epsy.ku.edu/academics/educational-psychology-research/phd/program-faculty) doctoral program at the University of Kansas.
 
@@ -25,4 +25,21 @@ Each section of this document describes a specific step in the process of creati
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
   'packages.bib')
+```
+
+```{r include=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
