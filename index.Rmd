@@ -5,10 +5,11 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [packages.bib]
+bibliography: [refs.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: wjakethompson/soccer
+twitter-handle: wjakethompson
 description: "A tutorial for creating a ranking system for soccer teams and making predictions."
 ---
 
@@ -23,17 +24,17 @@ Each section of this document describes a specific step in the process of creati
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(
-  c(.packages(), 'bookdown', 'knitr', 'rmarkdown'),
-  'packages.bib')
+  c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
+    'lubridate', 'rstan', 'ggplot2', 'pander'), 'packages.bib')
 ```
 
-```{r include=FALSE}
+```{r include = FALSE}
 options(digits = 3)
 
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = TRUE,
+  cache = FALSE,
   out.width = "70%",
   fig.align = 'center',
   fig.width = 6,
