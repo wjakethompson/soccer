@@ -1,0 +1,7 @@
+rmd_files: [
+  "index.rmd",
+
+  "gather-data.Rmd",
+
+  "references.Rmd"
+]
