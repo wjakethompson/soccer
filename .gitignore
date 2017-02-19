@@ -7,3 +7,8 @@ _main.*
 bookdown*
 *.md
 *.html
+search_index.json
+libs
+*.rds
+_main.*
+*.rda
