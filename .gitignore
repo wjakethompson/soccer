@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-_book
+*_book/
 _main.*
 bookdown*
 *.md
@@ -12,3 +12,4 @@ libs
 *.rds
 _main.*
 *.rda
+^_book/$
