@@ -1,3 +1,0 @@
-# Gather Data {#data}
-
-Something about scraping data
