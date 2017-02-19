@@ -1,6 +1,7 @@
 rmd_files: [
   "index.rmd",
-
+  
+  "define-model.Rmd",
   "gather-data.Rmd",
 
   "references.Rmd"
