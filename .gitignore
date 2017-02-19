@@ -5,3 +5,5 @@
 _book
 _main.*
 bookdown*
+*.md
+*.html
