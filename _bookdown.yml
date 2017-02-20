@@ -3,6 +3,8 @@ rmd_files: [
   
   "define-model.Rmd",
   "gather-data.Rmd",
+  
+  "appendix-a.Rmd",
 
   "references.Rmd"
 ]
