@@ -1,10 +1,17 @@
+new_session: yes
+
 rmd_files: [
   "index.rmd",
   
   "define-model.Rmd",
+  "simulation.Rmd",
   "gather-data.Rmd",
+  "fit-model.Rmd",
+  "make-predictions.Rmd",
   
   "appendix-a.Rmd",
 
   "references.Rmd"
 ]
+
+before_chapter_script: "_common.R"
