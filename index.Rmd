@@ -7,6 +7,7 @@ output: bookdown::gitbook
 documentclass: book
 bibliography: [refs.bib, packages.bib]
 biblio-style: apalike
+csl: apa.csl
 link-citations: yes
 github-repo: wjakethompson/soccer
 twitter-handle: wjakethompson
@@ -26,21 +27,4 @@ Each section of this document describes a specific step in the process of creati
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
     'lubridate', 'rstan', 'ggplot2', 'pander'), 'packages.bib')
-```
-
-```{r include = FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = FALSE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
