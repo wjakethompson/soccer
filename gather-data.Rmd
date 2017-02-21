@@ -1,5 +1,10 @@
 # Gather Data {#gather-data}
 
+```{r methods, include = FALSE}
+library(methods)
+```
+
+
 Perhaps the most important part of any data analysis is the collection of the data. If you don't have the data necessary to support the model you want to estimate, or the conclusions you want to draw, no amount of tinkering with the model or results can save you.
 
 The data for this project was collected using web scraping via the **rvest** [@R-rvest] and **dplyr** [@R-dplyr] packages. The scores for each game in a season for a given team can be found on ESPN's website. For example, all of Barcelona's games can be found [here](http://www.espnfc.us/club/barcelona/83/fixtures). Given that we have access to the results for any team available on ESPN, the question becomes which teams to include in the analysis. I chose teams that particpated in specific domestic leagues or in certain tournaments or competitions. The rationale for each selection is below.
