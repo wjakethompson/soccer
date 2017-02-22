@@ -114,8 +114,8 @@ model {
     lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
     lambda3[g] = exp(r + rho[home[g]] + rho[away[g]]);
   }
-  hs ~ poisson(lambda1 + lambda3);
-  as ~ poisson(lambda2 + lambda3);
+  h_goals ~ poisson(lambda1 + lambda3);
+  a_goals ~ poisson(lambda2 + lambda3);
 }
 ```
 
