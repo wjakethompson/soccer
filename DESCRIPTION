@@ -13,6 +13,7 @@ Imports:
   knitr,
   lubridate,
   pander,
+  pandoc,
   purrr,
   rstan,
   rvest
