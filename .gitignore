@@ -13,4 +13,3 @@ libs
 *.rds
 _main.*
 bookdown*
-*.rda
