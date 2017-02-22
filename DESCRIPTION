@@ -4,6 +4,7 @@ Version: 0.1
 Authors@R: c(
   person("Jake", "Thompson", , "wjakethompson@gmail.com", c("aut", "cre"))
   )
+Depends: R (>= 3.1.0)
 URL: https://github.com/wjakethompson/soccer
 Imports:
   bookdown,
@@ -12,7 +13,6 @@ Imports:
   knitr,
   lubridate,
   pander,
-  pandoc,
   purrr,
   rstan,
   rvest
