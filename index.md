@@ -1,0 +1,26 @@
+
+--- 
+title: "Soccer Predictions Using a Bayesian Random Intercepts Model"
+author: "Jake Thompson"
+date: "2017-02-22"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [refs.bib, packages.bib]
+biblio-style: apalike
+csl: apa.csl
+link-citations: yes
+github-repo: wjakethompson/soccer
+twitter-handle: wjakethompson
+description: "A tutorial for creating a ranking system for soccer teams and making predictions."
+---
+
+# Preface {-}
+
+This document was created in partial fulfillment of the requirements for the comprehensive examination for the [Educational Psychology and Research](http://epsy.ku.edu/academics/educational-psychology-research/phd/program-faculty) doctoral program at the University of Kansas.
+
+The task assigned was to create a rating system for European soccer teams, and to use these ratings to predict the winners of the major domestic leagues (the German Budesliga, the Spanish La Liga, the French Ligue 1, the English Premier League, and the Italian Serie A), and the winner of the Union of European Football Associations (UEFA) Champion's League.
+
+Each section of this document describes a specific step in the process of creating these predictions, from gathering the necessary data to creating output graphics.
+
+

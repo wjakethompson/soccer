@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Soccer Predictions Using a Bayesian Random Intercepts Model</title>
+  <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
+  <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Soccer Predictions Using a Bayesian Random Intercepts Model" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A tutorial for creating a ranking system for soccer teams and making predictions." />
+  <meta name="github-repo" content="wjakethompson/soccer" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Soccer Predictions Using a Bayesian Random Intercepts Model" />
+  <meta name="twitter:site" content="@wjakethompson" />
+  <meta name="twitter:description" content="A tutorial for creating a ranking system for soccer teams and making predictions." />
+  
+
+<meta name="author" content="Jake Thompson">
+
+
+<meta name="date" content="2017-02-22">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="simulation.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Soccer Predictions</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="define-model.html"><a href="define-model.html"><i class="fa fa-check"></i><b>1</b> Defining the Model</a><ul>
+<li class="chapter" data-level="1.1" data-path="define-model.html"><a href="define-model.html#biv-pois"><i class="fa fa-check"></i><b>1.1</b> The Bivariate Poisson</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="define-model.html"><a href="define-model.html#imp-bivpois"><i class="fa fa-check"></i><b>1.1.1</b> Implementing the Bivariate Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="define-model.html"><a href="define-model.html#mix-eff"><i class="fa fa-check"></i><b>1.2</b> The Mixed Effects Model</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="define-model.html"><a href="define-model.html#imp-mixef"><i class="fa fa-check"></i><b>1.2.1</b> Implementing the Mixed Effects Model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="simulation.html"><a href="simulation.html"><i class="fa fa-check"></i><b>2</b> Simulation Study</a></li>
+<li class="chapter" data-level="3" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>3</b> Gather Data</a><ul>
+<li class="chapter" data-level="3.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>3.1</b> Domestic league inclusion</a></li>
+<li class="chapter" data-level="3.2" data-path="gather-data.html"><a href="gather-data.html#non-domestic-competition-inclusion"><i class="fa fa-check"></i><b>3.2</b> Non-domestic competition inclusion</a></li>
+<li class="chapter" data-level="3.3" data-path="gather-data.html"><a href="gather-data.html#domestic-competition-inclusion"><i class="fa fa-check"></i><b>3.3</b> Domestic competition inclusion</a></li>
+<li class="chapter" data-level="3.4" data-path="gather-data.html"><a href="gather-data.html#collect-club-websites"><i class="fa fa-check"></i><b>3.4</b> Collect club websites</a></li>
+<li class="chapter" data-level="3.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>3.5</b> Scrape game data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>4</b> Fitting the Model</a><ul>
+<li class="chapter" data-level="4.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>4.1</b> Convergence</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>5</b> Making Predictions</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="scrape-functions.html"><a href="scrape-functions.html"><i class="fa fa-check"></i><b>A</b> Web Scraping Functions</a><ul>
+<li class="chapter" data-level="A.1" data-path="scrape-functions.html"><a href="scrape-functions.html#league-scrape"><i class="fa fa-check"></i><b>A.1</b> Scrape league pages</a></li>
+<li class="chapter" data-level="A.2" data-path="scrape-functions.html"><a href="scrape-functions.html#cup-scrape"><i class="fa fa-check"></i><b>A.2</b> Scrape international cups</a></li>
+<li class="chapter" data-level="A.3" data-path="scrape-functions.html"><a href="scrape-functions.html#dom-scrape"><i class="fa fa-check"></i><b>A.3</b> Scrape domestic cups</a></li>
+<li class="chapter" data-level="A.4" data-path="scrape-functions.html"><a href="scrape-functions.html#game-scrape"><i class="fa fa-check"></i><b>A.4</b> Scrape games</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Soccer Predictions Using a Bayesian Random Intercepts Model</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="define-model" class="section level1">
+<h1><span class="header-section-number">1</span> Defining the Model</h1>
+<p>In soccer, the goals scored by a single team can be thought of as coming from a Poisson distribution. Thus, we can state that the two scores from a given game, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, are Poisson distributed.</p>
+<span class="math display" id="eq:indep-pois">\[\begin{equation}
+\begin{split}
+  X &amp; \sim Poisson(\lambda_1)\\
+  Y &amp; \sim Poisson(\lambda_2)
+\end{split}
+\tag{1.1}
+\end{equation}\]</span>
+<p>This parameterization, however, assumes that the scores <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent of each other. In this project, the aim is to model the association between the two Poisson distributed variables. There are two methods for modeling this association that will be examined. The first is a bivariate Poisson distribution. The second is a mixed effects model with a random slope for each game.</p>
+<div id="biv-pois" class="section level2">
+<h2><span class="header-section-number">1.1</span> The Bivariate Poisson</h2>
+<p>In the bivariate Poisson, the scores for teams <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span>, are random variables where <span class="math inline">\(G_i \sim Poisson(\lambda_i),\ i = 0,\ 1,\ 2\)</span>.</p>
+<span class="math display" id="eq:bipois">\[\begin{equation}
+\begin{split}
+  X_A &amp; = G_1 + G_0\\
+  X_B &amp; = G_2 + G_0
+\end{split}
+\tag{1.2}
+\end{equation}\]</span>
+<p>And <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> are jointly distributed</p>
+<span class="math display" id="eq:jbp">\[\begin{equation}
+  (X_A,\ X_B) \sim BP(\lambda_1,\ \lambda_2,\ \lambda_0)
+\tag{1.3}
+\end{equation}\]</span>
+<p>In this parameterization, <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> are Poisson distributed with means equal to <span class="math inline">\(\lambda_1 + \lambda_3\)</span> and <span class="math inline">\(\lambda_2 + \lambda_3\)</span> respectively, with <span class="math inline">\(\lambda_3\)</span> representing the covariance between <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> <span class="citation">(AlMuhayfith, Alzaid, &amp; Omair, <a href="#ref-AlMuhayfith2016">2016</a>; Griffiths &amp; Milne, <a href="#ref-griffiths1978">1978</a>; Kawamura, <a href="#ref-kawamura1973">1973</a>)</span>. We can model these parameters just as we would model, for example, means in a normal distribution. Thus, for a given game, <span class="math inline">\(i\)</span>,</p>
+<span class="math display" id="eq:bipois-regress">\[\begin{equation}
+\begin{split}
+  (X_{Ai},\ X_{Bi}) &amp; \sim BP(\lambda_{1i},\ \lambda_{2i},\ \lambda_{0i}),\\
+  log(\lambda_{1i}) &amp; = \omega_{1i}\beta_{1},\\
+  log(\lambda_{2i}) &amp; = \omega_{2i}\beta_{2},\\
+  log(\lambda_{0i}) &amp; = \omega_{0i}\beta_{0}
+\end{split}
+\tag{1.4}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(\omega\)</span> represents a matrix of independent variable, and <span class="math inline">\(\beta\)</span> denotes the regression coefficients <span class="citation">(Karlis &amp; Ntzoufras, <a href="#ref-karlis2003">2003</a>, <a href="#ref-karlis2005">2005</a>)</span>. When predicting soccer games, the independent variables are the teams that are playing, and the regression coefficients represent the offensive or defensive strength of the teams <span class="citation">(Groll, Kneib, Mayr, &amp; Schauberger, <a href="#ref-groll2016">2016</a>)</span>. Specifically, we can model the two scores, <span class="math inline">\(X\)</span>, for teams <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, from a given game, <span class="math inline">\(i\)</span>, as</p>
+<span class="math display" id="eq:lambda0" id="eq:lambda2" id="eq:lambda1">\[\begin{align}
+  log(X_{Ai}) &amp;= \lambda_{1i} + \lambda_{0i}, \notag \\
+  log(X_{Bi}) &amp;= \lambda_{2i} + \lambda_{0i}, \notag \\
+  \lambda_{1i} &amp;= \mu + \eta + \alpha_A + \delta_B, \tag{1.5} \\
+  \lambda_{2i} &amp;= \mu + \alpha_B + \delta_A, \tag{1.6} \\
+  \lambda_{0i} &amp;= r + \rho_A + \rho_B \tag{1.7}
+\end{align}\]</span>
+<p>Here, <span class="math inline">\(\mu\)</span> denotes the overall intercept, or the expected log goals for a team not playing at home, and <span class="math inline">\(\eta\)</span> represents the increase in expected log goals for a team playing at home. The estimates of team ability come from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span>, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, <span class="math inline">\(r\)</span> denotes the expected covariance between the log expected goals, and <span class="math inline">\(\rho\)</span> denotes the change in expected covariance for each team <span class="citation">(Whitaker, <a href="#ref-whitaker2011">2011</a>)</span>.</p>
+<div id="imp-bivpois" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Implementing the Bivariate Poisson</h3>
+<p>The bivariate Poisson model can be fit using the following Stan code <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2016</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> and <span class="math inline">\(r\)</span> represents the overall means. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
+<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increasing the efficiency of the sampler to avoid divergent transitions <span class="citation">(Stan Development Team)</span>.</p>
+<pre class="stan"><code>data {
+  int&lt;lower=1&gt; C;               // number of clubs
+  int&lt;lower=1&gt; G;               // number of games
+  int&lt;lower=1,upper=C&gt; h[G];    // home club for game g
+  int&lt;lower=1,upper=C&gt; a[G];    // away club for game g
+  int&lt;lower=0&gt; hs[G];           // home goals for game g
+  int&lt;lower=0&gt; as[G];           // away goals for game g
+}
+parameters {
+  vector[C] alpha;              // attacking intercepts
+  vector[C] delta;              // defending intercepts
+  vector[C] rho;                // covariance predictors
+
+  real mu;                      // fixed intercept
+  real H;                       // homefield
+  real R;                       // covariance intercept
+  real&lt;lower=0&gt; sigma_a;        // attacking sd
+  real&lt;lower=0&gt; sigma_d;        // defending sd
+  real&lt;lower=0&gt; sigma_r;        // covariance sd
+}
+model {
+  vector[G] lambda1;
+  vector[G] lambda2;
+  vector[G] lambda3;
+
+  // priors
+  alpha ~ normal(0, sigma_a);   // attacking random effects
+  delta ~ normal(0, sigma_d);   // defending random effects
+  rho ~ normal(0, sigma_r);
+  mu ~ normal(0, 10);
+  H ~ normal(0, 10);
+  R ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_r ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:G) {
+    lambda1[g] = exp(mu + H + alpha[h[g]] + delta[a[g]]);
+    lambda2[g] = exp(mu + alpha[a[g]] + delta[h[g]]);
+    lambda3[g] = exp(R + rho[h[g]] + rho[a[g]]);
+  }
+  hs ~ poisson(lambda1 + lambda3);
+  as ~ poisson(lambda2 + lambda3);
+}</code></pre>
+</div>
+</div>
+<div id="mix-eff" class="section level2">
+<h2><span class="header-section-number">1.2</span> The Mixed Effects Model</h2>
+<p>test</p>
+<div id="imp-mixef" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Implementing the Mixed Effects Model</h3>
+
+</div>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-AlMuhayfith2016">
+<p>AlMuhayfith, F. E., Alzaid, A. A., &amp; Omair, M. A. (2016). On bivariate poisson regression models. <em>Journal of King Saud University - Science</em>, <em>28</em>(2), 178–189. <a href="https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003" class="uri">https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003</a></p>
+</div>
+<div id="ref-griffiths1978">
+<p>Griffiths, R., &amp; Milne, R. (1978). A class of bivariate poisson processes. <em>Journal of Multivariate Analysis</em>, <em>8</em>(3), 380–395. <a href="https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1" class="uri">https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1</a></p>
+</div>
+<div id="ref-kawamura1973">
+<p>Kawamura, K. (1973). The structure of bivariate poisson distribution. <em>Kodai Math. Sem. Rep.</em>, <em>25</em>(2), 246–256. <a href="https://doi.org/10.2996/kmj/1138846776" class="uri">https://doi.org/10.2996/kmj/1138846776</a></p>
+</div>
+<div id="ref-karlis2003">
+<p>Karlis, D., &amp; Ntzoufras, I. (2003). Analysis of sports data by using bivariate poisson models. <em>The Statistician</em>, <em>52</em>, 381–393.</p>
+</div>
+<div id="ref-karlis2005">
+<p>Karlis, D., &amp; Ntzoufras, I. (2005). Bivariate poisson and diagonal inflated bivariate poisson regression models in r. <em>Journal of Statistical Software</em>, <em>14</em>(10), 1–17.</p>
+</div>
+<div id="ref-groll2016">
+<p>Groll, A., Kneib, T., Mayr, A., &amp; Schauberger, G. (2016). Who’s the favourite? ? A bivariate poisson model for the uefa european football championship 2016. Retrieved from <a href="http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8" class="uri">http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8</a></p>
+</div>
+<div id="ref-whitaker2011">
+<p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
+</div>
+<div id="ref-R-rstan">
+<p>Guo, J., Gabry, J., &amp; Goodrich, B. (2016). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="simulation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": true,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": null
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/wjakethompson/soccer/edit/master/define-model.Rmd",
+"text": "Edit"
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
