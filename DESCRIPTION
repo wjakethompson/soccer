@@ -15,7 +15,8 @@ Imports:
   pander,
   purrr,
   rstan,
-  rvest
+  rvest,
+  tidyverse
 Remotes:
   hadley/ggplot2,
   rstudio/bookdown,
