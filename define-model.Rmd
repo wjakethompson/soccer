@@ -1,35 +1,3 @@
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = FALSE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = FALSE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
 # Defining the Model {#define-model}
 
 In soccer, the goals scored by a single team can be thought of as coming from a Poisson distribution. Thus, we can state that the two scores from a given game, $X$ and $Y$, are Poisson distributed.
@@ -93,48 +61,58 @@ The bivariate Poisson model can be fit using the following Stan code [@R-rstan].
 
 I have also reparameterized the random effects so that Stan can sample from a $\mathcal{N}(0,\ 1)$, which reduces computation time and increasing the efficiency of the sampler to avoid divergent transitions [@stan]. 
 
-```{stan output.var="bivpois"}
+```{stan stan_bivpois, output.var="bivpois", eval = FALSE}
 data {
-  int<lower=1> C;               // number of clubs
-  int<lower=1> G;               // number of games
-  int<lower=1,upper=C> h[G];    // home club for game g
-  int<lower=1,upper=C> a[G];    // away club for game g
-  int<lower=0> hs[G];           // home goals for game g
-  int<lower=0> as[G];           // away goals for game g
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
 }
 parameters {
-  vector[C] alpha;              // attacking intercepts
-  vector[C] delta;              // defending intercepts
-  vector[C] rho;                // covariance predictors
+  vector[num_clubs] raw_alpha;                      // attacking intercepts
+  vector[num_clubs] raw_delta;                      // defending intercepts
+  vector[num_clubs] raw_rho;                        // covariance intercepts
 
-  real mu;                      // fixed intercept
-  real H;                       // homefield
-  real R;                       // covariance intercept
-  real<lower=0> sigma_a;        // attacking sd
-  real<lower=0> sigma_d;        // defending sd
-  real<lower=0> sigma_r;        // covariance sd
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real r;                                           // covariance intercept
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_r;                            // covariance sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_clubs] rho;
+  
+  alpha = sigma_a * raw_alpha;
+  delta = sigma_d * raw_delta;
+  rho = sigma_r * raw_rho;
 }
 model {
-  vector[G] lambda1;
-  vector[G] lambda2;
-  vector[G] lambda3;
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+  vector[num_games] lambda3;
 
   // priors
-  alpha ~ normal(0, sigma_a);   // attacking random effects
-  delta ~ normal(0, sigma_d);   // defending random effects
-  rho ~ normal(0, sigma_r);
+  raw_alpha ~ normal(0, 1);   // attacking random effects
+  raw_delta ~ normal(0, 1);   // defending random effects
+  raw_rho ~ normal(0, 1);     // covariance random effects
   mu ~ normal(0, 10);
-  H ~ normal(0, 10);
-  R ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  r ~ normal(0, 10);
   sigma_a ~ normal(0, 10);
   sigma_d ~ normal(0, 10);
   sigma_r ~ normal(0, 10);
 
   // likelihood
-  for (g in 1:G) {
-    lambda1[g] = exp(mu + H + alpha[h[g]] + delta[a[g]]);
-    lambda2[g] = exp(mu + alpha[a[g]] + delta[h[g]]);
-    lambda3[g] = exp(R + rho[h[g]] + rho[a[g]]);
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
+    lambda3[g] = exp(r + rho[home[g]] + rho[away[g]]);
   }
   hs ~ poisson(lambda1 + lambda3);
   as ~ poisson(lambda2 + lambda3);
