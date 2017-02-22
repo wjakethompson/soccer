@@ -26,5 +26,5 @@ Each section of this document describes a specific step in the process of creati
 # automatically create a bib database for R packages
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
-    'lubridate', 'rstan', 'ggplot2', 'pander'), 'packages.bib')
+    'lubridate', 'rstan', 'ggplot2', 'pander', 'DT'), 'packages.bib')
 ```
