@@ -119,7 +119,6 @@ model {
 }
 ```
 
-
 ## The Mixed Effects Model {#mix-eff}
 
 test
