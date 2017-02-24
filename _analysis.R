@@ -1,5 +1,6 @@
 ### Setup R session ------------------------------------------------------------
-needed_packages <- c("rvest", "dplyr", "purrr", "lubridate", "rstan", "ggplot2")
+needed_packages <- c("rvest", "dplyr", "purrr", "lubridate", "rstan", "ggplot2",
+  "tidyr", "portableParallelSeeds", "parallel")
 load_packages <- function(x) {
   if(!(x %in% rownames(installed.packages()))) {
     install.packages(x, repos = "https://cran.rstudio.com/")
@@ -12,10 +13,157 @@ sapply(needed_packages, load_packages)
 rstan_options(auto_write = TRUE)
 options(mc.cores = (parallel::detectCores() - 1))
 
+rm(list = ls())
 
-### Gather Data ----------------------------------------------------------------
+
+### simulation -----------------------------------------------------------------
+generate_data <- function(run, seeds, num_club) {
+  setSeeds(seeds, run = run)
+  
+  teams <- data_frame(
+    club = paste0("club", sprintf("%02d", seq_len(num_club))),
+    attack = runif(n = num_club, min = -0.75, max = 0.75),
+    defend = runif(n = num_club, min = -0.75, max = 0.75),
+    cov = runif(n = num_club, min = -0.05, max = 0.05)
+  )
+  
+  games <- teams %>%
+    select(club) %>%
+    flatten_chr() %>%
+    crossing(., .)
+  colnames(games) <- c("home", "away")
+  
+  games <- games %>%
+    filter(home != away) %>%
+    left_join(teams, by = c("home" = "club")) %>%
+    rename(h_att = attack, h_def = defend, h_cov = cov) %>%
+    left_join(teams, by = c("away" = "club")) %>%
+    rename(a_att = attack, a_def = defend, a_cov = cov) %>%
+    mutate(
+      lambda1 = exp(0 + 0.5 + h_att + a_def),
+      lambda2 = exp(0 + a_att + h_def),
+      lambda3 = exp(-3 + h_cov + a_cov),
+      h_goals = rpois(n = nrow(.), lambda = (lambda1 + lambda3)),
+      a_goals = rpois(n = nrow(.), lambda = (lambda2 + lambda3)),
+      home_game = 1
+    ) %>%
+    select(home, away, h_goals, a_goals, home_game)
+  
+  list(
+    teams = teams,
+    games = games
+  )
+}
+
+# Define parameters for the simulation
+n_reps <- 1
+streams_per_rep <- 1
+
+# Create the seed warehouse
+project_seeds <- seedCreator(n_reps, streams_per_rep, seed = 9416)
+
+# Create data sets
+simulation_data <- lapply(X = 1:n_reps, FUN = generate_data,
+  seeds = project_seeds, num_club = 20)
+game_data <- map(simulation_data, function(x) x$games)
+team_data <- map(simulation_data, function(x) x$teams)
+
+x <- game_data[[1]]
+y <- team_data[[1]]
+simulation <- map2(.x = game_data, .y = team_data, .f = function(x, y) {
+  team_codes <- data_frame(
+    club = sort(unique(c(x$home, x$away)))
+  ) %>%
+    mutate(code = seq_len(nrow(.)))
+  
+  x <- left_join(x, team_codes, by = c("home" = "club")) %>%
+    rename(home_code = code) %>%
+    left_join(team_codes, by = c("away" = "club")) %>%
+    rename(away_code = code)
+  
+  stan_data <- list(
+    num_clubs = nrow(team_codes),
+    num_games = nrow(x),
+    home = x$home_code,
+    away = x$away_code,
+    h_goals = x$h_goals,
+    a_goals = x$a_goals,
+    homeg = x$home_game
+  )
+  
+  bivpois <- stan(file = "_data/stan-models/biv_pois.stan", data = stan_data,
+    chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
+    cores = 2, control = list(adapt_delta = 0.99))
+  mixeffc <- stan(file = "_data/stan-models/mix_effc.stan", data = stan_data,
+    chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
+    cores = 2, control = list(adapt_delta = 0.99))
+  
+  bivpois_maxrhat <- as.data.frame(summary(bivpois)[[1]]) %>%
+    select(Rhat) %>%
+    flatten_dbl() %>%
+    max()
+  mixeffc_maxrhat <- as.data.frame(summary(mixeffc)[[1]]) %>%
+    select(Rhat) %>%
+    flatten_dbl() %>%
+    max()
+  
+  bivpois_params <- rstan::extract(bivpois, pars = c("mu", "eta", "r", "alpha",
+    "delta", "rho"))
+  mixeffc_params <- rstan::extract(mixeffc, pars = c("mu", "eta", "alpha", "delta"))
+  
+  bivpois_alpha <- colMeans(bivpois_params$alpha)
+  bivpois_delta <- colMeans(bivpois_params$delta)
+  mixeffc_alpha <- colMeans(mixeffc_params$alpha)
+  mixeffc_delta <- colMeans(mixeffc_params$delta)
+  
+  bivpois_alpha_bias <- mean(bivpois_alpha - y$attack)
+  bivpois_delta_bias <- mean(bivpois_delta - y$defend)
+  bivpois_alpha_mse <- mean((bivpois_alpha - y$attack)^2)
+  bivpois_delta_mse <- mean((bivpois_delta - y$defend)^2)
+  
+  mixeffc_alpha_bias <- mean(mixeffc_alpha - y$attack)
+  mixeffc_delta_bias <- mean(mixeffc_delta - y$defend)
+  mixeffc_alpha_mse <- mean((mixeffc_alpha - y$attack)^2)
+  mixeffc_delta_mse <- mean((mixeffc_delta - y$defend)^2)
+  
+  data_frame(
+    bivpois_rhat = bivpois_maxrhat,
+    bivpois_params = list(list(bivpois_alpha = bivpois_alpha,
+      bivpois_delta = bivpois_delta)),
+    bivpois_alpha_bia = bivpois_alpha_bias,
+    bivpois_delta_bias = bivpois_delta_bias,
+    bivpois_alpha_mse = bivpois_alpha_mse,
+    bivpois_delta_mse = bivpois_delta_mse,
+    mixeffc_rhat = mixeffc_maxrhat,
+    mixeffc_params = list(list(mixeffc_alpha = mixeffc_alpha,
+      mixeffc_delta = mixeffc_delta)),
+    mixeffc_alpha_bias,
+    mixeffc_delta_bias,
+    mixeffc_alpha_mse,
+    mixeffc_delta_mse
+  )
+})
+save(simulation_data, file = "_data/simulation_data.rda")
+save(simulation, file = "_data/simulation.rda")
+
+rm(list = ls())
+
+
+### gather-data ----------------------------------------------------------------
 scrape_league <- function(x) {
-  url_data <- read_html(x)
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+  
   league_table <- url_data %>%
     html_nodes(css = "table") %>%
     html_table()
@@ -45,7 +193,19 @@ scrape_league <- function(x) {
   return(league_table)
 }
 scrape_major_cup <- function(x) {
-  url_data <- read_html(x)
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+  
   league_table <- url_data %>%
     html_nodes(css = "table") %>%
     html_table()
@@ -79,8 +239,19 @@ scrape_major_cup <- function(x) {
   return(league_table)
 }
 scrape_dom_cup <- function(x) {
-  url_data <- read_html(x)
-  
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+
   teams <- url_data %>%
     html_nodes("#stats-fair-play a") %>%
     html_text() %>%
@@ -134,6 +305,7 @@ domestic_cups <- list(
   spanish_super_cup = "http://www.espnfc.us/spanish-super-cup/431/statistics/fairplay"
 )
 
+safe_read_html <- safely(read_html)
 league_urls <- map_df(.x = leagues, .f = scrape_league)
 major_cup_urls <- map_df(.x = major_cups, .f = scrape_major_cup)
 domestic_cup_urls <- map_df(.x = domestic_cups, .f = scrape_dom_cup)
