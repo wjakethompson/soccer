@@ -2,7 +2,7 @@
 --- 
 title: "Soccer Predictions Using a Bayesian Random Intercepts Model"
 author: "Jake Thompson"
-date: "2017-02-22"
+date: "2017-02-24"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
