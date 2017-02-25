@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Soccer Predictions Using a Bayesian Random Intercepts Model</title>
+  <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
   <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
 
-  <meta property="og:title" content="Soccer Predictions Using a Bayesian Random Intercepts Model" />
+  <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="wjakethompson/soccer" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Soccer Predictions Using a Bayesian Random Intercepts Model" />
+  <meta name="twitter:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta name="twitter:site" content="@wjakethompson" />
   <meta name="twitter:description" content="A tutorial for creating a ranking system for soccer teams and making predictions." />
   
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-02-24">
+<meta name="date" content="2017-02-25">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -109,26 +109,35 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
-<li class="chapter" data-level="1" data-path="define-model.html"><a href="define-model.html"><i class="fa fa-check"></i><b>1</b> Defining the Model</a><ul>
-<li class="chapter" data-level="1.1" data-path="define-model.html"><a href="define-model.html#biv-pois"><i class="fa fa-check"></i><b>1.1</b> The Bivariate Poisson</a><ul>
-<li class="chapter" data-level="1.1.1" data-path="define-model.html"><a href="define-model.html#imp-bivpois"><i class="fa fa-check"></i><b>1.1.1</b> Implementing the Bivariate Poisson</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#european-soccer-format"><i class="fa fa-check"></i><b>1.1</b> European soccer format</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#domestic-leagues"><i class="fa fa-check"></i><b>1.1.1</b> Domestic leagues</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#uefa-champions-league"><i class="fa fa-check"></i><b>1.1.2</b> UEFA Champions League</a></li>
+<li class="chapter" data-level="1.1.3" data-path="intro.html"><a href="intro.html#domestic-cups"><i class="fa fa-check"></i><b>1.1.3</b> Domestic cups</a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="define-model.html"><a href="define-model.html#mix-eff"><i class="fa fa-check"></i><b>1.2</b> The Mixed Effects Model</a><ul>
-<li class="chapter" data-level="1.2.1" data-path="define-model.html"><a href="define-model.html#imp-mixef"><i class="fa fa-check"></i><b>1.2.1</b> Implementing the Mixed Effects Model</a></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#document-organization"><i class="fa fa-check"></i><b>1.2</b> Document Organization</a></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#colophon"><i class="fa fa-check"></i><b>1.3</b> Colophon</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="define-model.html"><a href="define-model.html"><i class="fa fa-check"></i><b>2</b> Defining the Model</a><ul>
+<li class="chapter" data-level="2.1" data-path="define-model.html"><a href="define-model.html#biv-pois"><i class="fa fa-check"></i><b>2.1</b> The Bivariate Poisson</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="define-model.html"><a href="define-model.html#imp-bivpois"><i class="fa fa-check"></i><b>2.1.1</b> Implementing the Bivariate Poisson</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="define-model.html"><a href="define-model.html#mix-eff"><i class="fa fa-check"></i><b>2.2</b> The Mixed Effects Model</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="define-model.html"><a href="define-model.html#imp-mixef"><i class="fa fa-check"></i><b>2.2.1</b> Implementing the Mixed Effects Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="simulation.html"><a href="simulation.html"><i class="fa fa-check"></i><b>2</b> Simulation Study</a></li>
-<li class="chapter" data-level="3" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>3</b> Gather Data</a><ul>
-<li class="chapter" data-level="3.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>3.1</b> Domestic league inclusion</a></li>
-<li class="chapter" data-level="3.2" data-path="gather-data.html"><a href="gather-data.html#non-domestic-competition-inclusion"><i class="fa fa-check"></i><b>3.2</b> Non-domestic competition inclusion</a></li>
-<li class="chapter" data-level="3.3" data-path="gather-data.html"><a href="gather-data.html#domestic-competition-inclusion"><i class="fa fa-check"></i><b>3.3</b> Domestic competition inclusion</a></li>
-<li class="chapter" data-level="3.4" data-path="gather-data.html"><a href="gather-data.html#collect-club-websites"><i class="fa fa-check"></i><b>3.4</b> Collect club websites</a></li>
-<li class="chapter" data-level="3.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>3.5</b> Scrape game data</a></li>
+<li class="chapter" data-level="3" data-path="simulation.html"><a href="simulation.html"><i class="fa fa-check"></i><b>3</b> Simulation Study</a></li>
+<li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
+<li class="chapter" data-level="4.2" data-path="gather-data.html"><a href="gather-data.html#non-domestic-competition-inclusion"><i class="fa fa-check"></i><b>4.2</b> Non-domestic competition inclusion</a></li>
+<li class="chapter" data-level="4.3" data-path="gather-data.html"><a href="gather-data.html#domestic-competition-inclusion"><i class="fa fa-check"></i><b>4.3</b> Domestic competition inclusion</a></li>
+<li class="chapter" data-level="4.4" data-path="gather-data.html"><a href="gather-data.html#collect-club-websites"><i class="fa fa-check"></i><b>4.4</b> Collect club websites</a></li>
+<li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>4</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="4.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>4.1</b> Convergence</a></li>
+<li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1</b> Convergence</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>5</b> Making Predictions</a></li>
+<li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="scrape-functions.html"><a href="scrape-functions.html"><i class="fa fa-check"></i><b>A</b> Web Scraping Functions</a><ul>
 <li class="chapter" data-level="A.1" data-path="scrape-functions.html"><a href="scrape-functions.html#league-scrape"><i class="fa fa-check"></i><b>A.1</b> Scrape league pages</a></li>
@@ -146,7 +155,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Soccer Predictions Using a Bayesian Random Intercepts Model</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Soccer Predictions Using Bayesian Mixed Effects Models</a>
           </h1>
         </div>
 

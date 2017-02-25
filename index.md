@@ -1,8 +1,8 @@
 
 --- 
-title: "Soccer Predictions Using a Bayesian Random Intercepts Model"
+title: "Soccer Predictions Using Bayesian Mixed Effects Models"
 author: "Jake Thompson"
-date: "2017-02-24"
+date: "2017-02-25"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
@@ -22,5 +22,7 @@ This document was created in partial fulfillment of the requirements for the com
 The task assigned was to create a rating system for European soccer teams, and to use these ratings to predict the winners of the major domestic leagues (the German Budesliga, the Spanish La Liga, the French Ligue 1, the English Premier League, and the Italian Serie A), and the winner of the Union of European Football Associations (UEFA) Champion's League.
 
 Each section of this document describes a specific step in the process of creating these predictions, from gathering the necessary data to creating output graphics.
+
+This work is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/us/) United States License. 
 
 

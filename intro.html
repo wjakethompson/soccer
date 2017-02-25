@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="scrape-functions.html">
-
+<link rel="prev" href="index.html">
+<link rel="next" href="define-model.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -163,58 +163,102 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="intro" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="european-soccer-format" class="section level2">
+<h2><span class="header-section-number">1.1</span> European soccer format</h2>
+<div id="domestic-leagues" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Domestic leagues</h3>
+</div>
+<div id="uefa-champions-league" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> UEFA Champions League</h3>
+</div>
+<div id="domestic-cups" class="section level3">
+<h3><span class="header-section-number">1.1.3</span> Domestic cups</h3>
+</div>
+</div>
+<div id="document-organization" class="section level2">
+<h2><span class="header-section-number">1.2</span> Document Organization</h2>
+</div>
+<div id="colophon" class="section level2">
+<h2><span class="header-section-number">1.3</span> Colophon</h2>
+<p>The source code for this document can be found at <a href="https://github.com/wjakethompson/soccer" class="uri">https://github.com/wjakethompson/soccer</a>. The document was written with <a href="https://bookdown.org"><strong>bookdown</strong></a> <span class="citation">(Xie, <a href="#ref-R-bookdown">2016</a>)</span>, which simplifies the process of turning multiple R markdown files into a single output file (e.g., HTML, PDF, EPUB).</p>
+<p>This document was built with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">session_info</span>(<span class="kw">c</span>(<span class="st">&quot;bookdown&quot;</span>, <span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;rmarkdown&quot;</span>, <span class="st">&quot;rvest&quot;</span>, <span class="st">&quot;purrr&quot;</span>,
+  <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;lubridate&quot;</span>, <span class="st">&quot;rstan&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;DT&quot;</span>))
+<span class="co">#&gt; Session info --------------------------------------------------------------</span>
+<span class="co">#&gt;  setting  value                       </span>
+<span class="co">#&gt;  version  R version 3.3.2 (2016-10-31)</span>
+<span class="co">#&gt;  system   x86_64, linux-gnu           </span>
+<span class="co">#&gt;  ui       X11                         </span>
+<span class="co">#&gt;  language (EN)                        </span>
+<span class="co">#&gt;  collate  en_US.UTF-8                 </span>
+<span class="co">#&gt;  tz       &lt;NA&gt;                        </span>
+<span class="co">#&gt;  date     2017-02-25</span>
+<span class="co">#&gt; Packages ------------------------------------------------------------------</span>
+<span class="co">#&gt;  package      * version   date       source                           </span>
+<span class="co">#&gt;  assertthat     0.1       2013-12-06 cran (@0.1)                      </span>
+<span class="co">#&gt;  backports      1.0.5     2017-01-18 cran (@1.0.5)                    </span>
+<span class="co">#&gt;  base64enc      0.1-3     2015-07-28 cran (@0.1-3)                    </span>
+<span class="co">#&gt;  BH             1.62.0-1  2016-11-19 cran (@1.62.0-)                  </span>
+<span class="co">#&gt;  bitops         1.0-6     2013-08-17 cran (@1.0-6)                    </span>
+<span class="co">#&gt;  bookdown       0.3.9     2017-02-22 Github (rstudio/bookdown@a5ad84c)</span>
+<span class="co">#&gt;  caTools        1.17.1    2014-09-10 cran (@1.17.1)                   </span>
+<span class="co">#&gt;  colorspace     1.3-2     2016-12-14 cran (@1.3-2)                    </span>
+<span class="co">#&gt;  curl           2.3       2016-11-24 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  DBI            0.5-1     2016-09-10 cran (@0.5-1)                    </span>
+<span class="co">#&gt;  dichromat      2.0-0     2013-01-24 cran (@2.0-0)                    </span>
+<span class="co">#&gt;  digest         0.6.12    2017-01-27 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  dplyr          0.5.0     2016-06-24 cran (@0.5.0)                    </span>
+<span class="co">#&gt;  DT             0.2       2016-08-09 cran (@0.2)                      </span>
+<span class="co">#&gt;  evaluate       0.10      2016-10-11 cran (@0.10)                     </span>
+<span class="co">#&gt;  ggplot2        2.2.1     2016-12-30 cran (@2.2.1)                    </span>
+<span class="co">#&gt;  gridExtra      2.2.1     2016-02-29 cran (@2.2.1)                    </span>
+<span class="co">#&gt;  gtable         0.2.0     2016-02-26 cran (@0.2.0)                    </span>
+<span class="co">#&gt;  highr          0.6       2016-05-09 cran (@0.6)                      </span>
+<span class="co">#&gt;  htmltools      0.3.5     2016-03-21 cran (@0.3.5)                    </span>
+<span class="co">#&gt;  htmlwidgets    0.8       2016-11-09 cran (@0.8)                      </span>
+<span class="co">#&gt;  httr           1.2.1     2016-07-03 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  inline         0.3.14    2015-04-13 cran (@0.3.14)                   </span>
+<span class="co">#&gt;  jsonlite       1.2       2016-12-31 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  knitr          1.15.1    2016-11-22 cran (@1.15.1)                   </span>
+<span class="co">#&gt;  labeling       0.3       2014-08-23 cran (@0.3)                      </span>
+<span class="co">#&gt;  lattice        0.20-34   2016-09-06 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  lazyeval       0.2.0     2016-06-12 cran (@0.2.0)                    </span>
+<span class="co">#&gt;  lubridate      1.6.0     2016-09-13 cran (@1.6.0)                    </span>
+<span class="co">#&gt;  magrittr       1.5       2014-11-22 cran (@1.5)                      </span>
+<span class="co">#&gt;  markdown       0.7.7     2015-04-22 cran (@0.7.7)                    </span>
+<span class="co">#&gt;  MASS           7.3-45    2016-04-21 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  Matrix         1.2-7.1   2016-09-01 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  mime           0.5       2016-07-07 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  munsell        0.4.3     2016-02-13 cran (@0.4.3)                    </span>
+<span class="co">#&gt;  openssl        0.9.6     2016-12-31 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  plyr           1.8.4     2016-06-08 cran (@1.8.4)                    </span>
+<span class="co">#&gt;  purrr          0.2.2     2016-06-18 cran (@0.2.2)                    </span>
+<span class="co">#&gt;  R6             2.2.0     2016-10-05 CRAN (R 3.3.2)                   </span>
+<span class="co">#&gt;  RColorBrewer   1.1-2     2014-12-07 cran (@1.1-2)                    </span>
+<span class="co">#&gt;  Rcpp           0.12.9.3  2017-02-22 Github (RcppCore/Rcpp@8bf15c0)   </span>
+<span class="co">#&gt;  RcppEigen      0.3.2.9.0 2016-08-21 cran (@0.3.2.9)                  </span>
+<span class="co">#&gt;  reshape2       1.4.2     2016-10-22 cran (@1.4.2)                    </span>
+<span class="co">#&gt;  rmarkdown      1.3       2016-12-21 cran (@1.3)                      </span>
+<span class="co">#&gt;  rprojroot      1.2       2017-01-16 cran (@1.2)                      </span>
+<span class="co">#&gt;  rstan          2.14.1    2016-12-28 cran (@2.14.1)                   </span>
+<span class="co">#&gt;  rvest          0.3.2     2016-06-17 cran (@0.3.2)                    </span>
+<span class="co">#&gt;  scales         0.4.1     2016-11-09 cran (@0.4.1)                    </span>
+<span class="co">#&gt;  selectr        0.3-1     2016-12-19 cran (@0.3-1)                    </span>
+<span class="co">#&gt;  StanHeaders    2.14.0-1  2017-01-09 cran (@2.14.0-)                  </span>
+<span class="co">#&gt;  stringi        1.1.2     2016-10-01 cran (@1.1.2)                    </span>
+<span class="co">#&gt;  stringr        1.2.0     2017-02-18 cran (@1.2.0)                    </span>
+<span class="co">#&gt;  tibble         1.2       2016-08-26 cran (@1.2)                      </span>
+<span class="co">#&gt;  xml2           1.1.1     2017-01-24 cran (@1.1.1)                    </span>
+<span class="co">#&gt;  yaml           2.1.14    2016-11-12 cran (@2.1.14)</span></code></pre></div>
 
+</div>
+</div>
+<h3>References</h3>
 <div id="refs" class="references">
-<div>
-<p>AlMuhayfith, F. E., Alzaid, A. A., &amp; Omair, M. A. (2016). On bivariate poisson regression models. <em>Journal of King Saud University - Science</em>, <em>28</em>(2), 178–189. <a href="https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003" class="uri">https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003</a></p>
-</div>
-<div>
-<p>Griffiths, R., &amp; Milne, R. (1978). A class of bivariate poisson processes. <em>Journal of Multivariate Analysis</em>, <em>8</em>(3), 380–395. <a href="https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1" class="uri">https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1</a></p>
-</div>
-<div>
-<p>Grolemund, G. (2016, November). Extracting Data From the Web Part 2. Retrieved from <a href="https://www.rstudio.com/resources/webinars/extracting-data-from-the-web-part-2/" class="uri">https://www.rstudio.com/resources/webinars/extracting-data-from-the-web-part-2/</a></p>
-</div>
-<div>
-<p>Grolemund, G., Spinu, V., &amp; Wickham, H. (2016). <em>Lubridate: Make dealing with dates a little easier</em>. Retrieved from <a href="https://CRAN.R-project.org/package=lubridate" class="uri">https://CRAN.R-project.org/package=lubridate</a></p>
-</div>
-<div>
-<p>Groll, A., Kneib, T., Mayr, A., &amp; Schauberger, G. (2016). Who’s the favourite? ? A bivariate poisson model for the uefa european football championship 2016. Retrieved from <a href="http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8" class="uri">http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8</a></p>
-</div>
-<div>
-<p>Guo, J., Gabry, J., &amp; Goodrich, B. (2016). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
-</div>
-<div>
-<p>Karlis, D., &amp; Ntzoufras, I. (2003). Analysis of sports data by using bivariate poisson models. <em>The Statistician</em>, <em>52</em>, 381–393.</p>
-</div>
-<div>
-<p>Karlis, D., &amp; Ntzoufras, I. (2005). Bivariate poisson and diagonal inflated bivariate poisson regression models in r. <em>Journal of Statistical Software</em>, <em>14</em>(10), 1–17.</p>
-</div>
-<div>
-<p>Kawamura, K. (1973). The structure of bivariate poisson distribution. <em>Kodai Math. Sem. Rep.</em>, <em>25</em>(2), 246–256. <a href="https://doi.org/10.2996/kmj/1138846776" class="uri">https://doi.org/10.2996/kmj/1138846776</a></p>
-</div>
-<div>
-<p>Stan Development Team. (2016). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
-</div>
-<div>
-<p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
-</div>
-<div>
-<p>Wickham, H. (2016a). <em>Purrr: Functional programming tools</em>. Retrieved from <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a></p>
-</div>
-<div>
-<p>Wickham, H. (2016b). <em>Rvest: Easily harvest (scrape) web pages</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rvest" class="uri">https://CRAN.R-project.org/package=rvest</a></p>
-</div>
-<div>
-<p>Wickham, H., &amp; Francois, R. (2016). <em>Dplyr: A grammar of data manipulation</em>. Retrieved from <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a></p>
-</div>
-<div>
-<p>Wickham, H., &amp; Grolemund, G. (2016). <em>R for data science</em> (1st ed.). Sebastopol, California: O’Reilly. Retrieved from <a href="http://r4ds.had.co.nz/" class="uri">http://r4ds.had.co.nz/</a></p>
-</div>
-<div>
+<div id="ref-R-bookdown">
 <p>Xie, Y. (2016). <em>Bookdown: Authoring books and technical documents with r markdown</em>. Retrieved from <a href="https://github.com/rstudio/bookdown" class="uri">https://github.com/rstudio/bookdown</a></p>
-</div>
 </div>
 </div>
             </section>
@@ -222,8 +266,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="scrape-functions.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="define-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -252,7 +296,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wjakethompson/soccer/edit/master/references.Rmd",
+"link": "https://github.com/wjakethompson/soccer/edit/master/intro.Rmd",
 "text": "Edit"
 },
 "download": null,

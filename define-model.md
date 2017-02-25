@@ -49,18 +49,18 @@ where $\omega$ represents a matrix of independent variable, and $\beta$ denotes 
 \begin{align}
   log(X_{Ai}) &= \lambda_{1i} + \lambda_{0i}, \notag \\
   log(X_{Bi}) &= \lambda_{2i} + \lambda_{0i}, \notag \\
-  \lambda_{1i} &= \mu + \eta + \alpha_A + \delta_B, (\#eq:lambda1) \\
+  \lambda_{1i} &= \mu + \eta H_i + \alpha_A + \delta_B, (\#eq:lambda1) \\
   \lambda_{2i} &= \mu + \alpha_B + \delta_A, (\#eq:lambda2) \\
   \lambda_{0i} &= \rho_A + \rho_B (\#eq:lambda0)
 \end{align}
 
-Here, $\mu$ denotes the overall intercept, or the expected log goals for a team not playing at home, and $\eta$ represents the increase in expected log goals for a team playing at home. The estimates of team ability come from $\alpha$ and $\delta$, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, $\rho$ denotes the change in expected covariance for each team [@whitaker2011].
+Here, $\mu$ denotes the overall intercept, or the expected log goals for a team not playing at home, and $\eta$ represents the increase in expected log goals for a team playing at home. $H_i$ is a dummary variable indicating whether game $i$ was played at the home team's stadium (1) or a neutral site (0). The estimates of team ability come from $\alpha$ and $\delta$, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, $\rho$ denotes the change in expected covariance for each team [@whitaker2011].
 
 ### Implementing the Bivariate Poisson {#imp-bivpois}
 
-The bivariate Poisson model can be fit using the following Stan code [@R-rstan]. In the model code, I have modeled $\alpha$, $\delta$, and $\rho$ as random effects so that $\mu$ represents the overall mean. This means that positive $\alpha$ values and negative $\delta$ are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.
+The bivariate Poisson model can be fit using the following Stan code and the **rstan** package [@R-rstan]. In the model code, I have modeled $\alpha$, $\delta$, and $\rho$ as random effects so that $\mu$ represents the overall mean. This means that positive $\alpha$ values and negative $\delta$ are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.
 
-I have also reparameterized the random effects so that Stan can sample from a $\mathcal{N}(0,\ 1)$, which reduces computation time and increasing the efficiency of the sampler to avoid divergent transitions [@stan]. 
+I have also reparameterized the random effects so that Stan can sample from a $\mathcal{N}(0,\ 1)$, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions [@stan].
 
 
 ```stan
@@ -121,6 +121,76 @@ model {
 
 ## The Mixed Effects Model {#mix-eff}
 
-test
+As an alternative to the bivariate Poisson model, one could model a random intercept for each game, rather than estimating $\rho$. Thus, the game random intercept model would be defined as
+
+\begin{align}
+  log(X_{Ai}) &= \lambda_{1i}, \notag \\
+  log(X_{Bi}) &= \lambda_{2i}, \notag \\
+  \lambda_{1i} &= \mu + \eta H_i + \alpha_A + \delta_B + \gamma_i, (\#eq:mixlam1) \\
+  \lambda_{2i} &= \mu + \alpha_B + \delta_A + \gamma_i (\#eq:mixlam2)
+\end{align}
+
+This model is very similar to the bivariate Poisson. The two rate parameters, $\lambda_{1i}$ and $\lambda_{2i}$, are defined the same, with only the addition of $\gamma_i$ denoting the random intercept for the game. This $\gamma_i$ replaces $\lambda_{0i}$ in the bivariate Poisson model. This has a couple of downstream effects on the estimation.
+
+First, in the bivariate Poisson model, $\rho$ is estimated for each team. Thus the convariance, $\lambda_{0i}$ is predicted for each game by the competing teams' $\rho$ values. This also allows predictions to be made for future games about what the covariance or dependency between the teams will be. In contrast, game random intercept model doesn't estimate predictors for this dependency. In this model, the dependency is treated as a random variable, with some variance to be estimated.
+
+Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.
 
 ### Implementing the Mixed Effects Model {#imp-mixef}
+
+The game random intercept model can be estimated using the following Stan code and the **rstan** package [@R-rstan]. As with the bivariate Poisson model, I have modeled $\alpha$ and $\delta$ as random effects so that $\mu$ represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency [@stan].
+
+
+```stan
+data {
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
+}
+parameters {
+  vector[num_clubs] raw_alpha;                      // attacking intercepts
+  vector[num_clubs] raw_delta;                      // defending intercepts
+  vector[num_games] raw_gamma;                      // game intercepts
+
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_g;                            // game sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_games] gamma;
+
+  alpha = sigma_a * raw_alpha;
+  delta = sigma_d * raw_delta;
+  gamma = sigma_g * raw_gamma;
+}
+model {
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+
+  // priors
+  raw_alpha ~ normal(0, 1);                         // attacking random effects
+  raw_delta ~ normal(0, 1);                         // defending random effects
+  raw_gamma ~ normal(0, 1);                         // game random effects
+  mu ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_g ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]] + gamma[g]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]] + gamma[g]);
+  }
+  h_goals ~ poisson(lambda1);
+  a_goals ~ poisson(lambda2);
+}
+```
