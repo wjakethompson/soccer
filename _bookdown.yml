@@ -2,6 +2,7 @@ new_session: yes
 
 rmd_files: [
   "index.rmd",
+  "intro.Rmd",
   
   "define-model.Rmd",
   "simulation.Rmd",
