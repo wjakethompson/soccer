@@ -10,7 +10,8 @@ rmd_files: [
   "fit-model.Rmd",
   "make-predictions.Rmd",
   
-  "appendix-a.Rmd",
+  "simulation-functions.Rmd",
+  "scraping-functions.Rmd",
 
   "references.Rmd"
 ]

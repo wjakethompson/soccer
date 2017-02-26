@@ -1,0 +1,15 @@
+# (APPENDIX) Appendix {-}
+
+# Simulation Functions {#simulation-functions}
+
+## Generate bivariate Poisson {#bivpois-generate}
+
+```{r gen_bivpois_app, eval = FALSE}
+# bivpois generation
+```
+
+## Generate game random intercept {#mixeffc-generate}
+
+```{r gen_mixeffc_app, eval = FALSE}
+# mixeffc generation
+```
