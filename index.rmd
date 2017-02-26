@@ -28,5 +28,6 @@ This work is licensed under the [Creative Commons Attribution-NonCommercial-NoDe
 # automatically create a bib database for R packages
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
-    'lubridate', 'rstan', 'ggplot2', 'DT'), 'packages.bib')
+    'lubridate', 'rstan', 'ggplot2', 'DT', 'portableParallelSeeds', 'parallel'),
+  'packages.bib')
 ```
