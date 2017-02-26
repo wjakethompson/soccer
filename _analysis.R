@@ -16,139 +16,6 @@ options(mc.cores = (parallel::detectCores() - 1))
 rm(list = ls())
 
 
-### simulation -----------------------------------------------------------------
-generate_data <- function(run, seeds, num_club) {
-  setSeeds(seeds, run = run)
-  
-  teams <- data_frame(
-    club = paste0("club", sprintf("%02d", seq_len(num_club))),
-    attack = runif(n = num_club, min = -0.75, max = 0.75),
-    defend = runif(n = num_club, min = -0.75, max = 0.75),
-    cov = runif(n = num_club, min = -0.05, max = 0.05)
-  )
-  
-  games <- teams %>%
-    select(club) %>%
-    flatten_chr() %>%
-    crossing(., .)
-  colnames(games) <- c("home", "away")
-  
-  games <- games %>%
-    filter(home != away) %>%
-    left_join(teams, by = c("home" = "club")) %>%
-    rename(h_att = attack, h_def = defend, h_cov = cov) %>%
-    left_join(teams, by = c("away" = "club")) %>%
-    rename(a_att = attack, a_def = defend, a_cov = cov) %>%
-    mutate(
-      lambda1 = exp(0 + 0.5 + h_att + a_def),
-      lambda2 = exp(0 + a_att + h_def),
-      lambda3 = exp(-3 + h_cov + a_cov),
-      h_goals = rpois(n = nrow(.), lambda = (lambda1 + lambda3)),
-      a_goals = rpois(n = nrow(.), lambda = (lambda2 + lambda3)),
-      home_game = 1
-    ) %>%
-    select(home, away, h_goals, a_goals, home_game)
-  
-  list(
-    teams = teams,
-    games = games
-  )
-}
-
-# Define parameters for the simulation
-n_reps <- 1
-streams_per_rep <- 1
-
-# Create the seed warehouse
-project_seeds <- seedCreator(n_reps, streams_per_rep, seed = 9416)
-
-# Create data sets
-simulation_data <- lapply(X = 1:n_reps, FUN = generate_data,
-  seeds = project_seeds, num_club = 20)
-game_data <- map(simulation_data, function(x) x$games)
-team_data <- map(simulation_data, function(x) x$teams)
-
-x <- game_data[[1]]
-y <- team_data[[1]]
-simulation <- map2(.x = game_data, .y = team_data, .f = function(x, y) {
-  team_codes <- data_frame(
-    club = sort(unique(c(x$home, x$away)))
-  ) %>%
-    mutate(code = seq_len(nrow(.)))
-  
-  x <- left_join(x, team_codes, by = c("home" = "club")) %>%
-    rename(home_code = code) %>%
-    left_join(team_codes, by = c("away" = "club")) %>%
-    rename(away_code = code)
-  
-  stan_data <- list(
-    num_clubs = nrow(team_codes),
-    num_games = nrow(x),
-    home = x$home_code,
-    away = x$away_code,
-    h_goals = x$h_goals,
-    a_goals = x$a_goals,
-    homeg = x$home_game
-  )
-  
-  bivpois <- stan(file = "_data/stan-models/biv_pois.stan", data = stan_data,
-    chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
-    cores = 2, control = list(adapt_delta = 0.99))
-  mixeffc <- stan(file = "_data/stan-models/mix_effc.stan", data = stan_data,
-    chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
-    cores = 2, control = list(adapt_delta = 0.99))
-  
-  bivpois_maxrhat <- as.data.frame(summary(bivpois)[[1]]) %>%
-    select(Rhat) %>%
-    flatten_dbl() %>%
-    max()
-  mixeffc_maxrhat <- as.data.frame(summary(mixeffc)[[1]]) %>%
-    select(Rhat) %>%
-    flatten_dbl() %>%
-    max()
-  
-  bivpois_params <- rstan::extract(bivpois, pars = c("mu", "eta", "r", "alpha",
-    "delta", "rho"))
-  mixeffc_params <- rstan::extract(mixeffc, pars = c("mu", "eta", "alpha", "delta"))
-  
-  bivpois_alpha <- colMeans(bivpois_params$alpha)
-  bivpois_delta <- colMeans(bivpois_params$delta)
-  mixeffc_alpha <- colMeans(mixeffc_params$alpha)
-  mixeffc_delta <- colMeans(mixeffc_params$delta)
-  
-  bivpois_alpha_bias <- mean(bivpois_alpha - y$attack)
-  bivpois_delta_bias <- mean(bivpois_delta - y$defend)
-  bivpois_alpha_mse <- mean((bivpois_alpha - y$attack)^2)
-  bivpois_delta_mse <- mean((bivpois_delta - y$defend)^2)
-  
-  mixeffc_alpha_bias <- mean(mixeffc_alpha - y$attack)
-  mixeffc_delta_bias <- mean(mixeffc_delta - y$defend)
-  mixeffc_alpha_mse <- mean((mixeffc_alpha - y$attack)^2)
-  mixeffc_delta_mse <- mean((mixeffc_delta - y$defend)^2)
-  
-  data_frame(
-    bivpois_rhat = bivpois_maxrhat,
-    bivpois_params = list(list(bivpois_alpha = bivpois_alpha,
-      bivpois_delta = bivpois_delta)),
-    bivpois_alpha_bia = bivpois_alpha_bias,
-    bivpois_delta_bias = bivpois_delta_bias,
-    bivpois_alpha_mse = bivpois_alpha_mse,
-    bivpois_delta_mse = bivpois_delta_mse,
-    mixeffc_rhat = mixeffc_maxrhat,
-    mixeffc_params = list(list(mixeffc_alpha = mixeffc_alpha,
-      mixeffc_delta = mixeffc_delta)),
-    mixeffc_alpha_bias,
-    mixeffc_delta_bias,
-    mixeffc_alpha_mse,
-    mixeffc_delta_mse
-  )
-})
-save(simulation_data, file = "_data/simulation_data.rda")
-save(simulation, file = "_data/simulation.rda")
-
-rm(list = ls())
-
-
 ### gather-data ----------------------------------------------------------------
 scrape_league <- function(x) {
   cont <- TRUE
@@ -449,7 +316,11 @@ save(full_data, file = "_data/full_data.rda")
 
 
 ### Fit Stan Model -------------------------------------------------------------
-fit_data <- filter(full_data, !is.na(home_goals))
+
+load("_data/full_data.rda")
+fit_data <-  full_data %>%
+  filter(!is.na(h_goals),
+    competition %in% c("Bund", "Prem", "Ligue 1", "La Liga", "Serie A"))
 
 filter_games <- TRUE
 while(filter_games) {
@@ -461,7 +332,7 @@ while(filter_games) {
     mutate(code = seq_len(nrow(.)))
 
   fit_data <- fit_data %>%
-    select(date:away_goals) %>%
+    select(-competition) %>%
     left_join(team_counts, by = c("home" = "team")) %>%
     rename(home_code = code) %>%
     left_join(team_counts, by = c("away" = "team")) %>%
@@ -475,61 +346,26 @@ while(filter_games) {
 }
 
 stan_data <- list(
-  h = fit_data$home_code,
-  a = fit_data$away_code,
-  hs = fit_data$home_goals,
-  as = fit_data$away_goals,
-  C = nrow(team_counts),
-  G = nrow(fit_data)
+  num_clubs = nrow(team_counts),
+  num_games = nrow(fit_data),
+  home = fit_data$home_code,
+  away = fit_data$away_code,
+  h_goals = fit_data$h_goals,
+  a_goals = fit_data$a_goals,
+  homeg = fit_data$home_game
 )
 
-data_list <- fit_data %>%
-  select(-date) %>%
-  mutate(game_num = seq_len(nrow(.))) %>%
-  as.list()
+bivpois <- stan(file = "_data/stan-models/biv_pois.stan", data = stan_data,
+  chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
+  cores = 2, control = list(adapt_delta = 0.99))
+mixeffc <- stan(file = "_data/stan-models/mix_effc.stan", data = stan_data,
+  chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
+  cores = 2, control = list(adapt_delta = 0.99))
 
-long_data <- pmap_df(.l = data_list, .f = function(home, away, home_goals,
-  away_goals, home_code, away_code, game_num) {
-  data_frame(
-    team  = c(home, away),
-    score = c(home_goals, away_goals),
-    tcode = c(home_code, away_code),
-    ocode = c(away_code, home_code),
-    home  = c(1, 0),
-    game  = game_num
-  )
-})
-
-long_stan <- list(
-  off = long_data$tcode,
-  def = long_data$ocode,
-  home = long_data$home,
-  score = long_data$score,
-  game = long_data$game,
-  C = nrow(team_counts),
-  G = nrow(fit_data),
-  N = nrow(long_data)
-)
-
-int_fit <- stan(file = "stan_models/soccer_random_int.stan", data = stan_data,
-  chains = 3, iter = 20000, warmup = 5000, init = "random", thin = 1,
-  cores = 3, control = list(adapt_delta = 0.99))
-saveRDS(int_fit, file = "model_output/random_int_model.rds")
-
-biv_fit <- stan(file = "stan_models/soccer_biv_pois.stan", data = stan_data,
-  chains = 3, iter = 20000, warmup = 5000, init = "random", thin = 1,
-  cores = 3, control = list(adapt_delta = 0.99))
-saveRDS(biv_fit, file = "model_output/biv_pois_model.rds")
-
-lng_fit <- stan(file = "stan_models/long_rnd_int.stan", data = long_stan,
-  chains = 3, iter = 20000, warmup = 5000, init = "random", thin = 1,
-  cores = 3, control = list(adapt_delta = 0.8))
-saveRDS(lng_fit, file = "model_output/lng_rnd_int_model.rds")
-
-rm(list = setdiff(ls(), c("full_data", "full_urls", "int_fit", "biv_fit",
-  "lng_fit", "team_counts")))
-gc()
-
+summary(bivpois, pars = c("mu", "eta", "sigma_a", "sigma_d", "sigma_r"),
+  probs = c(0.025, 0.25, 0.75, 0.975))$summary
+summary(mixeffc, pars = c("mu", "eta", "sigma_a", "sigma_d", "sigma_g"),
+  probs = c(0.025, 0.25, 0.75, 0.975))$summary
 
 ### Examine convergence --------------------------------------------------------
 as.data.frame(summary(int_fit)[[1]]) %>%
