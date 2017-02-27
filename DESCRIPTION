@@ -20,6 +20,5 @@ Imports:
   tidyverse
 Remotes:
   hadley/ggplot2,
-  pauljohn32/portableParallelSeeds,
   rstudio/bookdown,
   rstudio/rmarkdown
