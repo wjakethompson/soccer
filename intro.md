@@ -19,7 +19,7 @@
 
 
 
-## Document Organization
+## Document organization
 
 
 
@@ -41,7 +41,7 @@ devtools::session_info(c("bookdown", "knitr", "rmarkdown", "rvest", "purrr",
 #>  language (EN)                        
 #>  collate  en_US.UTF-8                 
 #>  tz       <NA>                        
-#>  date     2017-02-25
+#>  date     2017-02-27
 #> Packages ------------------------------------------------------------------
 #>  package      * version   date       source                           
 #>  assertthat     0.1       2013-12-06 cran (@0.1)                      
