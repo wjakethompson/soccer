@@ -10,8 +10,8 @@ Project Requirements
 
 The **rstan** package can be installed using the instructions provided by the Stan Development Team:
 
-* [Mac orLinux](https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Mac-or-Linux)
-* [Windows](https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Windows).
+* [Mac or Linux](https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Mac-or-Linux)
+* [Windows](https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Windows)
 
 The **portableParallelSeeds** package can be installed via
 
