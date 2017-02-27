@@ -1,132 +1,30 @@
 # Gather Data {#gather-data}
 
-```{r methods, include = FALSE}
-library(methods)
-```
-
-
 Perhaps the most important part of any data analysis is the collection of the data. If you don't have the data necessary to support the model you want to estimate, or the conclusions you want to draw, no amount of tinkering with the model or results can save you.
 
-The data for this project was collected using web scraping via the **rvest** [@R-rvest] and **dplyr** [@R-dplyr] packages. The scores for each game in a season for a given team can be found on ESPN's website. For example, all of Barcelona's games can be found [here](http://www.espnfc.us/club/barcelona/83/fixtures). Given that we have access to the results for any team available on ESPN, the question becomes which teams to include in the analysis. I chose teams that particpated in specific domestic leagues or in certain tournaments or competitions. The rationale for each selection is below.
+The data for this project was collected using web scraping via the **rvest** [@R-rvest] and **dplyr** [@R-dplyr] packages. The scores for each game in a season for a given team can be found on ESPN's website. For example, all of Barcelona's games can be found [here](http://www.espnfc.us/club/barcelona/83/fixtures). Given that there is access to the results for any team available on ESPN, the question becomes which teams to include in the analysis. I chose teams that particpated in specific domestic leagues or in certain tournaments or competitions. The rationale for each selection is below.
 
 ## Domestic league inclusion
 
 Because one goal of the project was to predict the 5 major European domestic leagues, all teams from the English Premier League, German Bundesliga, French Ligue 1, Spanish La Liga, and Italian Serie A were included. I also included the second tier leagues from these countries, if they were available. This included the English League Championship, German 2. Bundesliga, French Ligue 2, and Italian Serie B. The other major goal was to predict the UEFA Champion's League (UCL). Many of the UCL teams come from the major domestic leagues, however many teams do not. Thus, I also included teams from the Belgian Jupiler League, Danish SAS-Ligaen, Dutch Eredivisie, Portuguese Liga, Russian Premier League, Scottish Premiership, Swiss Super League, and Turkish Super Lig. These leagues were selected because they all had teams reach the knockout stage of the UCL, and thus would have sufficient crossover with the major leagues.
 
-To get the URLs for each team, we can write a function that uses the **rvest** package to pull hyperlinks of of the league pages called `scrape_league()`. See Appendix \@ref(league-scrape) for the full function.
-
-```{r league_scrape, include = FALSE}
-scrape_league <- function(x) {
-  url_data <- read_html(x)
-  league_table <- url_data %>%
-    html_nodes(css = "table") %>%
-    html_table()
-  league_table <- league_table[[1]]
-  colnames(league_table) <- as.character(league_table[1,])
-  colnames(league_table) <- make.names(colnames(league_table), unique = TRUE)
-  league_table <- league_table[-1,]
-  
-  league_table <- league_table %>%
-    select(club = TEAM, goals_for = `F`, goals_against = A, points = PTS) %>%
-    mutate(club = trimws(club, which = "both"))
-  
-  teams <- url_data %>%
-    html_nodes("td a") %>%
-    html_text() %>%
-    as.character() %>%
-    trimws(which = "both")
-  team_urls <- url_data %>%
-    html_nodes("td a") %>%
-    html_attr("href") %>%
-    as.character()
-
-  league_table <- league_table %>%
-    left_join(data_frame(club = teams, club_url = team_urls), by = "club") %>%
-    as_data_frame()
-  
-  return(league_table)
-}
-```
-
-This function takes in a URL for a given league, and returns a data frame with the club names, the totals goals scored by and against each club in league play, the points each club has accumulated, and the club's URL. For a full description of how the **rvest** package works, see [this webinar](https://www.rstudio.com/resources/webinars/extracting-data-from-the-web-part-2/) [@grolemund2016].
+To get the URLs for each team, I'll write a function that uses the **rvest** package to pull hyperlinks of of the league pages called `scrape_league()`. This function takes in a URL for a given league, and returns a data frame with the club names, the totals goals scored by and against each club in league play, the points each club has accumulated, and the club's URL. See Appendix \@ref(league-scrape) for the full function. For a full description of how the **rvest** package works, see [this webinar](https://www.rstudio.com/resources/webinars/extracting-data-from-the-web-part-2/) [@grolemund2016].
 
 ## Non-domestic competition inclusion
 
 Although many of the teams participating in the UCL come from the leagues the leagues outlines above, not all due. A few come from smaller leagues that are not covered by ESPN. Thus, all teams that participated in the group stage of the UCL were included. Additionally, teams that didn't qualify for the UCL, and some teams that did qualify for the UCL, but didn't make it out of the group stage, play in the second tier Eurpoa League tournament. Because this tournament includes more overlap between the leagues, all teams participating in the Europa league were also included. Finally, the International Champions Cup is a relatively new event that pairs top teams from Europe against each other around the world. All participants in this event were also included.
 
-The webpages for these competitions are formatted slightly differently than those for the domestic leagues, so we will need a slightly different function to scrape these team URLs, `scrape_major_cup()` (see Appendix \@ref(cup-scrape)).
-
-```{r uefa_scrape, include = FALSE}
-scrape_major_cup <- function(x) {
-  url_data <- read_html(x)
-  league_table <- url_data %>%
-    html_nodes(css = "table") %>%
-    html_table()
-  
-  league_table <- map_df(.x = league_table, .f = function(x) {
-    colnames(x) <- as.character(x[1,])
-    colnames(x) <- make.names(colnames(x), unique = TRUE)
-    x <- x[-1,]
-    
-    x <- x %>%
-      select(club = TEAM)
-    return(x)
-  }) %>%
-    bind_rows() %>%
-    mutate(club = trimws(club, which = "both"))
-  
-  teams <- url_data %>%
-    html_nodes("td a") %>%
-    html_text() %>%
-    as.character() %>%
-    trimws(which = "both")
-  team_urls <- url_data %>%
-    html_nodes("td a") %>%
-    html_attr("href") %>%
-    as.character()
-  
-  league_table <- league_table %>%
-    left_join(data_frame(club = teams, club_url = team_urls), by = "club") %>%
-    as_data_frame()
-  
-  return(league_table)
-}
-```
-
-Unlike the league scraper, this function only returns the club, and the URL for the club.
+The webpages for these competitions are formatted slightly differently than those for the domestic leagues, so I will need a slightly different function to scrape these team URLs, `scrape_major_cup()` (see Appendix \@ref(cup-scrape)). Unlike the league scraper, this function only returns the club, and the URL for the club.
 
 ## Domestic competition inclusion
 
 Finally, in addition to domestic leagues and international club competitions, European teams also compete in domestic tournaments. These competitions were also included to increase the number of data points for the top teams, as well as to increase the overlap between the first and second tier leagues of the top countries. All participants were included from Spain's Copa del Ray and Spanish Super Cup, Italy's Coppa Italia, France's Coupe de France and Coupe de la Ligue, Germany's DFB Pokal, and England's FA Cup and League Cup.
 
-These webpages are also formatted differently, so we have one final function to get the team URLs, `scrape_dom_cup()` (see Appendix \@ref(dom-scrape)).
-
-```{r dom_scrape, include = FALSE}
-scrape_dom_cup <- function(x) {
-    url_data <- read_html(x)
-  
-  teams <- url_data %>%
-    html_nodes("#stats-fair-play a") %>%
-    html_text() %>%
-    as.character() %>%
-    trimws(which = "both")
-  team_urls <- url_data %>%
-    html_nodes("#stats-fair-play a") %>%
-    html_attr("href") %>%
-    as.character()
-  
-  data_frame(
-    club = teams,
-    club_url = team_urls
-  )
-}
-```
-
-As with the scraper for the international competitions, this scraper also returns the club name and club URL.
+These webpages are also formatted differently, so I have one final function to get the team URLs, `scrape_dom_cup()` (see Appendix \@ref(dom-scrape)). As with the scraper for the international competitions, this scraper also returns the club name and club URL.
 
 ## Collect club websites
 
-Now that we have defined the functions, we can use the **purrr** package [@R-purrr] to map the function to each league or competition URL. For more information on the **purrr** package see [*R for Data Science*](http://r4ds.had.co.nz/iteration.html) [@r4ds]. First we create a list of URLs for each type of scraper.
+Now that criteria for which teams will be included has been defined, the **purrr** package [@R-purrr] can be used to map the each function the corresponding league or competition URL. For more information on the **purrr** package see [*R for Data Science*](http://r4ds.had.co.nz/iteration.html) [@r4ds]. First I'll create a list of URLs for each type of scraper.
 
 ```{r full_list}
 leagues <- list(
@@ -167,25 +65,22 @@ domestic_cups <- list(
 )
 ```
 
-We can then map our functions to the defined URLs.
+Then I can then map the functions to the defined URLs. Because there are many teams to scrape, it's possible to overload ESPN's server request limit. Therefore, I've define a safe version of the `read_html()` function that will allow us to check if the website was read correctly.
 
-```{r get_urls, message=FALSE}
+```{r get_urls, eval = FALSE}
 library(rvest)
 library(purrr)
 library(dplyr)
 
+safe_read_html <- safely(read_html)
 league_urls <- map_df(.x = leagues, .f = scrape_league)
 major_cup_urls <- map_df(.x = major_cups, .f = scrape_major_cup)
 domestic_cup_urls <- map_df(.x = domestic_cups, .f = scrape_dom_cup)
-
-league_urls
-major_cup_urls
-domestic_cup_urls
 ```
 
-The next step is to create a data frame of all the clubs and their URLs. Many teams participate in multiple competitions that were included, so we will only keep one instance.
+The next step is to create a data frame of all the clubs and their URLs. Many teams participate in multiple competitions that were included, so only one instance will be kept.
 
-```{r clean_url}
+```{r clean_url, eval = FALSE}
 url_lookup <- list(
   select(league_urls, club, club_url),
   major_cup_urls,
@@ -200,120 +95,28 @@ full_urls <- league_urls %>%
   full_join(url_lookup, by = "club") %>%
   filter(!is.na(club_url))
 
-full_urls
+DT::datatable(full_urls, options = list(pageLength = 5, scrollX = TRUE),
+  rownames = FALSE)
+```
+
+```{r print_full_urls, echo = FALSE}
+load("_data/full_urls.rda")
+DT::datatable(full_urls, options = list(pageLength = 5, scrollX = TRUE),
+  rownames = FALSE)
 ```
 
 ## Scrape game data
 
-Now that we have all of the team URLs, we can scrape the game data from each team's page on ESPN. To do this, we'll define a new scraper function, `scrape_team()` (see Appendix \@ref(game-scrape)). Because there are so many teams to scrape, it's possible we may overload ESPN's server request limit. Therefore, we'll define a safe version of the `read_html()` function that will allow us to check if the website was read correctly.
-
-```{r game_scrape, include = FALSE}
-scrape_team <- function(x, y) {
-    x <- gsub("/index", "/fixtures", x, fixed = TRUE)
-    
-    cont <- TRUE
-    while(cont) {
-      url_data <- safe_read_html(x)
-      
-      if(is.null(url_data[[1]])) {
-        closeAllConnections()
-        Sys.sleep(5)
-      } else {
-        url_data <- url_data[[1]]
-        cont <- FALSE
-      }
-    }
-    date <- url_data %>%
-      html_nodes(".headline") %>%
-      html_text() %>%
-      as.character()
-    if ("LIVE" %in% date) {
-      date[which(date == "LIVE")] <- format(Sys.Date(), "%b %d, %Y")
-    }
-    date <- mdy(date)
-    home_team <- url_data %>%
-      html_nodes(".score-home-team .team-name") %>%
-      html_text() %>%
-      as.character()
-    away_team <- url_data %>%
-      html_nodes(".score-away-team .team-name") %>%
-      html_text() %>%
-      as.character()
-    home_score <- url_data %>%
-      html_nodes(".home-score") %>%
-      html_text() %>%
-      as.character() %>%
-      gsub(" ", "", x = .) %>%
-      gsub( " *\\(.*?\\) *", "", x = .) %>%
-      as.numeric()
-    away_score <- url_data %>%
-      html_nodes(".away-score") %>%
-      html_text() %>%
-      as.character() %>%
-      gsub(" ", "", x = .) %>%
-      gsub( " *\\(.*?\\) *", "", x = .) %>%
-      as.numeric()
-    competition <- url_data %>%
-      html_nodes(".score-column.score-competition") %>%
-      html_text() %>%
-      as.character()
-    
-    team_data <- data_frame(
-      date = date,
-      home = home_team,
-      away = away_team,
-      home_goals = home_score,
-      away_goals = away_score,
-      competition = competition
-    ) %>%
-      arrange(date) %>%
-      unique()
-    
-    abbrev <- as_data_frame(table(c(team_data$home, team_data$away))) %>%
-      top_n(n = 1, wt = n) %>%
-      select(Var1) %>%
-      flatten_chr()
-    
-    if (nrow(team_data) < 3) {
-      ret_data <- data_frame(
-        club = y,
-        abbrev = y,
-        team_data = NA
-      )
-    } else {
-      if (abbrev == "Sporting") {
-        team_data$home[which(team_data$home == "Sporting")] <- y
-        team_data$away[which(team_data$away == "Sporting")] <- y
-        ret_data <- data_frame(
-          club = y,
-          abbrev = y,
-          team_data = list(team_data)
-        )
-      } else {
-        team_data <- filter(team_data, home != "Sporting", away != "Sporting")
-        ret_data <- data_frame(
-          club = y,
-          abbrev = abbrev,
-          team_data = list(team_data)
-        )
-      }
-    }
-    
-    return(ret_data)
-}
-```
-
-Now we map this function to all of our club URLs, just like we did with the league URLs. Note that we also use the **lubridate** package [@R-lubridate] to format dates.
+Now that all of the team URLs have been collected, I can scrape the game data from each team's page on ESPN. To do this, I'll define a new scraper function, `scrape_team()` (see Appendix \@ref(game-scrape)). Then this function gets mapped to all of the club URLs, using the same process that was used for the league URLs. Note that I also use the **lubridate** package [@R-lubridate] to format dates within the `scrape_team()` function.
 
 ```{r get_games, eval = FALSE}
 library(lubridate)
 
-safe_read_html <- safely(read_html)
 full_data <- map2_df(.x = full_urls$club_url, .y = full_urls$club,
   .f = scrape_team)
 ```
 
-Finally, we just have to do a little cleaning. We will remove duplicate games, and replace the abbreviations that ESPN uses in their scores with the full club name.
+Finally, there is just little cleaning to be done. I will remove duplicate games, and replace the abbreviations that ESPN uses in their scores with the full club name.
 
 ```{r clean_data, eval = FALSE}
 team_lookup <- select(full_data, -team_data)
@@ -342,6 +145,6 @@ DT::datatable(full_data, options = list(pageLength = 5, scrollX = TRUE))
 
 ```{r print_table, echo = FALSE, results = "asis"}
 load("_data/full_data.rda")
-DT::datatable(full_data, options = list(pageLength = 5, scrollX = TRUE),
+DT::datatable(full_data, options = list(pageLength = 10, scrollX = TRUE),
   rownames = FALSE)
 ```
