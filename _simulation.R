@@ -116,7 +116,7 @@ simulation_fun <- function(x) {
   bivpois <- stan(file = "_data/stan-models/biv_pois.stan", data = stan_data,
     chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
     cores = 2, control = list(adapt_delta = 0.99))
-  mixeffc <- stan(file = "_data/stan-models/mix_effc.stan", data = stan_data,
+  gri <- stan(file = "_data/stan-models/gri.stan", data = stan_data,
     chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
     cores = 2, control = list(adapt_delta = 0.99))
   
@@ -124,30 +124,30 @@ simulation_fun <- function(x) {
     select(Rhat) %>%
     flatten_dbl() %>%
     max()
-  mixeffc_maxrhat <- as.data.frame(summary(mixeffc)[[1]]) %>%
+  gri_maxrhat <- as.data.frame(summary(gri)[[1]]) %>%
     select(Rhat) %>%
     flatten_dbl() %>%
     max()
   
   bivpois_params <- rstan::extract(bivpois, pars = c("mu", "eta", "alpha",
     "delta", "rho"))
-  mixeffc_params <- rstan::extract(mixeffc, pars = c("mu", "eta", "alpha",
+  gri_params <- rstan::extract(gri, pars = c("mu", "eta", "alpha",
     "delta"))
   
   bivpois_alpha <- colMeans(bivpois_params$alpha)
   bivpois_delta <- colMeans(bivpois_params$delta)
-  mixeffc_alpha <- colMeans(mixeffc_params$alpha)
-  mixeffc_delta <- colMeans(mixeffc_params$delta)
+  gri_alpha <- colMeans(gri_params$alpha)
+  gri_delta <- colMeans(gri_params$delta)
   
   bivpois_alpha_bias <- mean(bivpois_alpha - x$teams$attack)
   bivpois_delta_bias <- mean(bivpois_delta - x$teams$defend)
   bivpois_alpha_mse <- mean((bivpois_alpha - x$teams$attack)^2)
   bivpois_delta_mse <- mean((bivpois_delta - x$teams$defend)^2)
   
-  mixeffc_alpha_bias <- mean(mixeffc_alpha - x$teams$attack)
-  mixeffc_delta_bias <- mean(mixeffc_delta - x$teams$defend)
-  mixeffc_alpha_mse <- mean((mixeffc_alpha - x$teams$attack)^2)
-  mixeffc_delta_mse <- mean((mixeffc_delta - x$teams$defend)^2)
+  gri_alpha_bias <- mean(gri_alpha - x$teams$attack)
+  gri_delta_bias <- mean(gri_delta - x$teams$defend)
+  gri_alpha_mse <- mean((gri_alpha - x$teams$attack)^2)
+  gri_delta_mse <- mean((gri_delta - x$teams$defend)^2)
   
   data_frame(
     generator = x$method,
@@ -158,20 +158,19 @@ simulation_fun <- function(x) {
     bivpois_delta_bias = bivpois_delta_bias,
     bivpois_alpha_mse = bivpois_alpha_mse,
     bivpois_delta_mse = bivpois_delta_mse,
-    mixeffc_rhat = mixeffc_maxrhat,
-    mixeffc_params = list(list(mixeffc_alpha = mixeffc_alpha,
-      mixeffc_delta = mixeffc_delta)),
-    mixeffc_alpha_bias,
-    mixeffc_delta_bias,
-    mixeffc_alpha_mse,
-    mixeffc_delta_mse
+    gri_rhat = gri_maxrhat,
+    gri_params = list(list(gri_alpha = gri_alpha, gri_delta = gri_delta)),
+    gri_alpha_bias,
+    gri_delta_bias,
+    gri_alpha_mse,
+    gri_delta_mse
   )
 }
 
 
 ### run simulation -------------------------------------------------------------
 # Define parameters for the simulation
-n_reps <- 2
+n_reps <- 200
 streams_per_rep <- 1
 
 # Create the seed warehouse

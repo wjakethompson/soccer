@@ -12,7 +12,7 @@ In soccer, the goals scored by a single team can be thought of as coming from a 
 
 This parameterization, however, assumes that the scores $X$ and $Y$ are independent of each other. In this project, the aim is to model the association between the two Poisson distributed variables. There are two methods for modeling this association that will be examined. The first is a bivariate Poisson distribution. The second is a mixed effects model with a random slope for each game.
 
-## The Bivariate Poisson {#biv-pois}
+## The bivariate Poisson model {#biv-pois}
 
 In the bivariate Poisson, the scores for teams $A$ and $B$, $X_A$ and $X_B$, are random variables where $G_i \sim Poisson(\lambda_i),\ i = 0,\ 1,\ 2$.
 
@@ -55,7 +55,7 @@ where $\omega$ represents a matrix of independent variable, and $\beta$ denotes 
 
 Here, $\mu$ denotes the overall intercept, or the expected log goals for a team not playing at home, and $\eta$ represents the increase in expected log goals for a team playing at home. $H_i$ is a dummary variable indicating whether game $i$ was played at the home team's stadium (1) or a neutral site (0). The estimates of team ability come from $\alpha$ and $\delta$, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, $\rho$ denotes the change in expected covariance for each team [@whitaker2011].
 
-### Implementing the Bivariate Poisson {#imp-bivpois}
+### Implementing the bivariate Poisson model {#imp-bivpois}
 
 The bivariate Poisson model can be fit using the following Stan code and the **rstan** package [@R-rstan]. In the model code, I have modeled $\alpha$, $\delta$, and $\rho$ as random effects so that $\mu$ represents the overall mean. This means that positive $\alpha$ values and negative $\delta$ are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.
 
@@ -117,15 +117,15 @@ model {
 }
 ```
 
-## The Mixed Effects Model {#mix-eff}
+## The game random intercept model {#gri}
 
 As an alternative to the bivariate Poisson model, one could model a random intercept for each game, rather than estimating $\rho$. Thus, the game random intercept model would be defined as
 
 \begin{align}
   log(X_{Ai}) &= \lambda_{1i}, \notag \\
   log(X_{Bi}) &= \lambda_{2i}, \notag \\
-  \lambda_{1i} &= \mu + \eta H_i + \alpha_A + \delta_B + \gamma_i, (\#eq:mixlam1) \\
-  \lambda_{2i} &= \mu + \alpha_B + \delta_A + \gamma_i (\#eq:mixlam2)
+  \lambda_{1i} &= \mu + \eta H_i + \alpha_A + \delta_B + \gamma_i, (\#eq:grilam1) \\
+  \lambda_{2i} &= \mu + \alpha_B + \delta_A + \gamma_i (\#eq:grilam2)
 \end{align}
 
 This model is very similar to the bivariate Poisson. The two rate parameters, $\lambda_{1i}$ and $\lambda_{2i}$, are defined the same, with only the addition of $\gamma_i$ denoting the random intercept for the game. This $\gamma_i$ replaces $\lambda_{0i}$ in the bivariate Poisson model. This has a couple of downstream effects on the estimation.
@@ -134,11 +134,11 @@ First, in the bivariate Poisson model, $\rho$ is estimated for each team. Thus t
 
 Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.
 
-### Implementing the Mixed Effects Model {#imp-mixef}
+### Implementing the game random intercept model {#imp-gri}
 
 The game random intercept model can be estimated using the following Stan code and the **rstan** package [@R-rstan]. As with the bivariate Poisson model, I have modeled $\alpha$ and $\delta$ as random effects so that $\mu$ represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency [@stan].
 
-```{stan stan_mixeffc, output.var="mixeffc", eval = FALSE}
+```{stan stan_gri, output.var="gri", eval = FALSE}
 data {
   int<lower=1> num_clubs;                           // number of clubs
   int<lower=1> num_games;                           // number of games
