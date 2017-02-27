@@ -12,6 +12,7 @@ Imports:
   DT,
   knitr,
   lubridate,
+  methods,
   pander,
   parallel,
   purrr,

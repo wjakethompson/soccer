@@ -10,7 +10,7 @@ biblio-style: apalike
 csl: apa.csl
 link-citations: yes
 nocite: |
-  @R-knitr, @R-rmarkdown, @R-ggplot2, @R-DT, @R-parallel
+  @R-knitr, @R-rmarkdown, @R-ggplot2, @R-DT, @R-parallel, @R-base
 github-repo: wjakethompson/soccer
 twitter-handle: wjakethompson
 description: "A tutorial for creating a ranking system for soccer teams and making predictions."
@@ -30,6 +30,7 @@ This work is licensed under the [Creative Commons Attribution-NonCommercial-NoDe
 # automatically create a bib database for R packages
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
-    'lubridate', 'rstan', 'ggplot2', 'DT', 'portableParallelSeeds', 'parallel'),
+    'lubridate', 'rstan', 'ggplot2', 'DT', 'portableParallelSeeds', 'parallel',
+    'methods'),
   'packages.bib')
 ```
