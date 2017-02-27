@@ -221,7 +221,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="imp-bivpois" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Implementing the bivariate Poisson model</h3>
 <p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2016</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
-<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a>)</span>.</p>
+<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -291,7 +291,7 @@ model {
 <p>Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.</p>
 <div id="imp-gri" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Implementing the game random intercept model</h3>
-<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2016</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a>)</span>.</p>
+<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2016</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -374,7 +374,7 @@ model {
 <p>Guo, J., Gabry, J., &amp; Goodrich, B. (2016). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
 </div>
 <div id="ref-stan">
-<p>Stan Development Team. (2016). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
+<p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
 </div>
 </div>
             </section>

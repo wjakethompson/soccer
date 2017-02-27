@@ -185,7 +185,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="model-est" class="section level2">
 <h2><span class="header-section-number">3.2</span> Model estimation</h2>
 <p>In total, 200 data sets were generated: 100 from the bivariate Poisson, and 100 from the game random intercept model. For each data set, both the bivariate Poisson and game random intercept model were estimated. Thus, each model was estimated 100 times on a data set from the matching data generation method, and 100 times on mis-matched data.</p>
-<p>For each estimation, 2 chains were run with 15000 iterations. The first 5000 iterations of each chain were discarded for burnin. This resulted in a total of 20000 retained iterations that made up the final posterior distributions. The thinning interval was set to 1 (no thinning). Finally, the target proposal acceptance rate during the adaptation period was set to 0.99. This forces the algorithm to take smaller steps, which decreases efficiency. However, this also helps to eliminate divergent transitions, which are common when parameter estimates are close to their bounds, such as a variance very close to 0 <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a>)</span>. The full model estimation function can be seen in Appendix <a href="simulation-functions.html#estimate-fun">A.3</a>.</p>
+<p>For each estimation, 2 chains were run with 15000 iterations. The first 5000 iterations of each chain were discarded for burnin. This resulted in a total of 20000 retained iterations that made up the final posterior distributions. The thinning interval was set to 1 (no thinning). Finally, the target proposal acceptance rate during the adaptation period was set to 0.99. This forces the algorithm to take smaller steps, which decreases efficiency. However, this also helps to eliminate divergent transitions, which are common when parameter estimates are close to their bounds, such as a variance very close to 0 <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>, <a href="#ref-stanwarn">2016</a><a href="#ref-stanwarn">a</a>)</span>. The full model estimation function can be seen in Appendix <a href="simulation-functions.html#estimate-fun">A.3</a>.</p>
 </div>
 <div id="running-the-simulation" class="section level2">
 <h2><span class="header-section-number">3.3</span> Running the simulation</h2>
@@ -220,7 +220,10 @@ simulation &lt;-<span class="st"> </span><span class="kw">map_df</span>(<span cl
 <h3>References</h3>
 <div id="refs" class="references">
 <div id="ref-stan">
-<p>Stan Development Team. (2016). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
+<p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
+</div>
+<div id="ref-stanwarn">
+<p>Stan Development Team. (2016a). <em>Brief guide to stan’s warnings</em>. Retrieved from <a href="http://mc-stan.org/misc/warnings.html" class="uri">http://mc-stan.org/misc/warnings.html</a></p>
 </div>
 <div id="ref-R-purrr">
 <p>Wickham, H. (2016a). <em>Purrr: Functional programming tools</em>. Retrieved from <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a></p>
