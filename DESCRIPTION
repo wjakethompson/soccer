@@ -10,7 +10,6 @@ Imports:
   bookdown,
   dplyr,
   DT,
-  ggplot2,
   knitr,
   lubridate,
   pander,
