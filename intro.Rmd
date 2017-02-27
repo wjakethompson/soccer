@@ -1,26 +1,32 @@
 # Introduction {#intro}
 
+The goal of this project is to predict winners of the major domestic European soccer leagues and the UEFA Champions League. Necessarily, this means that the real goal is to accurately predict the outcomes of individual games. To do this, I estimate team abilities using Bayesian mixed effects models. The estimated abilities can then be used to predict the outcomes of games that have yet to be played.
 
+Before diving into the process of developing and estimating these models, it will be useful to have a brief introduction to how competitions are structured for European soccer teams. An understanding of the various competitions will help clarify why teams are or are not included in the estimation of the model, and make more obvious how predictions should be made.
 
 ## European soccer format
 
+Unlike most American sports leagues (e.g., NFL, NBA, MLB, etc.), European soccer teams compete in a variety of domestic and international competitions. In general, these competitions fall into one of three major categories:
 
+1. Domestic leagues
+1. Domestic cups
+1. FIFA/UEFA Competitions
 
-### Domestic leagues
+### Domestic leagues {#dom-league-descrip}
 
-
-
-### UEFA Champions League
-
-
+Domestic leagues are most analogous to the regular season of the major American sports. In most domestic European soccer leagues, the league follows a double round robin structure with each team playing every other team twice: once at home and once away. Teams are awarded 3 points for a victory, 1 point for a tie, and 0 points for a loss. Once all the games have been played, the team with the most points wins the league.
 
 ### Domestic cups
 
+European leagues also host domestic cups. For the most part, domestic tournaments consist of all eligible professional teams from a country, not just the teams from the highest league (this would be analogous to a baseball tournament where minor league and major league teams all competed against each other). These cups can either be straight knockout style tournaments (e.g., March Madness for NCAA basketball), or each leg can have two legs where the teams involved play twice, once at each team's home stadium. Because of the vast number of teams involved in these cups, entrance into the tournament is usually staggered so that the best teams are guaranteed places in the later rounds.
 
+### FIFA and UEFA Competitions
+
+These are the international tournaments. For this project, the focus is on the UEFA Champions League. This tournament consists of several qualifying rounds before the tournament proper (e.g., play-in games). Once the tournament proper begins, the final 32 teams are placed into 8 groups of 4 teams each. A team plays every team in its group twice, once at home and once away, with points awarded the same as for domestic leagues (see section \@ref(dom-league-descrip)). At the end of group play, the two teams with the most points from each group advance to the final 16. From this point on, the tournament follows the structure of a knockout tournament, with each round having two legs (one home and one away game). This continues until the final, which is only a single game played at a neutral location.
 
 ## Document organization
 
-
+This document steps through the process that was followed to create the predictions for the major European domestic leagues and the UEFA Champions League. I start by defining two possible models for estimating club ability in Section \@ref(define-model). I then conduct a small scale simulation study in Section \@ref(simulation) to determine if one of the models is better able to recover estimates of team ability. Sections \@ref(gather-data) and \@ref(fit-model) focus on gather the data to be used and estimating the model respectively. Finally, in Section \@ref(predict), the estimates from the model are used to predict the outcomes of the domestic leagues and the UEFA Champions League.
 
 ## Colophon
 
@@ -30,5 +36,6 @@ This document was built with:
 
 ```{r}
 devtools::session_info(c("bookdown", "knitr", "rmarkdown", "rvest", "purrr",
-  "dplyr", "lubridate", "rstan", "ggplot2", "DT"))
+  "dplyr", "lubridate", "rstan", "ggplot2", "DT", "portableParallelSeeds",
+  "parallel", "methods"))
 ```
