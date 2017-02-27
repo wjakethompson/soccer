@@ -3,7 +3,8 @@ needed_packages <- c("dplyr", "purrr", "rstan", "tidyr", "parallel",
   "portableParallelSeeds", "parallel")
 load_packages <- function(x) {
   if(!(x %in% rownames(installed.packages()))) {
-    install.packages(x, repos = "https://cran.rstudio.com/")
+    install.packages(x, repos = c("https://cran.rstudio.com/",
+      "http://rweb.crmda.ku.edu/kran"))
   }
   suppressPackageStartupMessages(require(x, character.only = TRUE))
 }
