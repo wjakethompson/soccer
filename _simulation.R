@@ -189,7 +189,7 @@ simulation_data <- c(
   gri_data
 )
 
-simulation <- map2(.x = game_data, .y = team_data, .f = simulation_fun)
+simulation <- map_df(.x = simulation_data, .f = simulation_fun)
 save(simulation, file = "_data/simulation.rda")
 
 rm(list = ls())
