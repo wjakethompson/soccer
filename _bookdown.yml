@@ -9,6 +9,7 @@ rmd_files: [
   "gather-data.Rmd",
   "fit-model.Rmd",
   "make-predictions.Rmd",
+  "conclusion.Rmd",
   
   "simulation-functions.Rmd",
   "scraping-functions.Rmd",

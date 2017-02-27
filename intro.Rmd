@@ -26,7 +26,7 @@ These are the international tournaments. For this project, the focus is on the U
 
 ## Document organization
 
-This document steps through the process that was followed to create the predictions for the major European domestic leagues and the UEFA Champions League. I start by defining two possible models for estimating club ability in Section \@ref(define-model). I then conduct a small scale simulation study in Section \@ref(simulation) to determine if one of the models is better able to recover estimates of team ability. Sections \@ref(gather-data) and \@ref(fit-model) focus on gather the data to be used and estimating the model respectively. Finally, in Section \@ref(predict), the estimates from the model are used to predict the outcomes of the domestic leagues and the UEFA Champions League.
+This document steps through the process that was followed to create the predictions for the major European domestic leagues and the UEFA Champions League. I start by defining two possible models for estimating club ability in Section \@ref(define-model). I then conduct a small scale simulation study in Section \@ref(simulation) to determine if one of the models is better able to recover estimates of team ability. Sections \@ref(gather-data) and \@ref(fit-model) focus on gather the data to be used and estimating the model respectively. In Section \@ref(predict), the estimates from the model are used to predict the outcomes of the domestic leagues and the UEFA Champions League, and output graphics are created. Finally, Section \@ref(conclusion) outlines the limitations of this approach and possible improvements to the model.
 
 ## Colophon
 
