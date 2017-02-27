@@ -6,7 +6,19 @@
 
 ```r
 scrape_league <- function(x) {
-  url_data <- read_html(x)
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+  
   league_table <- url_data %>%
     html_nodes(css = "table") %>%
     html_table()
@@ -28,7 +40,7 @@ scrape_league <- function(x) {
     html_nodes("td a") %>%
     html_attr("href") %>%
     as.character()
-
+  
   league_table <- league_table %>%
     left_join(data_frame(club = teams, club_url = team_urls), by = "club") %>%
     as_data_frame()
@@ -42,7 +54,19 @@ scrape_league <- function(x) {
 
 ```r
 scrape_major_cup <- function(x) {
-  url_data <- read_html(x)
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+  
   league_table <- url_data %>%
     html_nodes(css = "table") %>%
     html_table()
@@ -82,8 +106,19 @@ scrape_major_cup <- function(x) {
 
 ```r
 scrape_dom_cup <- function(x) {
-    url_data <- read_html(x)
-  
+  cont <- TRUE
+  while(cont) {
+    url_data <- safe_read_html(x)
+    
+    if(is.null(url_data[[1]])) {
+      closeAllConnections()
+      Sys.sleep(5)
+    } else {
+      url_data <- url_data[[1]]
+      cont <- FALSE
+    }
+  }
+
   teams <- url_data %>%
     html_nodes("#stats-fair-play a") %>%
     html_text() %>%

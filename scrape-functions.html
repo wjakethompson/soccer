@@ -178,7 +178,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="league-scrape" class="section level2">
 <h2><span class="header-section-number">B.1</span> Scrape league pages</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scrape_league &lt;-<span class="st"> </span>function(x) {
-  url_data &lt;-<span class="st"> </span><span class="kw">read_html</span>(x)
+  cont &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+  while(cont) {
+    url_data &lt;-<span class="st"> </span><span class="kw">safe_read_html</span>(x)
+    
+    if(<span class="kw">is.null</span>(url_data[[<span class="dv">1</span>]])) {
+      <span class="kw">closeAllConnections</span>()
+      <span class="kw">Sys.sleep</span>(<span class="dv">5</span>)
+    } else {
+      url_data &lt;-<span class="st"> </span>url_data[[<span class="dv">1</span>]]
+      cont &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+    }
+  }
+  
   league_table &lt;-<span class="st"> </span>url_data %&gt;%
 <span class="st">    </span><span class="kw">html_nodes</span>(<span class="dt">css =</span> <span class="st">&quot;table&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">html_table</span>()
@@ -200,7 +212,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;td a&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">as.character</span>()
-
+  
   league_table &lt;-<span class="st"> </span>league_table %&gt;%
 <span class="st">    </span><span class="kw">left_join</span>(<span class="kw">data_frame</span>(<span class="dt">club =</span> teams, <span class="dt">club_url =</span> team_urls), <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">as_data_frame</span>()
@@ -211,7 +223,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="cup-scrape" class="section level2">
 <h2><span class="header-section-number">B.2</span> Scrape international cups</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scrape_major_cup &lt;-<span class="st"> </span>function(x) {
-  url_data &lt;-<span class="st"> </span><span class="kw">read_html</span>(x)
+  cont &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+  while(cont) {
+    url_data &lt;-<span class="st"> </span><span class="kw">safe_read_html</span>(x)
+    
+    if(<span class="kw">is.null</span>(url_data[[<span class="dv">1</span>]])) {
+      <span class="kw">closeAllConnections</span>()
+      <span class="kw">Sys.sleep</span>(<span class="dv">5</span>)
+    } else {
+      url_data &lt;-<span class="st"> </span>url_data[[<span class="dv">1</span>]]
+      cont &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+    }
+  }
+  
   league_table &lt;-<span class="st"> </span>url_data %&gt;%
 <span class="st">    </span><span class="kw">html_nodes</span>(<span class="dt">css =</span> <span class="st">&quot;table&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">html_table</span>()
@@ -248,8 +272,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="dom-scrape" class="section level2">
 <h2><span class="header-section-number">B.3</span> Scrape domestic cups</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scrape_dom_cup &lt;-<span class="st"> </span>function(x) {
-    url_data &lt;-<span class="st"> </span><span class="kw">read_html</span>(x)
-  
+  cont &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+  while(cont) {
+    url_data &lt;-<span class="st"> </span><span class="kw">safe_read_html</span>(x)
+    
+    if(<span class="kw">is.null</span>(url_data[[<span class="dv">1</span>]])) {
+      <span class="kw">closeAllConnections</span>()
+      <span class="kw">Sys.sleep</span>(<span class="dv">5</span>)
+    } else {
+      url_data &lt;-<span class="st"> </span>url_data[[<span class="dv">1</span>]]
+      cont &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+    }
+  }
+
   teams &lt;-<span class="st"> </span>url_data %&gt;%
 <span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;#stats-fair-play a&quot;</span>) %&gt;%
 <span class="st">    </span><span class="kw">html_text</span>() %&gt;%
