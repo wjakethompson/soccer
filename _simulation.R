@@ -1,6 +1,6 @@
 ### Setup R session ------------------------------------------------------------
 needed_packages <- c("dplyr", "purrr", "rstan", "tidyr", "parallel",
-  "portableParallelSeeds", "parallel")
+  "portableParallelSeeds")
 load_packages <- function(x) {
   if(!(x %in% rownames(installed.packages()))) {
     install.packages(x, repos = c("https://cran.rstudio.com/",
