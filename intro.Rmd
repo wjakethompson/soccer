@@ -36,5 +36,5 @@ This document was built with:
 
 ```{r session_info}
 load("_data/session_info.rda")
-session_info
+devtools:::print.session_info(session_info)
 ```
