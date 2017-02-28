@@ -21,7 +21,7 @@ rm(list = ls())
 session_info <- devtools::session_info(c("bookdown", "knitr", "rmarkdown",
   "rvest", "purrr", "dplyr", "lubridate", "rstan", "ggplot2", "DT",
   "portableParallelSeeds", "parallel", "methods"))
-save(session, file = "_data/session_info.rda")
+save(session_info, file = "_data/session_info.rda")
 
 
 ### gather-data ----------------------------------------------------------------

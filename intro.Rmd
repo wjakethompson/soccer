@@ -34,7 +34,7 @@ The source code for this document can be found at <https://github.com/wjakethomp
 
 This document was built with:
 
-```{r}
+```{r session_info}
 load("_data/session_info.rda")
 session_info
 ```
