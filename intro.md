@@ -38,172 +38,153 @@ This document was built with:
 
 ```r
 load("_data/session_info.rda")
-session_info
-#> $platform
-#> $version
-#> [1] "R version 3.3.2 (2016-10-31)"
-#> 
-#> $system
-#> [1] "x86_64, darwin13.4.0"
-#> 
-#> $ui
-#> [1] "RStudio (1.0.136)"
-#> 
-#> $language
-#> [1] "(EN)"
-#> 
-#> $collate
-#> [1] "en_US.UTF-8"
-#> 
-#> $tz
-#> [1] "America/Chicago"
-#> 
-#> $date
-#> [1] "2017-02-27"
-#> 
-#> attr(,"class")
-#> [1] "platform_info"
-#> 
-#> $packages
-#>                  package *    version       date
-#> 1             assertthat          0.1 2013-12-06
-#> 2              backports        1.0.4 2016-10-24
-#> 3              base64enc        0.1-3 2015-07-28
-#> 4                     BH     1.62.0-1 2016-11-19
-#> 5                 bitops        1.0-6 2013-08-17
-#> 6               bookdown        0.3.7 2017-01-15
-#> 7                    car        2.1-3 2016-08-11
-#> 8                caTools       1.17.1 2014-09-10
-#> 9             colorspace        1.2-6 2015-03-11
-#> 10                  curl          2.1 2016-09-22
-#> 11                   DBI        0.5-1 2016-09-10
-#> 12             dichromat        2.0-0 2013-01-24
-#> 13                digest       0.6.11 2017-01-03
-#> 14                 dplyr *      0.5.0 2016-06-24
-#> 15                    DT          0.2 2016-08-09
-#> 16              evaluate         0.10 2016-10-11
-#> 17               ggplot2 * 2.2.1.9000 2017-01-26
-#> 18             gridExtra        2.2.1 2016-02-29
-#> 19                gtable        0.2.0 2016-02-26
-#> 20                 highr          0.6 2016-05-09
-#> 21             htmltools        0.3.5 2016-03-21
-#> 22           htmlwidgets          0.7 2016-08-02
-#> 23                  httr        1.2.1 2016-07-03
-#> 24                inline       0.3.14 2015-04-13
-#> 25              jsonlite          1.2 2016-12-31
-#> 26                 knitr       1.15.1 2016-11-22
-#> 27              labeling          0.3 2014-08-23
-#> 28               lattice      0.20-34 2016-09-06
-#> 29              lazyeval   0.2.0.9000 2016-09-19
-#> 30                  lme4       1.1-12 2016-04-16
-#> 31             lubridate * 1.6.0.9009 2017-01-24
-#> 32              magrittr          1.5 2014-11-22
-#> 33              markdown        0.7.7 2015-04-22
-#> 34                  MASS       7.3-45 2016-04-21
-#> 35                Matrix      1.2-7.1 2016-09-01
-#> 36          MatrixModels        0.4-1 2015-08-22
-#> 37                  mgcv       1.8-15 2016-09-14
-#> 38                  mime          0.5 2016-07-07
-#> 39                 minqa        1.2.4 2014-10-09
-#> 40               munsell        0.4.3 2016-02-13
-#> 41                  nlme      3.1-128 2016-05-10
-#> 42                nloptr        1.0.4 2014-08-04
-#> 43                  nnet       7.3-12 2016-02-02
-#> 44               openssl        0.9.4 2016-05-25
-#> 45              pbkrtest        0.4-6 2016-01-27
-#> 46                  plyr   1.8.4.9000 2016-11-03
-#> 47 portableParallelSeeds *       0.97 2016-11-14
-#> 48                 purrr * 0.2.2.9000 2016-11-22
-#> 49              quantreg         5.29 2016-09-04
-#> 50                    R6        2.2.0 2016-10-05
-#> 51          RColorBrewer        1.1-2 2014-12-07
-#> 52                  Rcpp     0.12.9.1 2017-01-24
-#> 53             RcppEigen    0.3.2.9.0 2016-08-21
-#> 54              reshape2        1.4.2 2016-10-22
-#> 55             rmarkdown          1.3 2016-12-21
-#> 56             rockchalk      1.8.101 2016-02-25
-#> 57             rprojroot          1.1 2016-10-29
-#> 58                 rstan *     2.14.1 2016-12-28
-#> 59                 rvest *      0.3.2 2016-06-17
-#> 60                scales        0.4.1 2016-11-09
-#> 61               selectr        0.3-0 2016-08-30
-#> 62               SparseM         1.72 2016-09-06
-#> 63           StanHeaders *   2.14.0-1 2017-01-09
-#> 64               stringi        1.1.2 2016-10-01
-#> 65               stringr        1.1.0 2016-08-19
-#> 66                tibble       1.2-15 2017-01-11
-#> 67                  xml2 *      1.0.0 2016-06-24
-#> 68                  yaml       2.1.14 2016-11-12
-#>                               source
-#> 1                     CRAN (R 3.3.0)
-#> 2                      cran (@1.0.4)
-#> 3                      cran (@0.1-3)
-#> 4                    cran (@1.62.0-)
-#> 5                     CRAN (R 3.3.0)
-#> 6  Github (rstudio/bookdown@2211cd0)
-#> 7                     CRAN (R 3.3.0)
-#> 8                     cran (@1.17.1)
-#> 9                     CRAN (R 3.3.0)
-#> 10                    CRAN (R 3.3.0)
-#> 11                     cran (@0.5-1)
-#> 12                    CRAN (R 3.3.0)
-#> 13                    cran (@0.6.11)
-#> 14                    CRAN (R 3.3.0)
-#> 15                    CRAN (R 3.3.0)
-#> 16                    CRAN (R 3.3.0)
-#> 17   Github (hadley/ggplot2@2a1bf98)
-#> 18                    CRAN (R 3.3.0)
-#> 19                    CRAN (R 3.3.0)
-#> 20                       cran (@0.6)
-#> 21                     cran (@0.3.5)
-#> 22                    CRAN (R 3.3.0)
-#> 23                    CRAN (R 3.3.0)
-#> 24                    CRAN (R 3.3.0)
-#> 25                       cran (@1.2)
-#> 26                    cran (@1.15.1)
-#> 27                    CRAN (R 3.3.0)
-#> 28                    CRAN (R 3.3.2)
-#> 29  Github (hadley/lazyeval@c155c3d)
-#> 30                    CRAN (R 3.3.0)
-#> 31 Github (hadley/lubridate@ebd90d9)
-#> 32                    CRAN (R 3.3.0)
-#> 33                     cran (@0.7.7)
-#> 34                    CRAN (R 3.3.2)
-#> 35                    CRAN (R 3.3.2)
-#> 36                    CRAN (R 3.3.0)
-#> 37                    CRAN (R 3.3.2)
-#> 38                    CRAN (R 3.3.0)
-#> 39                    CRAN (R 3.3.0)
-#> 40                    CRAN (R 3.3.0)
-#> 41                    CRAN (R 3.3.2)
-#> 42                    CRAN (R 3.3.0)
-#> 43                    CRAN (R 3.3.2)
-#> 44                    CRAN (R 3.3.0)
-#> 45                    CRAN (R 3.3.0)
-#> 46      Github (hadley/plyr@fe19241)
-#> 47                    CRAN (R 3.3.1)
-#> 48     Github (hadley/purrr@5360143)
-#> 49                    CRAN (R 3.3.0)
-#> 50                     cran (@2.2.0)
-#> 51                    CRAN (R 3.3.0)
-#> 52    Github (RcppCore/Rcpp@5a99a86)
-#> 53                    CRAN (R 3.3.0)
-#> 54                     cran (@1.4.2)
-#> 55                       cran (@1.3)
-#> 56                    CRAN (R 3.3.0)
-#> 57                       cran (@1.1)
-#> 58                    CRAN (R 3.3.2)
-#> 59                    CRAN (R 3.3.0)
-#> 60                    CRAN (R 3.3.2)
-#> 61                    CRAN (R 3.3.0)
-#> 62                    CRAN (R 3.3.0)
-#> 63                    CRAN (R 3.3.2)
-#> 64                    CRAN (R 3.3.1)
-#> 65                     cran (@1.1.0)
-#> 66    Github (hadley/tibble@3d6f8b4)
-#> 67                     cran (@1.0.0)
-#> 68                    cran (@2.1.14)
-#> 
-#> attr(,"class")
-#> [1] "session_info"
+devtools:::print.session_info(session_info)
+#> Session info --------------------------------------------------------------
+#>  setting  value                       
+#>  version  R version 3.3.2 (2016-10-31)
+#>  system   x86_64, darwin13.4.0        
+#>  ui       RStudio (1.0.136)           
+#>  language (EN)                        
+#>  collate  en_US.UTF-8                 
+#>  tz       America/Chicago             
+#>  date     2017-02-27
+#> Packages ------------------------------------------------------------------
+#>  package               * version    date      
+#>  assertthat              0.1        2013-12-06
+#>  backports               1.0.4      2016-10-24
+#>  base64enc               0.1-3      2015-07-28
+#>  BH                      1.62.0-1   2016-11-19
+#>  bitops                  1.0-6      2013-08-17
+#>  bookdown                0.3.7      2017-01-15
+#>  car                     2.1-3      2016-08-11
+#>  caTools                 1.17.1     2014-09-10
+#>  colorspace              1.2-6      2015-03-11
+#>  curl                    2.1        2016-09-22
+#>  DBI                     0.5-1      2016-09-10
+#>  dichromat               2.0-0      2013-01-24
+#>  digest                  0.6.11     2017-01-03
+#>  dplyr                 * 0.5.0      2016-06-24
+#>  DT                      0.2        2016-08-09
+#>  evaluate                0.10       2016-10-11
+#>  ggplot2               * 2.2.1.9000 2017-01-26
+#>  gridExtra               2.2.1      2016-02-29
+#>  gtable                  0.2.0      2016-02-26
+#>  highr                   0.6        2016-05-09
+#>  htmltools               0.3.5      2016-03-21
+#>  htmlwidgets             0.7        2016-08-02
+#>  httr                    1.2.1      2016-07-03
+#>  inline                  0.3.14     2015-04-13
+#>  jsonlite                1.2        2016-12-31
+#>  knitr                   1.15.1     2016-11-22
+#>  labeling                0.3        2014-08-23
+#>  lattice                 0.20-34    2016-09-06
+#>  lazyeval                0.2.0.9000 2016-09-19
+#>  lme4                    1.1-12     2016-04-16
+#>  lubridate             * 1.6.0.9009 2017-01-24
+#>  magrittr                1.5        2014-11-22
+#>  markdown                0.7.7      2015-04-22
+#>  MASS                    7.3-45     2016-04-21
+#>  Matrix                  1.2-7.1    2016-09-01
+#>  MatrixModels            0.4-1      2015-08-22
+#>  mgcv                    1.8-15     2016-09-14
+#>  mime                    0.5        2016-07-07
+#>  minqa                   1.2.4      2014-10-09
+#>  munsell                 0.4.3      2016-02-13
+#>  nlme                    3.1-128    2016-05-10
+#>  nloptr                  1.0.4      2014-08-04
+#>  nnet                    7.3-12     2016-02-02
+#>  openssl                 0.9.4      2016-05-25
+#>  pbkrtest                0.4-6      2016-01-27
+#>  plyr                    1.8.4.9000 2016-11-03
+#>  portableParallelSeeds * 0.97       2016-11-14
+#>  purrr                 * 0.2.2.9000 2016-11-22
+#>  quantreg                5.29       2016-09-04
+#>  R6                      2.2.0      2016-10-05
+#>  RColorBrewer            1.1-2      2014-12-07
+#>  Rcpp                    0.12.9.1   2017-01-24
+#>  RcppEigen               0.3.2.9.0  2016-08-21
+#>  reshape2                1.4.2      2016-10-22
+#>  rmarkdown               1.3        2016-12-21
+#>  rockchalk               1.8.101    2016-02-25
+#>  rprojroot               1.1        2016-10-29
+#>  rstan                 * 2.14.1     2016-12-28
+#>  rvest                 * 0.3.2      2016-06-17
+#>  scales                  0.4.1      2016-11-09
+#>  selectr                 0.3-0      2016-08-30
+#>  SparseM                 1.72       2016-09-06
+#>  StanHeaders           * 2.14.0-1   2017-01-09
+#>  stringi                 1.1.2      2016-10-01
+#>  stringr                 1.1.0      2016-08-19
+#>  tibble                  1.2-15     2017-01-11
+#>  xml2                  * 1.0.0      2016-06-24
+#>  yaml                    2.1.14     2016-11-12
+#>  source                           
+#>  CRAN (R 3.3.0)                   
+#>  cran (@1.0.4)                    
+#>  cran (@0.1-3)                    
+#>  cran (@1.62.0-)                  
+#>  CRAN (R 3.3.0)                   
+#>  Github (rstudio/bookdown@2211cd0)
+#>  CRAN (R 3.3.0)                   
+#>  cran (@1.17.1)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  cran (@0.5-1)                    
+#>  CRAN (R 3.3.0)                   
+#>  cran (@0.6.11)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  Github (hadley/ggplot2@2a1bf98)  
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  cran (@0.6)                      
+#>  cran (@0.3.5)                    
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  cran (@1.2)                      
+#>  cran (@1.15.1)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  Github (hadley/lazyeval@c155c3d) 
+#>  CRAN (R 3.3.0)                   
+#>  Github (hadley/lubridate@ebd90d9)
+#>  CRAN (R 3.3.0)                   
+#>  cran (@0.7.7)                    
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  Github (hadley/plyr@fe19241)     
+#>  CRAN (R 3.3.1)                   
+#>  Github (hadley/purrr@5360143)    
+#>  CRAN (R 3.3.0)                   
+#>  cran (@2.2.0)                    
+#>  CRAN (R 3.3.0)                   
+#>  Github (RcppCore/Rcpp@5a99a86)   
+#>  CRAN (R 3.3.0)                   
+#>  cran (@1.4.2)                    
+#>  cran (@1.3)                      
+#>  CRAN (R 3.3.0)                   
+#>  cran (@1.1)                      
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.0)                   
+#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.1)                   
+#>  cran (@1.1.0)                    
+#>  Github (hadley/tibble@3d6f8b4)   
+#>  cran (@1.0.0)                    
+#>  cran (@2.1.14)
 ```
