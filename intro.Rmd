@@ -35,7 +35,6 @@ The source code for this document can be found at <https://github.com/wjakethomp
 This document was built with:
 
 ```{r}
-devtools::session_info(c("bookdown", "knitr", "rmarkdown", "rvest", "purrr",
-  "dplyr", "lubridate", "rstan", "ggplot2", "DT", "portableParallelSeeds",
-  "parallel", "methods"))
+load("_data/session_info.rda")
+session_info
 ```

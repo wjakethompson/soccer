@@ -17,6 +17,13 @@ options(mc.cores = (parallel::detectCores() - 1))
 rm(list = ls())
 
 
+### intro ----------------------------------------------------------------------
+session_info <- devtools::session_info(c("bookdown", "knitr", "rmarkdown",
+  "rvest", "purrr", "dplyr", "lubridate", "rstan", "ggplot2", "DT",
+  "portableParallelSeeds", "parallel", "methods"))
+save(session, file = "_data/session_info.rda")
+
+
 ### gather-data ----------------------------------------------------------------
 scrape_league <- function(x) {
   cont <- TRUE
