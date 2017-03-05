@@ -152,10 +152,11 @@ simulation_fun <- function(x) {
   
   data_frame(
     generator = x$method,
+    true_params = list(x$teams),
     bivpois_rhat = bivpois_maxrhat,
     bivpois_params = list(list(bivpois_alpha = bivpois_alpha,
       bivpois_delta = bivpois_delta)),
-    bivpois_alpha_bia = bivpois_alpha_bias,
+    bivpois_alpha_bias = bivpois_alpha_bias,
     bivpois_delta_bias = bivpois_delta_bias,
     bivpois_alpha_mse = bivpois_alpha_mse,
     bivpois_delta_mse = bivpois_delta_mse,
