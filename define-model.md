@@ -60,7 +60,7 @@ Here, $\mu$ denotes the overall intercept, or the expected log goals for a team 
 
 The bivariate Poisson model can be fit using the following Stan code and the **rstan** package [@R-rstan]. In the model code, I have modeled $\alpha$, $\delta$, and $\rho$ as random effects so that $\mu$ represents the overall mean. This means that positive $\alpha$ values and negative $\delta$ are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.
 
-I have also reparameterized the random effects so that Stan can sample from a $\mathcal{N}(0,\ 1)$, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions [@stan].
+I have also reparameterized the random effects so that Stan can sample from a $\mathcal{N}(0,\ 1)$, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions [@betancourt2016; @betancourt2017; @stan].
 
 
 ```stan
@@ -138,7 +138,7 @@ Thus, although both models take into account the dependency between the two scor
 
 ### Implementing the game random intercept model {#imp-gri}
 
-The game random intercept model can be estimated using the following Stan code and the **rstan** package [@R-rstan]. As with the bivariate Poisson model, I have modeled $\alpha$ and $\delta$ as random effects so that $\mu$ represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency [@stan].
+The game random intercept model can be estimated using the following Stan code and the **rstan** package [@R-rstan]. As with the bivariate Poisson model, I have modeled $\alpha$ and $\delta$ as random effects so that $\mu$ represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency [@betancourt2016; @betancourt2017; @stan].
 
 
 ```stan

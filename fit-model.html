@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-02-28">
+<meta name="date" content="2017-03-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -140,7 +140,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -179,8 +184,71 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="fit-model" class="section level1">
 <h1><span class="header-section-number">5</span> Fitting the Model</h1>
-<div id="convergence" class="section level2">
-<h2><span class="header-section-number">5.1</span> Convergence</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(rstan)
+<span class="kw">load</span>(<span class="st">&quot;_data/full_data.rda&quot;</span>)
+
+fit_data &lt;-<span class="st">  </span>full_data %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(h_goals))
+
+filter_games &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+while(filter_games) {
+  team_counts &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">c</span>(fit_data$home, fit_data$away)) %&gt;%<span class="st"> </span><span class="kw">as_data_frame</span>() %&gt;%
+<span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(n &gt;=<span class="st"> </span><span class="dv">5</span>) %&gt;%
+<span class="st">    </span><span class="kw">select</span>(<span class="dt">team =</span> Var1) %&gt;%
+<span class="st">    </span><span class="kw">arrange</span>(team) %&gt;%
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">code =</span> <span class="kw">seq_len</span>(<span class="kw">nrow</span>(.)))
+
+  fit_data &lt;-<span class="st"> </span>fit_data %&gt;%
+<span class="st">    </span><span class="kw">select</span>(-competition) %&gt;%
+<span class="st">    </span><span class="kw">left_join</span>(team_counts, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;home&quot;</span> =<span class="st"> &quot;team&quot;</span>)) %&gt;%
+<span class="st">    </span><span class="kw">rename</span>(<span class="dt">home_code =</span> code) %&gt;%
+<span class="st">    </span><span class="kw">left_join</span>(team_counts, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;away&quot;</span> =<span class="st"> &quot;team&quot;</span>)) %&gt;%
+<span class="st">    </span><span class="kw">rename</span>(<span class="dt">away_code =</span> code) %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(home_code), !<span class="kw">is.na</span>(away_code))
+  
+  new_min &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">c</span>(fit_data$home, fit_data$away)) %&gt;%<span class="st"> </span><span class="kw">as.numeric</span>() %&gt;%<span class="st"> </span><span class="kw">min</span>()
+  if (new_min &gt;=<span class="st"> </span><span class="dv">5</span>) {
+    filter_games &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+  }
+}
+
+stan_data &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">num_clubs =</span> <span class="kw">nrow</span>(team_counts),
+  <span class="dt">num_games =</span> <span class="kw">nrow</span>(fit_data),
+  <span class="dt">home =</span> fit_data$home_code,
+  <span class="dt">away =</span> fit_data$away_code,
+  <span class="dt">h_goals =</span> fit_data$h_goals,
+  <span class="dt">a_goals =</span> fit_data$a_goals,
+  <span class="dt">homeg =</span> fit_data$home_game
+)
+
+gri &lt;-<span class="st"> </span><span class="kw">stan</span>(<span class="dt">file =</span> <span class="st">&quot;_data/stan-models/gri.stan&quot;</span>, <span class="dt">data =</span> stan_data,
+  <span class="dt">chains =</span> <span class="dv">3</span>, <span class="dt">iter =</span> <span class="dv">15000</span>, <span class="dt">warmup =</span> <span class="dv">5000</span>, <span class="dt">init =</span> <span class="st">&quot;random&quot;</span>, <span class="dt">thin =</span> <span class="dv">1</span>,
+  <span class="dt">cores =</span> <span class="dv">3</span>, <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adapt_delta =</span> <span class="fl">0.99</span>))
+
+
+sp &lt;-<span class="st"> </span><span class="kw">get_sampler_params</span>(gri, <span class="dt">inc_warmup =</span> <span class="ot">FALSE</span>)
+E &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">sapply</span>(sp, <span class="dt">FUN =</span> function(x) x[,<span class="st">&quot;energy__&quot;</span>]))
+EBFMI &lt;-<span class="st"> </span><span class="kw">get_num_upars</span>(gri) /<span class="st"> </span><span class="kw">apply</span>(E, <span class="dv">2</span>, var)</code></pre></div>
+<div id="diagnostics" class="section level2">
+<h2><span class="header-section-number">5.1</span> MCMC diagnostics</h2>
+<div id="convergence" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Convergence</h3>
+<p>Rhat geweke (ggmcmc) running means autocorrelation</p>
+</div>
+<div id="efficiency" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Efficiency</h3>
+<p>mean accept stat max tree depth (should be &lt; 10, the default value) BFMI</p>
+</div>
+</div>
+<div id="model-fit" class="section level2">
+<h2><span class="header-section-number">5.2</span> Model fit</h2>
+<p>posterior predictive checks * distribution of scores * distribution of MOV * correct predictions</p>
+</div>
+<div id="results" class="section level2">
+<h2><span class="header-section-number">5.3</span> Results</h2>
 
 </div>
 </div>

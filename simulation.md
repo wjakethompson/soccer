@@ -47,3 +47,103 @@ save(simulation, file = "_data/simulation.rda")
 ```
 
 ## Simulation results {#sim-results}
+
+
+
+To assess the bivariate Poisson and game random intercept models, I first examine the correlations between the true parameters and the estimated parameters from each model. The parameters for each replication can be pulled out of the simulation results using the **purrr** and **dplyr** packages [@R-purrr; @R-dplyr].
+
+
+```r
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(purrr)
+#> 
+#> Attaching package: 'purrr'
+#> The following objects are masked from 'package:dplyr':
+#> 
+#>     contains, order_by
+
+plot_sim <- simulation %>%
+  select(bivpois_params, gri_params) %>%
+  as.list() %>%
+  pmap_df(.l = ., .f = function(bivpois_params, gri_params) {
+      data_frame(
+        bivpois_alpha = bivpois_params$bivpois_alpha,
+        bivpois_delta = bivpois_params$bivpois_delta,
+        gri_alpha = gri_params$gri_alpha,
+        gri_delta = gri_params$gri_delta
+      )
+    })
+```
+
+I then use the **GGally** package [@R-GGally], an extension of **ggplot2** [@R-ggplot2] to plot a scatterplot matrix with correlations.
+
+
+```r
+library(ggplot2)
+library(GGally)
+#> 
+#> Attaching package: 'GGally'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     nasa
+
+lowerFn <- function(data, mapping, ..., alpha = 0.5) {
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_point(..., alpha = alpha) +
+    geom_abline(intercept = 0, slope = 1, color = "red")
+  p
+}
+
+ggpairs(title = "Alpha Recovery",
+  data = plot_sim, columns = c("bivpois_alpha", "gri_alpha"),
+  columnLabels = c("Bivariate Poisson", "Game Random Intercept"),
+  upper = list(continuous = wrap("cor", size = 5)),
+  lower = list(continuous = wrap(lowerFn, alpha = 0.1))
+) +
+  theme_bw()
+
+ggpairs(title = "Delta Recovery",
+  data = plot_sim, columns = c("bivpois_delta", "gri_delta"),
+  columnLabels = c("Bivariate Poisson", "Game Random Intercept"),
+  upper = list(continuous = wrap("cor", size = 5)),
+  lower = list(continuous = wrap(lowerFn, alpha = 0.1))
+) +
+  theme_bw()
+```
+
+<img src="simulation_files/figure-html/plot_corr-1.png" width="70%" style="display: block; margin: auto;" /><img src="simulation_files/figure-html/plot_corr-2.png" width="70%" style="display: block; margin: auto;" />
+
+
+
+
+```r
+simulation %>%
+  select(`Data Generator` = generator, bivpois_alpha_bias, bivpois_delta_bias, gri_alpha_bias,
+    gri_delta_bias) %>%
+  group_by(`Data Generator`) %>%
+  summarize(
+    `Bivariate Poisson: Alpha` = sprintf("%.3f", mean(bivpois_alpha_bias)),
+    `Bivariate Poisson: Delta` = sprintf("%.3f", mean(bivpois_delta_bias)),
+    `Game Random Intercept: Alpha` = sprintf("%.3f", mean(gri_alpha_bias)),
+    `Game Random Intercept: Delta` = sprintf("%.3f", mean(gri_delta_bias))
+  ) %>%
+  mutate(`Data Generator` = factor(`Data Generator`, levels = c("bivpois", "gri"),
+    labels = c("Bivariate Poisson", "Game Random Intercept"))) %>%
+  knitr::kable()
+```
+
+
+
+Data Generator          Bivariate Poisson: Alpha   Bivariate Poisson: Delta   Game Random Intercept: Alpha   Game Random Intercept: Delta 
+----------------------  -------------------------  -------------------------  -----------------------------  -----------------------------
+Bivariate Poisson       0.001                      -0.012                     0.001                          -0.012                       
+Game Random Intercept   -0.010                     -0.003                     -0.010                         -0.002                       
+

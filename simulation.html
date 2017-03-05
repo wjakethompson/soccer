@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-02-28">
+<meta name="date" content="2017-03-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -140,7 +140,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -184,7 +189,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">3.1</span> Data generation</h2>
 <p>Data was simulated to mimic the major domestic European leagues. For each data set, 20 clubs were generated, with each club playing all other clubs twice, once at home, and once away, for a total of 380 games.</p>
 <p>For both data generating models, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> parameters were drawn from a <span class="math inline">\(\mathcal{N}(0,0.35)\)</span>. Both <span class="math inline">\(\rho\)</span> in the bivariate Poisson and <span class="math inline">\(\gamma\)</span> in the game random intercept model were sampled from a <span class="math inline">\(\mathcal{N}(0,0.1)\)</span> distribution. For all models, <span class="math inline">\(\mu\)</span> was set to 0, and <span class="math inline">\(\eta\)</span> was set to 0.5. These distributions were based on preliminary analyses using the 2015-16 English Premier League data.</p>
-<p>For each game, <span class="math inline">\(\lambda\)</span> values were calculated based on the parameters that were generated for each team (and game for the game random intercept model). Scores were then randomly generated using the <code>rpois()</code> function. Full data generation functions can be see in Appendix <a href="simulation-functions.html#bivpois-generate">A.1</a> and <a href="simulation-functions.html#gri-generate">A.2</a>. When simulating the data sets, the <strong>portableParallelSeeds</strong> package was used to ensure that the data generation was completely replicable, and that the random number streams were not overlapping <span class="citation">(<span class="citeproc-not-found" data-reference-id="R-portableParallelSeeds"><strong>???</strong></span>)</span>.</p>
+<p>For each game, <span class="math inline">\(\lambda\)</span> values were calculated based on the parameters that were generated for each team (and game for the game random intercept model). Scores were then randomly generated using the <code>rpois()</code> function. Full data generation functions can be see in Appendix <a href="simulation-functions.html#bivpois-generate">A.1</a> and <a href="simulation-functions.html#gri-generate">A.2</a>. When simulating the data sets, the <strong>portableParallelSeeds</strong> package was used to ensure that the data generation was completely replicable, and that the random number streams were not overlapping <span class="citation">(Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span>.</p>
 </div>
 <div id="model-est" class="section level2">
 <h2><span class="header-section-number">3.2</span> Model estimation</h2>
@@ -193,7 +198,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="running-the-simulation" class="section level2">
 <h2><span class="header-section-number">3.3</span> Running the simulation</h2>
-<p>The following code was used to run the simulation. I first define the total number of replications and the number of random streams needed for each replication. I then use <strong>portableParallelSeeds</strong> <span class="citation">(<span class="citeproc-not-found" data-reference-id="R-portableParallelSeeds"><strong>???</strong></span>)</span> to create seeds for each replication, and save them. Data sets are then generated from each model, with the number of data sets from each model being equal to half of the total number of replications specified by <code>n_reps</code>. Finally, I create one list that contains all of the data sets, <code>simulation_data</code>, and map the simulation function to each element of that list using the <strong>purrr</strong> package <span class="citation">(Wickham, <a href="#ref-R-purrr">2016</a><a href="#ref-R-purrr">a</a>)</span>.</p>
+<p>The following code was used to run the simulation. I first define the total number of replications and the number of random streams needed for each replication. I then use <strong>portableParallelSeeds</strong> <span class="citation">(Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span> to create seeds for each replication, and save them. Data sets are then generated from each model, with the number of data sets from each model being equal to half of the total number of replications specified by <code>n_reps</code>. Finally, I create one list that contains all of the data sets, <code>simulation_data</code>, and map the simulation function to each element of that list using the <strong>purrr</strong> package <span class="citation">(Wickham, <a href="#ref-R-purrr">2016</a><a href="#ref-R-purrr">a</a>)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Define parameters for the simulation</span>
 n_reps &lt;-<span class="st"> </span><span class="dv">200</span>
 streams_per_rep &lt;-<span class="st"> </span><span class="dv">1</span>
@@ -218,11 +223,114 @@ simulation &lt;-<span class="st"> </span><span class="kw">map_df</span>(<span cl
 </div>
 <div id="sim-results" class="section level2">
 <h2><span class="header-section-number">3.4</span> Simulation results</h2>
+<p>To assess the bivariate Poisson and game random intercept models, I first examine the correlations between the true parameters and the estimated parameters from each model. The parameters for each replication can be pulled out of the simulation results using the <strong>purrr</strong> and <strong>dplyr</strong> packages <span class="citation">(Wickham, <a href="#ref-R-purrr">2016</a><a href="#ref-R-purrr">a</a>; Wickham &amp; Francois, <a href="#ref-R-dplyr">2016</a>)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span>
+<span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+<span class="kw">library</span>(purrr)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: &#39;purrr&#39;</span>
+<span class="co">#&gt; The following objects are masked from &#39;package:dplyr&#39;:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     contains, order_by</span>
+
+plot_sim &lt;-<span class="st"> </span>simulation %&gt;%
+<span class="st">  </span><span class="kw">select</span>(bivpois_params, gri_params) %&gt;%
+<span class="st">  </span><span class="kw">as.list</span>() %&gt;%
+<span class="st">  </span><span class="kw">pmap_df</span>(<span class="dt">.l =</span> ., <span class="dt">.f =</span> function(bivpois_params, gri_params) {
+      <span class="kw">data_frame</span>(
+        <span class="dt">bivpois_alpha =</span> bivpois_params$bivpois_alpha,
+        <span class="dt">bivpois_delta =</span> bivpois_params$bivpois_delta,
+        <span class="dt">gri_alpha =</span> gri_params$gri_alpha,
+        <span class="dt">gri_delta =</span> gri_params$gri_delta
+      )
+    })</code></pre></div>
+<p>I then use the <strong>GGally</strong> package <span class="citation">(Schloerke et al., <a href="#ref-R-GGally">2016</a>)</span>, an extension of <strong>ggplot2</strong> <span class="citation">(Wickham &amp; Chang, <a href="#ref-R-ggplot2">2016</a>)</span> to plot a scatterplot matrix with correlations.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(GGally)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: &#39;GGally&#39;</span>
+<span class="co">#&gt; The following object is masked from &#39;package:dplyr&#39;:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     nasa</span>
+
+lowerFn &lt;-<span class="st"> </span>function(data, mapping, ..., <span class="dt">alpha =</span> <span class="fl">0.5</span>) {
+  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> data, <span class="dt">mapping =</span> mapping) +
+<span class="st">    </span><span class="kw">geom_point</span>(..., <span class="dt">alpha =</span> alpha) +
+<span class="st">    </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">slope =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)
+  p
+}
+
+<span class="kw">ggpairs</span>(<span class="dt">title =</span> <span class="st">&quot;Alpha Recovery&quot;</span>,
+  <span class="dt">data =</span> plot_sim, <span class="dt">columns =</span> <span class="kw">c</span>(<span class="st">&quot;bivpois_alpha&quot;</span>, <span class="st">&quot;gri_alpha&quot;</span>),
+  <span class="dt">columnLabels =</span> <span class="kw">c</span>(<span class="st">&quot;Bivariate Poisson&quot;</span>, <span class="st">&quot;Game Random Intercept&quot;</span>),
+  <span class="dt">upper =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> <span class="kw">wrap</span>(<span class="st">&quot;cor&quot;</span>, <span class="dt">size =</span> <span class="dv">5</span>)),
+  <span class="dt">lower =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> <span class="kw">wrap</span>(lowerFn, <span class="dt">alpha =</span> <span class="fl">0.1</span>))
+) +
+<span class="st">  </span><span class="kw">theme_bw</span>()
+
+<span class="kw">ggpairs</span>(<span class="dt">title =</span> <span class="st">&quot;Delta Recovery&quot;</span>,
+  <span class="dt">data =</span> plot_sim, <span class="dt">columns =</span> <span class="kw">c</span>(<span class="st">&quot;bivpois_delta&quot;</span>, <span class="st">&quot;gri_delta&quot;</span>),
+  <span class="dt">columnLabels =</span> <span class="kw">c</span>(<span class="st">&quot;Bivariate Poisson&quot;</span>, <span class="st">&quot;Game Random Intercept&quot;</span>),
+  <span class="dt">upper =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> <span class="kw">wrap</span>(<span class="st">&quot;cor&quot;</span>, <span class="dt">size =</span> <span class="dv">5</span>)),
+  <span class="dt">lower =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> <span class="kw">wrap</span>(lowerFn, <span class="dt">alpha =</span> <span class="fl">0.1</span>))
+) +
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="simulation_files/figure-html/plot_corr-1.png" width="70%" style="display: block; margin: auto;" /><img src="simulation_files/figure-html/plot_corr-2.png" width="70%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simulation %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="st">`</span><span class="dt">Data Generator</span><span class="st">`</span> =<span class="st"> </span>generator, bivpois_alpha_bias, bivpois_delta_bias, gri_alpha_bias,
+    gri_delta_bias) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">Data Generator</span><span class="st">`</span>) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(
+    <span class="st">`</span><span class="dt">Bivariate Poisson: Alpha</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, <span class="kw">mean</span>(bivpois_alpha_bias)),
+    <span class="st">`</span><span class="dt">Bivariate Poisson: Delta</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, <span class="kw">mean</span>(bivpois_delta_bias)),
+    <span class="st">`</span><span class="dt">Game Random Intercept: Alpha</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, <span class="kw">mean</span>(gri_alpha_bias)),
+    <span class="st">`</span><span class="dt">Game Random Intercept: Delta</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, <span class="kw">mean</span>(gri_delta_bias))
+  ) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Data Generator</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="st">`</span><span class="dt">Data Generator</span><span class="st">`</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;bivpois&quot;</span>, <span class="st">&quot;gri&quot;</span>),
+    <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Bivariate Poisson&quot;</span>, <span class="st">&quot;Game Random Intercept&quot;</span>))) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Data Generator</th>
+<th align="left">Bivariate Poisson: Alpha</th>
+<th align="left">Bivariate Poisson: Delta</th>
+<th align="left">Game Random Intercept: Alpha</th>
+<th align="left">Game Random Intercept: Delta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bivariate Poisson</td>
+<td align="left">0.001</td>
+<td align="left">-0.012</td>
+<td align="left">0.001</td>
+<td align="left">-0.012</td>
+</tr>
+<tr class="even">
+<td align="left">Game Random Intercept</td>
+<td align="left">-0.010</td>
+<td align="left">-0.003</td>
+<td align="left">-0.010</td>
+<td align="left">-0.002</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
+<div id="ref-R-portableParallelSeeds">
+<p>Johnson, P. E. (2016). <em>PortableParallelSeeds: Allow replication of simulations on parallel and serial computers</em>. Retrieved from <a href="https://CRAN.R-project.org/package=portableParallelSeeds" class="uri">https://CRAN.R-project.org/package=portableParallelSeeds</a></p>
+</div>
 <div id="ref-stan">
 <p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
 </div>
@@ -231,6 +339,15 @@ simulation &lt;-<span class="st"> </span><span class="kw">map_df</span>(<span cl
 </div>
 <div id="ref-R-purrr">
 <p>Wickham, H. (2016a). <em>Purrr: Functional programming tools</em>. Retrieved from <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a></p>
+</div>
+<div id="ref-R-dplyr">
+<p>Wickham, H., &amp; Francois, R. (2016). <em>Dplyr: A grammar of data manipulation</em>. Retrieved from <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a></p>
+</div>
+<div id="ref-R-GGally">
+<p>Schloerke, B., Crowley, J., Cook, D., Briatte, F., Marbach, M., Thoen, E., … Larmarange, J. (2016). <em>GGally: Extension to ’ggplot2’</em>. Retrieved from <a href="https://CRAN.R-project.org/package=GGally" class="uri">https://CRAN.R-project.org/package=GGally</a></p>
+</div>
+<div id="ref-R-ggplot2">
+<p>Wickham, H., &amp; Chang, W. (2016). <em>Ggplot2: Create elegant data visualisations using the grammar of graphics</em>. Retrieved from <a href="https://CRAN.R-project.org/package=ggplot2" class="uri">https://CRAN.R-project.org/package=ggplot2</a></p>
 </div>
 </div>
             </section>

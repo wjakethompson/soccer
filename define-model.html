@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-02-28">
+<meta name="date" content="2017-03-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -140,7 +140,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -225,7 +230,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="imp-bivpois" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Implementing the bivariate Poisson model</h3>
 <p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2016</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
-<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
+<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -295,7 +300,7 @@ model {
 <p>Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.</p>
 <div id="imp-gri" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Implementing the game random intercept model</h3>
-<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2016</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
+<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2016</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -354,10 +359,10 @@ model {
 <h3>References</h3>
 <div id="refs" class="references">
 <div id="ref-AlMuhayfith2016">
-<p>AlMuhayfith, F. E., Alzaid, A. A., &amp; Omair, M. A. (2016). On bivariate poisson regression models. <em>Journal of King Saud University - Science</em>, <em>28</em>(2), 178–189. <a href="https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003" class="uri">https://doi.org/http://dx.doi.org/10.1016/j.jksus.2015.09.003</a></p>
+<p>AlMuhayfith, F. E., Alzaid, A. A., &amp; Omair, M. A. (2016). On bivariate poisson regression models. <em>Journal of King Saud University - Science</em>, <em>28</em>(2), 178–189. <a href="https://doi.org/10.1016/j.jksus.2015.09.003" class="uri">https://doi.org/10.1016/j.jksus.2015.09.003</a></p>
 </div>
 <div id="ref-griffiths1978">
-<p>Griffiths, R., &amp; Milne, R. (1978). A class of bivariate poisson processes. <em>Journal of Multivariate Analysis</em>, <em>8</em>(3), 380–395. <a href="https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1" class="uri">https://doi.org/http://dx.doi.org/10.1016/0047-259X(78)90061-1</a></p>
+<p>Griffiths, R., &amp; Milne, R. (1978). A class of bivariate poisson processes. <em>Journal of Multivariate Analysis</em>, <em>8</em>(3), 380–395. <a href="https://doi.org/10.1016/0047-259X(78)90061-1" class="uri">https://doi.org/10.1016/0047-259X(78)90061-1</a></p>
 </div>
 <div id="ref-kawamura1973">
 <p>Kawamura, K. (1973). The structure of bivariate poisson distribution. <em>Kodai Math. Sem. Rep.</em>, <em>25</em>(2), 246–256. <a href="https://doi.org/10.2996/kmj/1138846776" class="uri">https://doi.org/10.2996/kmj/1138846776</a></p>
@@ -369,13 +374,19 @@ model {
 <p>Karlis, D., &amp; Ntzoufras, I. (2005). Bivariate poisson and diagonal inflated bivariate poisson regression models in r. <em>Journal of Statistical Software</em>, <em>14</em>(10), 1–17.</p>
 </div>
 <div id="ref-groll2016">
-<p>Groll, A., Kneib, T., Mayr, A., &amp; Schauberger, G. (2016). Who’s the favourite? ? A bivariate poisson model for the uefa european football championship 2016. Retrieved from <a href="http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8" class="uri">http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8</a></p>
+<p>Groll, A., Kneib, T., Mayr, A., &amp; Schauberger, G. (2016). Who’s the favourite? A bivariate poisson model for the uefa european football championship 2016. Retrieved from <a href="http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8" class="uri">http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8</a></p>
 </div>
 <div id="ref-whitaker2011">
 <p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
 </div>
 <div id="ref-R-rstan">
 <p>Guo, J., Gabry, J., &amp; Goodrich, B. (2016). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
+</div>
+<div id="ref-betancourt2016">
+<p>Betancourt, M. (2016). <em>Diagnosing suboptimal cotangent disintegrations in hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1604.00695" class="uri">https://arxiv.org/abs/1604.00695</a></p>
+</div>
+<div id="ref-betancourt2017">
+<p>Betancourt, M. (2017). <em>A conceptual introduction to hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1701.02434" class="uri">https://arxiv.org/abs/1701.02434</a></p>
 </div>
 <div id="ref-stan">
 <p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
