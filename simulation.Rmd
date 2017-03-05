@@ -53,7 +53,7 @@ colnames(simulation)[4] <- "bivpois_alpha_bias"
 
 To assess the bivariate Poisson and game random intercept models, I first examine the correlations between the true parameters and the estimated parameters from each model. The parameters for each replication can be pulled out of the simulation results using the **purrr** and **dplyr** packages [@R-purrr; @R-dplyr].
 
-```{r sim_data}
+```{r sim_data, message = FALSE}
 library(dplyr)
 library(purrr)
 
@@ -72,7 +72,7 @@ plot_sim <- simulation %>%
 
 I then use the **GGally** package [@R-GGally], an extension of **ggplot2** [@R-ggplot2] to plot a scatterplot matrix with correlations.
 
-```{r plot_corr}
+```{r plot_corr, message = FALSE}
 library(ggplot2)
 library(GGally)
 
