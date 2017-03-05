@@ -323,6 +323,57 @@ save(full_urls, file = "_data/full_urls.rda")
 save(full_data, file = "_data/full_data.rda")
 
 
+### fit-model ------------------------------------------------------------------
+load("_data/full_data.rda")
+
+fit_data <-  full_data %>%
+  filter(!is.na(h_goals)) %>%
+  select(-competition)
+
+filter_games <- TRUE
+while(filter_games) {
+  team_counts <- table(c(fit_data$home, fit_data$away)) %>% as_data_frame() %>%
+    arrange(desc(n)) %>%
+    filter(n >= 5) %>%
+    select(team = Var1) %>%
+    arrange(team) %>%
+    mutate(code = seq_len(nrow(.)))
+  
+  fit_data <- fit_data %>%
+    left_join(team_counts, by = c("home" = "team")) %>%
+    rename(home_code = code) %>%
+    left_join(team_counts, by = c("away" = "team")) %>%
+    rename(away_code = code) %>%
+    filter(!is.na(home_code), !is.na(away_code))
+  
+  new_min <- table(c(fit_data$home, fit_data$away)) %>% as.numeric() %>% min()
+  if (new_min >= 5) {
+    filter_games <- FALSE
+  } else {
+    fit_data <- fit_data %>%
+      select(-home_code, -away_code)
+  }
+}
+
+stan_data <- list(
+  num_clubs = nrow(team_counts),
+  num_games = nrow(fit_data),
+  home = fit_data$home_code,
+  away = fit_data$away_code,
+  h_goals = fit_data$h_goals,
+  a_goals = fit_data$a_goals,
+  homeg = fit_data$home_game
+)
+
+gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
+  chains = 2, iter = 10000, warmup = 2000, init = "random", thin = 1,
+  cores = 2, control = list(adapt_delta = 0.99))
+save(gri_stanfit, file = "_data/gri_stanfit.rda")
+
+# Extract y_rep from stanfit object
+y_rep <- extract(fit, pars = "y_rep", permuted = TRUE)$y_rep
+str(y_rep)
+
 ### Fit Stan Model -------------------------------------------------------------
 
 load("_data/full_data.rda")
