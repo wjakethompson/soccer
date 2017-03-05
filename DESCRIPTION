@@ -15,6 +15,7 @@ Imports:
   methods,
   pander,
   parallel,
+  portableParallelSeeds,
   purrr,
   rstan,
   rvest,
