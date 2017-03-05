@@ -10,6 +10,7 @@ Imports:
   bookdown,
   dplyr,
   DT,
+  GGally,
   knitr,
   lubridate,
   methods,
