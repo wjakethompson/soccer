@@ -31,6 +31,6 @@ This work is licensed under the [Creative Commons Attribution-NonCommercial-NoDe
 knitr::write_bib(
   c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 'rvest', 'purrr', 'dplyr',
     'lubridate', 'rstan', 'ggplot2', 'DT', 'portableParallelSeeds', 'parallel',
-    'methods', 'GGally'),
+    'methods', 'GGally', 'plyr'),
   'packages.bib')
 ```
