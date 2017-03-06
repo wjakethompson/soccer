@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-05">
+<meta name="date" content="2017-03-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -130,7 +130,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.1" data-path="simulation.html"><a href="simulation.html#data-generation"><i class="fa fa-check"></i><b>3.1</b> Data generation</a></li>
 <li class="chapter" data-level="3.2" data-path="simulation.html"><a href="simulation.html#model-est"><i class="fa fa-check"></i><b>3.2</b> Model estimation</a></li>
 <li class="chapter" data-level="3.3" data-path="simulation.html"><a href="simulation.html#running-the-simulation"><i class="fa fa-check"></i><b>3.3</b> Running the simulation</a></li>
-<li class="chapter" data-level="3.4" data-path="simulation.html"><a href="simulation.html#sim-results"><i class="fa fa-check"></i><b>3.4</b> Simulation results</a></li>
+<li class="chapter" data-level="3.4" data-path="simulation.html"><a href="simulation.html#sim-results"><i class="fa fa-check"></i><b>3.4</b> Simulation results</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="simulation.html"><a href="simulation.html#sim-corr"><i class="fa fa-check"></i><b>3.4.1</b> Correlation between true and estimated parameters</a></li>
+<li class="chapter" data-level="3.4.2" data-path="simulation.html"><a href="simulation.html#sim-bias-mse"><i class="fa fa-check"></i><b>3.4.2</b> Estimation bias and mean square error</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#summary-of-findings-sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings {sim-concl}</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
 <li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
@@ -157,6 +161,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="A.1" data-path="simulation-functions.html"><a href="simulation-functions.html#bivpois-generate"><i class="fa fa-check"></i><b>A.1</b> Generate bivariate Poisson</a></li>
 <li class="chapter" data-level="A.2" data-path="simulation-functions.html"><a href="simulation-functions.html#gri-generate"><i class="fa fa-check"></i><b>A.2</b> Generate game random intercept</a></li>
 <li class="chapter" data-level="A.3" data-path="simulation-functions.html"><a href="simulation-functions.html#estimate-fun"><i class="fa fa-check"></i><b>A.3</b> Fit models to simualted data</a></li>
+<li class="chapter" data-level="A.4" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-cor"><i class="fa fa-check"></i><b>A.4</b> Plot correlation matrices</a><ul>
+<li class="chapter" data-level="A.4.1" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-comp"><i class="fa fa-check"></i><b>A.4.1</b> Plot components</a></li>
+<li class="chapter" data-level="A.4.2" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-plot"><i class="fa fa-check"></i><b>A.4.2</b> Plot creation</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="B" data-path="scrape-functions.html"><a href="scrape-functions.html"><i class="fa fa-check"></i><b>B</b> Web Scraping Functions</a><ul>
 <li class="chapter" data-level="B.1" data-path="scrape-functions.html"><a href="scrape-functions.html#league-scrape"><i class="fa fa-check"></i><b>B.1</b> Scrape league pages</a></li>
@@ -241,10 +249,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
 </div>
 <div>
-<p>Wickham, H. (2016a). <em>Purrr: Functional programming tools</em>. Retrieved from <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a></p>
+<p>Wickham, H. (2016a). <em>Plyr: Tools for splitting, applying and combining data</em>. Retrieved from <a href="https://CRAN.R-project.org/package=plyr" class="uri">https://CRAN.R-project.org/package=plyr</a></p>
 </div>
 <div>
-<p>Wickham, H. (2016b). <em>Rvest: Easily harvest (scrape) web pages</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rvest" class="uri">https://CRAN.R-project.org/package=rvest</a></p>
+<p>Wickham, H. (2016b). <em>Purrr: Functional programming tools</em>. Retrieved from <a href="https://CRAN.R-project.org/package=purrr" class="uri">https://CRAN.R-project.org/package=purrr</a></p>
+</div>
+<div>
+<p>Wickham, H. (2016c). <em>Rvest: Easily harvest (scrape) web pages</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rvest" class="uri">https://CRAN.R-project.org/package=rvest</a></p>
 </div>
 <div>
 <p>Wickham, H., &amp; Chang, W. (2016). <em>Ggplot2: Create elegant data visualisations using the grammar of graphics</em>. Retrieved from <a href="https://CRAN.R-project.org/package=ggplot2" class="uri">https://CRAN.R-project.org/package=ggplot2</a></p>

@@ -2,7 +2,7 @@
 --- 
 title: "Soccer Predictions Using Bayesian Mixed Effects Models"
 author: "Jake Thompson"
-date: "2017-03-05"
+date: "2017-03-06"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
