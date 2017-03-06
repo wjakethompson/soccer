@@ -167,3 +167,95 @@ simulation_fun <- function(x) {
 }
 ```
 
+## Plot correlation matrices {#ggally-cor}
+
+### Plot components {#ggally-comp}
+
+```{r ggally_fun_app, eval = FALSE}
+lowerFn <- function(data, mapping, ..., alpha = 0.5, lim = 2) {
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_point(..., alpha = alpha) +
+    geom_abline(intercept = 0, slope = 1, color = "black") +
+    scale_x_continuous(limits = c(-lim, lim), breaks = seq(-lim, lim, 1)) +
+    scale_y_continuous(limits = c(-lim, lim), breaks = seq(-lim, lim, 1)) +
+    theme_bw()
+  p
+}
+
+diagFn <- function(data, mapping, ..., alpha = 0.5, lim = 2) {
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_density(..., alpha = alpha) +
+    scale_x_continuous(limits = c(-lim, lim), breaks = seq(-lim, lim, 1)) +
+    theme_bw() +
+    theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())
+  p
+}
+
+upperFn <- function(data, mapping, ..., size = 3, lim = 2) {
+  xCol <- deparse(mapping$x)
+  yCol <- deparse(mapping$y)
+  colorCol <- deparse(mapping$colour)
+  xVal <- data[[xCol]]
+  yVal <- data[[yCol]]
+  cVal <- data[[colorCol]]
+  
+  plot_data <- data_frame(xVal, yVal, cVal) %>%
+    group_by(cVal) %>%
+    summarize(corr = cor(xVal, yVal, method = "pearson")) %>%
+    mutate(
+      cVal = factor(cVal, levels = c("gri", "bivpois"),
+        labels =c("GRI", "Biv Poisson")),
+      lab = paste0(cVal, ": ", sprintf("%.3f", corr)),
+      y_pos = 1:2,
+      x_pos = 0
+    )
+  
+  p <- ggplot(data = plot_data, aes(x = x_pos, y = y_pos, fill = cVal,
+    label = lab)) +
+    geom_label(color = "white", fontface = "bold", size = size) +
+    scale_x_continuous(limits = c(-lim, lim), breaks = seq(-lim, lim, 1)) +
+    scale_y_continuous(limits = c(0, 3)) +
+    scale_fill_manual(values = c(`Biv Poisson` = "#F8766D", GRI = "#00BFC4")) +
+    theme_bw() +
+    theme(
+      legend.position = "none"
+    )
+  p
+}
+
+get_lim <- function(data) {
+  data %>%
+    as.list() %>%
+    flatten_dbl() %>%
+    abs() %>%
+    max() %>%
+    round_any(accuracy = 0.5, f = ceiling)
+}
+```
+
+### Plot creation {#ggally-plot}
+
+```{r ggally_create_app, eval = FALSE}
+lim <- get_lim(select(plot_sim, -generator))
+
+ggpairs(
+  title = "Alpha Recovery", data = plot_sim,
+  columns = c("true_alpha", "bivpois_alpha", "gri_alpha"),
+  mapping = aes(color = generator, fill = generator),
+  columnLabels = c("True", "Bivariate Poisson", "Game Random Intercept"),
+  upper = list(continuous = wrap(upperFn, size = 3, lim = lim)),
+  lower = list(continuous = wrap(lowerFn, alpha = 0.1, lim = lim)),
+  diag = list(continuous = wrap(diagFn, alpha = 0.5, lim = lim))
+)
+
+ggpairs(
+  title = "Delta Recovery", data = plot_sim,
+  columns = c("true_delta", "bivpois_delta", "gri_delta"),
+  mapping = aes(color = generator, fill = generator),
+  columnLabels = c("True", "Bivariate Poisson", "Game Random Intercept"),
+  upper = list(continuous = wrap(upperFn, size = 3, lim = lim)),
+  lower = list(continuous = wrap(lowerFn, alpha = 0.1, lim = lim)),
+  diag = list(continuous = wrap(diagFn, alpha = 0.5, lim = lim))
+)
+```
+
