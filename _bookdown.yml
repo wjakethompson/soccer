@@ -13,6 +13,7 @@ rmd_files: [
   
   "simulation-functions.Rmd",
   "scraping-functions.Rmd",
+  "model-diagnostics.Rmd",
 
   "references.Rmd"
 ]

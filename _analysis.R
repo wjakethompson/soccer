@@ -1,6 +1,6 @@
 ### Setup R session ------------------------------------------------------------
 needed_packages <- c("rvest", "dplyr", "purrr", "lubridate", "rstan", "ggplot2",
-  "tidyr", "portableParallelSeeds", "parallel", "methods")
+  "tidyr", "portableParallelSeeds", "parallel", "methods", "tidyr")
 load_packages <- function(x) {
   if(!(x %in% rownames(installed.packages()))) {
     install.packages(x, repos = c("https://cran.rstudio.com/",
@@ -20,7 +20,7 @@ rm(list = ls())
 ### intro ----------------------------------------------------------------------
 session_info <- devtools::session_info(c("bookdown", "knitr", "rmarkdown",
   "rvest", "purrr", "dplyr", "lubridate", "rstan", "ggplot2", "DT",
-  "portableParallelSeeds", "parallel", "methods"))
+  "portableParallelSeeds", "parallel", "methods", "GGally", "plyr"))
 save(session_info, file = "_data/session_info.rda")
 
 
@@ -166,7 +166,7 @@ leagues <- list(
 major_cups <- list(
   champions_league = "http://www.espnfc.us/uefa-champions-league/2/table",
   europa_league = "http://www.espnfc.us/uefa-europa-league/2310/table",
-  icc = "http://www.espnfc.us/international-champions-cup/2326/table"
+  icc = "http://www.espnfc.us/international-champions-cup/2326/table?season=2016"
 )
 
 domestic_cups <- list(
@@ -318,16 +318,16 @@ full_data <- bind_rows(full_data$team_data) %>%
   filter(date > ymd("2016-03-01")) %>%
   rename(h_goals = home_goals, a_goals = away_goals)
 
-rm(list = setdiff(ls(), c("full_urls", "full_data"))); gc()
 save(full_urls, file = "_data/full_urls.rda")
 save(full_data, file = "_data/full_data.rda")
+rm(list = ls()); gc()
 
 
 ### fit-model ------------------------------------------------------------------
 load("_data/full_data.rda")
 
 fit_data <-  full_data %>%
-  filter(!is.na(h_goals)) %>%
+  filter(!is.na(h_goals), !is.na(a_goals)) %>%
   select(-competition)
 
 filter_games <- TRUE
@@ -335,14 +335,14 @@ while(filter_games) {
   team_counts <- table(c(fit_data$home, fit_data$away)) %>% as_data_frame() %>%
     arrange(desc(n)) %>%
     filter(n >= 5) %>%
-    select(team = Var1) %>%
+    select(team = Var1, games = n) %>%
     arrange(team) %>%
     mutate(code = seq_len(nrow(.)))
   
   fit_data <- fit_data %>%
-    left_join(team_counts, by = c("home" = "team")) %>%
+    left_join(select(team_counts, -games), by = c("home" = "team")) %>%
     rename(home_code = code) %>%
-    left_join(team_counts, by = c("away" = "team")) %>%
+    left_join(select(team_counts, -games), by = c("away" = "team")) %>%
     rename(away_code = code) %>%
     filter(!is.na(home_code), !is.na(away_code))
   
@@ -366,120 +366,27 @@ stan_data <- list(
 )
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
-  chains = 2, iter = 10000, warmup = 2000, init = "random", thin = 1,
-  cores = 2, control = list(adapt_delta = 0.99))
-save(gri_stanfit, file = "_data/gri_stanfit.rda")
+  chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
+  cores = 3, algorithm = "NUTS", control = list(adapt_delta = 0.99))
+upars <- get_num_upars(gri_stanfit)
+save(gri_stanfit, upars, file = "_data/gri_stanfit.rda")
 
-# Extract y_rep from stanfit object
-y_rep <- extract(fit, pars = "y_rep", permuted = TRUE)$y_rep
-str(y_rep)
-
-### Fit Stan Model -------------------------------------------------------------
-
-load("_data/full_data.rda")
-fit_data <-  full_data %>%
-  filter(!is.na(h_goals),
-    competition %in% c("Bund", "Prem", "Ligue 1", "La Liga", "Serie A"))
-
-filter_games <- TRUE
-while(filter_games) {
-  team_counts <- table(c(fit_data$home, fit_data$away)) %>% as_data_frame() %>%
-    arrange(desc(n)) %>%
-    filter(n >= 5) %>%
-    select(team = Var1) %>%
-    arrange(team) %>%
-    mutate(code = seq_len(nrow(.)))
-
-  fit_data <- fit_data %>%
-    select(-competition) %>%
-    left_join(team_counts, by = c("home" = "team")) %>%
-    rename(home_code = code) %>%
-    left_join(team_counts, by = c("away" = "team")) %>%
-    rename(away_code = code) %>%
-    filter(!is.na(home_code), !is.na(away_code))
-  
-  new_min <- table(c(fit_data$home, fit_data$away)) %>% as.numeric() %>% min()
-  if (new_min >= 5) {
-    filter_games <- FALSE
-  }
-}
-
-stan_data <- list(
-  num_clubs = nrow(team_counts),
-  num_games = nrow(fit_data),
-  home = fit_data$home_code,
-  away = fit_data$away_code,
-  h_goals = fit_data$h_goals,
-  a_goals = fit_data$a_goals,
-  homeg = fit_data$home_game
-)
-
-bivpois <- stan(file = "_data/stan-models/biv_pois.stan", data = stan_data,
-  chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
-  cores = 2, control = list(adapt_delta = 0.99))
-mixeffc <- stan(file = "_data/stan-models/mix_effc.stan", data = stan_data,
-  chains = 2, iter = 15000, warmup = 5000, init = "random", thin = 1,
-  cores = 2, control = list(adapt_delta = 0.99))
-
-summary(bivpois, pars = c("mu", "eta", "sigma_a", "sigma_d", "sigma_r"),
-  probs = c(0.025, 0.25, 0.75, 0.975))$summary
-summary(mixeffc, pars = c("mu", "eta", "sigma_a", "sigma_d", "sigma_g"),
-  probs = c(0.025, 0.25, 0.75, 0.975))$summary
-
-### Examine convergence --------------------------------------------------------
-as.data.frame(summary(int_fit)[[1]]) %>%
-  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
-  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
-  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
-  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
-  labs(y = expression(hat(italic(R))),
-    title = "Convergence for Random Intercept Model") +
-  theme_bw() -> rnd_int_rhat
-ggsave(filename = "rnd_int_rhat.png", plot = rnd_int_rhat,
-  path = "model_output/", width = 10, height = 7, units = "in", dpi = 300)
-
-as.data.frame(summary(lng_fit)[[1]]) %>%
-  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
-  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
-  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
-  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
-  labs(y = expression(hat(italic(R))),
-    title = "Convergence for Long Form Model") +
-  theme_bw() -> lng_rnd_rhat
-ggsave(filename = "lng_rnd_rhat.png", plot = rnd_int_rhat,
-  path = "model_output/", width = 10, height = 7, units = "in", dpi = 300)
-
-as.data.frame(summary(biv_fit)[[1]]) %>%
-  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
-  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
-  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
-  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
-  labs(y = expression(hat(italic(R))),
-    title = "Convergence for Bivariate Poisson Model") +
-  theme_bw() -> biv_poi_rhat
-ggsave(filename = "biv_poi_rhat.png", plot = rnd_int_rhat,
-  path = "model_output/", width = 10, height = 7, units = "in", dpi = 300)
-
-
-### Analyze results ------------------------------------------------------------
-params_summary <- summary(int_fit, pars = c("mu", "H", "alpha", "delta"),
-  probs = c(0.025, 0.25, 0.75, 0.975))$summary
-
-params <- extract(int_fit, pars = c("mu", "H", "alpha", "delta"))
+params <- rstan::extract(gri_stanfit, pars = c("mu", "alpha", "delta"))
 alpha <- colMeans(params$alpha)
 delta <- colMeans(params$delta)
 mu <- mean(params$mu)
-H <- mean(params$H)
 
-
-results <- data_frame(
+club_rankings <- data_frame(
   club = team_counts$team,
   attacking = alpha,
   defense = delta
 ) %>%
   mutate(
-    home_goals = exp(mu + alpha),
-    away_goals = exp(mu + delta),
-    exp_margin = home_goals - away_goals
+    exp_offense = exp(mu + alpha),
+    exp_defense = exp(mu + delta),
+    exp_margin = exp_offense - exp_defense
   ) %>%
   arrange(desc(exp_margin))
+
+save(club_rankings, file = "_data/club_rankings.rda")
+rm(list = ls()); gc()

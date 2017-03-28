@@ -21,6 +21,7 @@ Imports:
   purrr,
   rstan,
   rvest,
+  tidyr,
   tidyverse
 Remotes:
   hadley/ggplot2,
