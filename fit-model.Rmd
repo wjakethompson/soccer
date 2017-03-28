@@ -85,7 +85,7 @@ This section attempt to replicated the original data. At each each iteration of 
 
 Finally, the model can be estimated using the Stan interface **rstan** [@R-rstan]. The model is estimated with 3 chains, each with 4000 iterations. The first 2000 iterations from each chain are discarded as burn in. Additionally, a thinning interval of 2 was used. These decisions were made to decrease computation time, and to limit the size of the result `stanfit` objects, which become quite large. This leaves 1000 iterations from each chain, for a total of 3000 iterations that will make up the final posterior distributions. As in the simulation study, the target proposal acceptance rate during the adaptation period was set to 0.99 [see Section \@ref(model-est); @stan; @stanwarn].
 
-```{r estimate_stan, eval = FALSE}
+```{r estimate_stan, eval = TRUE}
 library(rstan)
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
@@ -93,13 +93,13 @@ gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   cores = 3, algorithm = "NUTS", seed = 9416,
   control = list(adapt_delta = 0.99, max_treedepth = 15))
 upars <- get_num_upars(gri_stanfit)
-save(gri_stanfit, upars, file = "_data/gri_stanfit.rda")
+# save(gri_stanfit, upars, file = "_data/gri_stanfit.rda")
 ```
 
 
 ## MCMC diagnostics {#diagnostics}
 
-```{r load_stanfit, include = FALSE}
+```{r load_stanfit, include = FALSE, eval = FALSE}
 library(rstan)
 load("_data/gri_stanfit.rda")
 ```
