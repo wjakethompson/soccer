@@ -1,0 +1,154 @@
+
+# Model Diagnostics Output {#diagnostic-output}
+
+## Plot $\hat{R}$ values {#rhat-plot}
+
+
+```r
+as.data.frame(summary(gri_stanfit)[[1]]) %>%
+  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
+  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
+  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
+  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
+  labs(y = expression(hat(italic(R)))) +
+  theme_bw()
+```
+
+## Plot effective sample size values
+
+
+```r
+as.data.frame(summary(gri_stanfit)[[1]]) %>%
+  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
+  ggplot(aes(x = Parameter, y = n_eff, color = Parameter)) +
+  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
+  expand_limits(y = 0) +
+  labs(y = expression(hat(italic(R)))) +
+  theme_bw()
+```
+
+## NUTS diagnostics table
+
+
+```r
+sp <- get_sampler_params(gri_stanfit, inc_warmup = FALSE)
+E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
+EBFMI <- upars / apply(E, 2, var)
+
+mean_accept <- sapply(sp, function(x) mean(x[, "accept_stat__"]))
+max_treedepth <- sapply(sp, function(x) max(x[, "treedepth__"]))
+
+data_frame(
+  Chain = paste0("Chain ", 1:length(EBFMI)),
+  `BFMI` = sprintf("%0.3f", EBFMI),
+  `Mean Acceptance Rate` = sprintf("%0.3f", mean_accept),
+  `Max Treedepth` = max_treedepth
+) %>%
+  knitr::kable(caption = "Diagnostic statistics for the NUTS algorithm.",
+    align = "c")
+```
+
+## PPMC score distribution plot {#ppmc-sdp}
+
+
+```r
+rep_data %>%
+  filter(replication %in% 1:500) %>%
+  gather(key = team, value = score, home_score:away_score) %>%
+  mutate(team = factor(team, levels = c("home_score", "away_score"),
+    labels = c("Home Score", "Away Score"))) %>%
+  ggplot(mapping = aes(x = score)) +
+  facet_wrap(~ team, ncol = 2) +
+  stat_density(aes(group = replication, color = "Replications"), geom = "line",
+    alpha = 0.2, bw = 0.5, position = "identity") +
+  stat_density(
+    data = fit_data %>%
+      select(h_goals, a_goals) %>%
+      gather(key = team, value = score, h_goals:a_goals) %>%
+      mutate(team = factor(team, levels = c("h_goals", "a_goals"),
+        labels = c("Home Score", "Away Score"))),
+    aes(color = "Observed"), geom = "line", alpha = 0.8, bw = 0.5
+  ) +
+  scale_color_manual(values = c("Observed" = "red",
+    "Replications" = "black")) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(color = guide_legend(title = NULL, override.aes = list(alpha = 1)))
+```
+
+## PPMC margin of victory credible intervals {#ppmc-mov}
+
+
+```r
+set.seed(32011)
+mov <- rep_data %>%
+  mutate(mov = home_score - away_score) %>%
+  group_by(game) %>%
+  summarize(
+    mean = mean(mov, na.rm = TRUE),
+    pct025 = quantile(mov, probs = 0.025),
+    pct25 = quantile(mov, probs = 0.25),
+    pct50 = quantile(mov, probs = 0.5),
+    pct75 = quantile(mov, probs = 0.75),
+    pct975 = quantile(mov, probs = 0.975)
+  ) %>%
+  mutate(obs_mov = fit_data$h_goals - fit_data$a_goals) %>%
+  mutate(
+    cred50 = obs_mov >= pct25 & obs_mov <= pct75,
+    cred95 = obs_mov >= pct025 & obs_mov <= pct975
+  )
+
+mov %>%
+  filter(obs_mov >= -5, obs_mov <= 5, pct025 >= -5, pct975 <= 5) %>%
+  group_by(cred50, cred95) %>%
+  sample_n(3) %>%
+  arrange(desc(cred50), desc(cred95)) %>%
+  ungroup() %>%
+  mutate(game = factor(game) %>% forcats::fct_inorder()) %>%
+  ggplot() +
+  geom_linerange(aes(x = game, ymin = pct025, ymax = pct975,
+    linetype = "95% Credible Interval"), color = "#00BFC4") +
+  geom_linerange(aes(x = game, ymin = pct25, ymax = pct75,
+    linetype = "50% Credible Interval"), size = 1, color = "#00BFC4") +
+  geom_point(aes(x = game, y = obs_mov, color = "Observed MOV"), shape = 18,
+    size = 4) +
+  scale_y_continuous(limits = c(-5, 5), breaks = seq(-5, 5, 1)) +
+  scale_linetype_manual(values = c("95% Credible Interval" = "dashed",
+    "50% Credible Interval" = "solid")) +
+  scale_color_manual(values = c("Observed MOV" = "#F8766D")) +
+  labs(x = "Game", y = "Home Team Margin of Victory") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) +
+  guides(
+    linetype = guide_legend(title = NULL, override.aes = list(size = 0.5)),
+    color = guide_legend(title = NULL)
+  )
+```
+
+## Log loss comparison table
+
+
+```r
+data_frame(
+  Model = c("Game Random Intercept", "Data Average", "Equal Probabilities",
+    "Home Win"),
+  `Log Loss` = c(
+    avg_logloss,
+    logloss(pred = matrix(data = c(mean(observations[,1]),
+      mean(observations[,2]), mean(observations[,3])), nrow = nrow(outcomes),
+      ncol = 3, byrow = TRUE), obs = observations),
+    logloss(pred = matrix(data = 1/3, nrow = nrow(outcomes), ncol = 3),
+      obs = observations),
+    logloss(pred = matrix(data = c(1, 0, 0), nrow = nrow(outcomes), ncol = 3,
+      byrow = TRUE), obs = observations)
+  )  
+) %>%
+  knitr::kable(caption = "Log loss comparison to baseline models.", digits = 3,
+    align = "c")
+```

@@ -82,12 +82,12 @@ I then use the **GGally** package [@R-GGally], an extension of **ggplot2** [@R-g
 
 
 <div class="figure" style="text-align: center">
-<img src="simulation_files/figure-html/alpha-cor-1.png" alt="Correlation between true and estimated alpha parameters under different generating and estimated models." width="70%" />
+<img src="simulation_files/figure-html/alpha-cor-1.png" alt="Correlation between true and estimated alpha parameters under different generating and estimated models." width="80%" />
 <p class="caption">(\#fig:alpha-cor)Correlation between true and estimated alpha parameters under different generating and estimated models.</p>
 </div>
 
 <div class="figure" style="text-align: center">
-<img src="simulation_files/figure-html/delta-cor-1.png" alt="Correlation between true and estimated delta parameters under different generating and estimated models." width="70%" />
+<img src="simulation_files/figure-html/delta-cor-1.png" alt="Correlation between true and estimated delta parameters under different generating and estimated models." width="80%" />
 <p class="caption">(\#fig:delta-cor)Correlation between true and estimated delta parameters under different generating and estimated models.</p>
 </div>
 
@@ -159,7 +159,7 @@ As would be expected, there is more error associated with estimates coming from 
 
 These results indicate that the best choice of model would be the one that matches the data generation process. Unfortunately, when using real data, the exact data generation process is impossible to know. However, these findings also show that the cost of being wrong is much less when using the game random intercept model to estimate, compared to the bivariate Poisson model.
 
-## Summary of findings {sim-concl}
+## Summary of findings {#sim-concl}
 
 The findings from the simulation study indicate that the game random intercept model should be the preferred model for estimating the abilities of soccer teams. Across data generating models, the game random intercept model was better able to recover the true parameters (Section \@ref(sim-corr)). Additionally, the game random intercept model had comparable bias and lower mean square error than the the bivariate Poisson model (Section \@ref(sim-bias-mse)).
 

@@ -41,13 +41,13 @@ load("_data/session_info.rda")
 devtools:::print.session_info(session_info)
 #> Session info --------------------------------------------------------------
 #>  setting  value                       
-#>  version  R version 3.3.2 (2016-10-31)
+#>  version  R version 3.3.3 (2017-03-06)
 #>  system   x86_64, darwin13.4.0        
 #>  ui       RStudio (1.0.136)           
 #>  language (EN)                        
 #>  collate  en_US.UTF-8                 
 #>  tz       America/Chicago             
-#>  date     2017-02-27
+#>  date     2017-03-28
 #> Packages ------------------------------------------------------------------
 #>  package               * version    date      
 #>  assertthat              0.1        2013-12-06
@@ -62,11 +62,12 @@ devtools:::print.session_info(session_info)
 #>  curl                    2.1        2016-09-22
 #>  DBI                     0.5-1      2016-09-10
 #>  dichromat               2.0-0      2013-01-24
-#>  digest                  0.6.11     2017-01-03
+#>  digest                  0.6.12     2017-01-27
 #>  dplyr                 * 0.5.0      2016-06-24
 #>  DT                      0.2        2016-08-09
 #>  evaluate                0.10       2016-10-11
-#>  ggplot2               * 2.2.1.9000 2017-01-26
+#>  GGally                  1.3.0      2017-03-05
+#>  ggplot2               * 2.2.1.9000 2017-03-27
 #>  gridExtra               2.2.1      2016-02-29
 #>  gtable                  0.2.0      2016-02-26
 #>  highr                   0.6        2016-05-09
@@ -80,30 +81,34 @@ devtools:::print.session_info(session_info)
 #>  lattice                 0.20-34    2016-09-06
 #>  lazyeval                0.2.0.9000 2016-09-19
 #>  lme4                    1.1-12     2016-04-16
-#>  lubridate             * 1.6.0.9009 2017-01-24
+#>  lubridate             * 1.6.0.9009 2017-03-27
 #>  magrittr                1.5        2014-11-22
 #>  markdown                0.7.7      2015-04-22
 #>  MASS                    7.3-45     2016-04-21
-#>  Matrix                  1.2-7.1    2016-09-01
+#>  Matrix                  1.2-8      2017-01-20
 #>  MatrixModels            0.4-1      2015-08-22
-#>  mgcv                    1.8-15     2016-09-14
+#>  mgcv                    1.8-17     2017-02-08
 #>  mime                    0.5        2016-07-07
 #>  minqa                   1.2.4      2014-10-09
 #>  munsell                 0.4.3      2016-02-13
-#>  nlme                    3.1-128    2016-05-10
+#>  nlme                    3.1-131    2017-02-06
 #>  nloptr                  1.0.4      2014-08-04
 #>  nnet                    7.3-12     2016-02-02
 #>  openssl                 0.9.4      2016-05-25
 #>  pbkrtest                0.4-6      2016-01-27
 #>  plyr                    1.8.4.9000 2016-11-03
 #>  portableParallelSeeds * 0.97       2016-11-14
-#>  purrr                 * 0.2.2.9000 2016-11-22
+#>  prettyunits             1.0.2      2015-07-13
+#>  progress                1.1.2      2016-12-14
+#>  purrr                 * 0.2.2.9000 2017-03-27
 #>  quantreg                5.29       2016-09-04
 #>  R6                      2.2.0      2016-10-05
 #>  RColorBrewer            1.1-2      2014-12-07
-#>  Rcpp                    0.12.9.1   2017-01-24
+#>  Rcpp                    0.12.10    2017-03-27
 #>  RcppEigen               0.3.2.9.0  2016-08-21
+#>  reshape                 0.8.6      2016-10-21
 #>  reshape2                1.4.2      2016-10-22
+#>  rlang                   0.0.0.9004 2017-03-27
 #>  rmarkdown               1.3        2016-12-21
 #>  rockchalk               1.8.101    2016-02-25
 #>  rprojroot               1.1        2016-10-29
@@ -113,9 +118,9 @@ devtools:::print.session_info(session_info)
 #>  selectr                 0.3-0      2016-08-30
 #>  SparseM                 1.72       2016-09-06
 #>  StanHeaders           * 2.14.0-1   2017-01-09
-#>  stringi                 1.1.2      2016-10-01
-#>  stringr                 1.1.0      2016-08-19
-#>  tibble                  1.2-15     2017-01-11
+#>  stringi                 1.1.3      2017-03-21
+#>  stringr                 1.2.0      2017-02-18
+#>  tibble                  1.2-15     2017-03-05
 #>  xml2                  * 1.0.0      2016-06-24
 #>  yaml                    2.1.14     2016-11-12
 #>  source                           
@@ -131,11 +136,12 @@ devtools:::print.session_info(session_info)
 #>  CRAN (R 3.3.0)                   
 #>  cran (@0.5-1)                    
 #>  CRAN (R 3.3.0)                   
-#>  cran (@0.6.11)                   
+#>  cran (@0.6.12)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
-#>  Github (hadley/ggplot2@2a1bf98)  
+#>  Github (ggobi/GGally@4ed1c3b)    
+#>  Github (hadley/ggplot2@f4398b6)  
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
 #>  cran (@0.6)                      
@@ -146,33 +152,37 @@ devtools:::print.session_info(session_info)
 #>  cran (@1.2)                      
 #>  cran (@1.15.1)                   
 #>  CRAN (R 3.3.0)                   
-#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.3)                   
 #>  Github (hadley/lazyeval@c155c3d) 
 #>  CRAN (R 3.3.0)                   
-#>  Github (hadley/lubridate@ebd90d9)
+#>  Github (hadley/lubridate@82dd6ba)
 #>  CRAN (R 3.3.0)                   
 #>  cran (@0.7.7)                    
-#>  CRAN (R 3.3.2)                   
-#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.3)                   
+#>  CRAN (R 3.3.3)                   
 #>  CRAN (R 3.3.0)                   
-#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.3)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
-#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.3)                   
 #>  CRAN (R 3.3.0)                   
-#>  CRAN (R 3.3.2)                   
+#>  CRAN (R 3.3.3)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
 #>  Github (hadley/plyr@fe19241)     
 #>  CRAN (R 3.3.1)                   
-#>  Github (hadley/purrr@5360143)    
+#>  cran (@1.0.2)                    
+#>  cran (@1.1.2)                    
+#>  Github (hadley/purrr@55d4dbe)    
 #>  CRAN (R 3.3.0)                   
 #>  cran (@2.2.0)                    
 #>  CRAN (R 3.3.0)                   
-#>  Github (RcppCore/Rcpp@5a99a86)   
+#>  Github (RcppCore/Rcpp@876d635)   
 #>  CRAN (R 3.3.0)                   
+#>  cran (@0.8.6)                    
 #>  cran (@1.4.2)                    
+#>  Github (hadley/rlang@fbfc06c)    
 #>  cran (@1.3)                      
 #>  CRAN (R 3.3.0)                   
 #>  cran (@1.1)                      
@@ -182,9 +192,9 @@ devtools:::print.session_info(session_info)
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.0)                   
 #>  CRAN (R 3.3.2)                   
-#>  CRAN (R 3.3.1)                   
-#>  cran (@1.1.0)                    
-#>  Github (hadley/tibble@3d6f8b4)   
+#>  cran (@1.1.3)                    
+#>  cran (@1.2.0)                    
+#>  Github (hadley/tibble@4c32758)   
 #>  cran (@1.0.0)                    
 #>  cran (@2.1.14)
 ```

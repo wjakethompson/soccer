@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
-  <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3.16 and GitBook 2.6.7">
 
   <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-06">
+<meta name="date" content="2017-03-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +134,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.4.1" data-path="simulation.html"><a href="simulation.html#sim-corr"><i class="fa fa-check"></i><b>3.4.1</b> Correlation between true and estimated parameters</a></li>
 <li class="chapter" data-level="3.4.2" data-path="simulation.html"><a href="simulation.html#sim-bias-mse"><i class="fa fa-check"></i><b>3.4.2</b> Estimation bias and mean square error</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#summary-of-findings-sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings {sim-concl}</a></li>
+<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
 <li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
@@ -144,12 +144,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
-<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
-<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#fit-real-data"><i class="fa fa-check"></i><b>5.1</b> Model estimation</a></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.2</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.2.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.2.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.2.2</b> Efficiency</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
-<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.3</b> Model fit</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="fit-model.html"><a href="fit-model.html#ppmc-score-dist"><i class="fa fa-check"></i><b>5.3.1</b> Score distributions</a></li>
+<li class="chapter" data-level="5.3.2" data-path="fit-model.html"><a href="fit-model.html#ppmc-mov-int"><i class="fa fa-check"></i><b>5.3.2</b> Margin of victory intervals</a></li>
+<li class="chapter" data-level="5.3.3" data-path="fit-model.html"><a href="fit-model.html#ppmc-prediction"><i class="fa fa-check"></i><b>5.3.3</b> Prediction error</a></li>
+<li class="chapter" data-level="5.3.4" data-path="fit-model.html"><a href="fit-model.html#posterior-predictive-check-summary"><i class="fa fa-check"></i><b>5.3.4</b> Posterior predictive check summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.4</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -171,6 +177,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="B.2" data-path="scrape-functions.html"><a href="scrape-functions.html#cup-scrape"><i class="fa fa-check"></i><b>B.2</b> Scrape international cups</a></li>
 <li class="chapter" data-level="B.3" data-path="scrape-functions.html"><a href="scrape-functions.html#dom-scrape"><i class="fa fa-check"></i><b>B.3</b> Scrape domestic cups</a></li>
 <li class="chapter" data-level="B.4" data-path="scrape-functions.html"><a href="scrape-functions.html#game-scrape"><i class="fa fa-check"></i><b>B.4</b> Scrape games</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="diagnostic-output.html"><a href="diagnostic-output.html"><i class="fa fa-check"></i><b>C</b> Model Diagnostics Output</a><ul>
+<li class="chapter" data-level="C.1" data-path="diagnostic-output.html"><a href="diagnostic-output.html#rhat-plot"><i class="fa fa-check"></i><b>C.1</b> Plot <span class="math inline">\(\hat{R}\)</span> values</a></li>
+<li class="chapter" data-level="C.2" data-path="diagnostic-output.html"><a href="diagnostic-output.html#plot-effective-sample-size-values"><i class="fa fa-check"></i><b>C.2</b> Plot effective sample size values</a></li>
+<li class="chapter" data-level="C.3" data-path="diagnostic-output.html"><a href="diagnostic-output.html#nuts-diagnostics-table"><i class="fa fa-check"></i><b>C.3</b> NUTS diagnostics table</a></li>
+<li class="chapter" data-level="C.4" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-sdp"><i class="fa fa-check"></i><b>C.4</b> PPMC score distribution plot</a></li>
+<li class="chapter" data-level="C.5" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-mov"><i class="fa fa-check"></i><b>C.5</b> PPMC margin of victory credible intervals</a></li>
+<li class="chapter" data-level="C.6" data-path="diagnostic-output.html"><a href="diagnostic-output.html#log-loss-comparison-table"><i class="fa fa-check"></i><b>C.6</b> Log loss comparison table</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>

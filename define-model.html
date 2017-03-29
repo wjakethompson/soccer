@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
-  <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3.16 and GitBook 2.6.7">
 
   <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-06">
+<meta name="date" content="2017-03-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +134,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.4.1" data-path="simulation.html"><a href="simulation.html#sim-corr"><i class="fa fa-check"></i><b>3.4.1</b> Correlation between true and estimated parameters</a></li>
 <li class="chapter" data-level="3.4.2" data-path="simulation.html"><a href="simulation.html#sim-bias-mse"><i class="fa fa-check"></i><b>3.4.2</b> Estimation bias and mean square error</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#summary-of-findings-sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings {sim-concl}</a></li>
+<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
 <li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
@@ -144,12 +144,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
-<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
-<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#fit-real-data"><i class="fa fa-check"></i><b>5.1</b> Model estimation</a></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.2</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.2.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.2.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.2.2</b> Efficiency</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
-<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.3</b> Model fit</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="fit-model.html"><a href="fit-model.html#ppmc-score-dist"><i class="fa fa-check"></i><b>5.3.1</b> Score distributions</a></li>
+<li class="chapter" data-level="5.3.2" data-path="fit-model.html"><a href="fit-model.html#ppmc-mov-int"><i class="fa fa-check"></i><b>5.3.2</b> Margin of victory intervals</a></li>
+<li class="chapter" data-level="5.3.3" data-path="fit-model.html"><a href="fit-model.html#ppmc-prediction"><i class="fa fa-check"></i><b>5.3.3</b> Prediction error</a></li>
+<li class="chapter" data-level="5.3.4" data-path="fit-model.html"><a href="fit-model.html#posterior-predictive-check-summary"><i class="fa fa-check"></i><b>5.3.4</b> Posterior predictive check summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.4</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -171,6 +177,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="B.2" data-path="scrape-functions.html"><a href="scrape-functions.html#cup-scrape"><i class="fa fa-check"></i><b>B.2</b> Scrape international cups</a></li>
 <li class="chapter" data-level="B.3" data-path="scrape-functions.html"><a href="scrape-functions.html#dom-scrape"><i class="fa fa-check"></i><b>B.3</b> Scrape domestic cups</a></li>
 <li class="chapter" data-level="B.4" data-path="scrape-functions.html"><a href="scrape-functions.html#game-scrape"><i class="fa fa-check"></i><b>B.4</b> Scrape games</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="diagnostic-output.html"><a href="diagnostic-output.html"><i class="fa fa-check"></i><b>C</b> Model Diagnostics Output</a><ul>
+<li class="chapter" data-level="C.1" data-path="diagnostic-output.html"><a href="diagnostic-output.html#rhat-plot"><i class="fa fa-check"></i><b>C.1</b> Plot <span class="math inline">\(\hat{R}\)</span> values</a></li>
+<li class="chapter" data-level="C.2" data-path="diagnostic-output.html"><a href="diagnostic-output.html#plot-effective-sample-size-values"><i class="fa fa-check"></i><b>C.2</b> Plot effective sample size values</a></li>
+<li class="chapter" data-level="C.3" data-path="diagnostic-output.html"><a href="diagnostic-output.html#nuts-diagnostics-table"><i class="fa fa-check"></i><b>C.3</b> NUTS diagnostics table</a></li>
+<li class="chapter" data-level="C.4" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-sdp"><i class="fa fa-check"></i><b>C.4</b> PPMC score distribution plot</a></li>
+<li class="chapter" data-level="C.5" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-mov"><i class="fa fa-check"></i><b>C.5</b> PPMC margin of victory credible intervals</a></li>
+<li class="chapter" data-level="C.6" data-path="diagnostic-output.html"><a href="diagnostic-output.html#log-loss-comparison-table"><i class="fa fa-check"></i><b>C.6</b> Log loss comparison table</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -234,11 +248,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   \lambda_{2i} &amp;= \mu + \alpha_B + \delta_A, \tag{2.6} \\
   \lambda_{0i} &amp;= \rho_A + \rho_B \tag{2.7}
 \end{align}\]</span>
-<p>Here, <span class="math inline">\(\mu\)</span> denotes the overall intercept, or the expected log goals for a team not playing at home, and <span class="math inline">\(\eta\)</span> represents the increase in expected log goals for a team playing at home. <span class="math inline">\(H_i\)</span> is a dummary variable indicating whether game <span class="math inline">\(i\)</span> was played at the home team’s stadium (1) or a neutral site (0). The estimates of team ability come from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span>, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, <span class="math inline">\(\rho\)</span> denotes the change in expected covariance for each team <span class="citation">(Whitaker, <a href="#ref-whitaker2011">2011</a>)</span>.</p>
+<p>Here, <span class="math inline">\(\mu\)</span> denotes the overall intercept, or the expected log goals for a team not playing at home, and <span class="math inline">\(\eta\)</span> represents the increase in expected log goals for a team playing at home. <span class="math inline">\(H_i\)</span> is a dummy variable indicating whether game <span class="math inline">\(i\)</span> was played at the home team’s stadium (1) or a neutral site (0). The estimates of team ability come from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span>, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, <span class="math inline">\(\rho\)</span> denotes the change in expected covariance for each team <span class="citation">(Whitaker, <a href="#ref-whitaker2011">2011</a>)</span>.</p>
 <div id="imp-bivpois" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Implementing the bivariate Poisson model</h3>
-<p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2016</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
-<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
+<p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2017</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
+<p>All parameters have non-information priors. The priors were specified as normal with a mean of 0 and standard deviation of 10. This specification provides a diffuse range of plausible values for the parameter, allowing the likelihood to dominate. However, the use of a diffuse normal prior also prevents arbitrary boundaries from being set for a uniformly distributed prior.</p>
+<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">c</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -308,7 +323,7 @@ model {
 <p>Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.</p>
 <div id="imp-gri" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Implementing the game random intercept model</h3>
-<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2016</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>)</span>.</p>
+<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2017</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. Diffuse normal priors are specified in the same way as for the bivariate Poisson model. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">c</a>)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -388,7 +403,7 @@ model {
 <p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
 </div>
 <div id="ref-R-rstan">
-<p>Guo, J., Gabry, J., &amp; Goodrich, B. (2016). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
+<p>Guo, J., Gabry, J., &amp; Goodrich, B. (2017). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
 </div>
 <div id="ref-betancourt2016">
 <p>Betancourt, M. (2016). <em>Diagnosing suboptimal cotangent disintegrations in hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1604.00695" class="uri">https://arxiv.org/abs/1604.00695</a></p>
@@ -397,7 +412,7 @@ model {
 <p>Betancourt, M. (2017). <em>A conceptual introduction to hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1701.02434" class="uri">https://arxiv.org/abs/1701.02434</a></p>
 </div>
 <div id="ref-stan">
-<p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
+<p>Stan Development Team. (2016c). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
 </div>
 </div>
             </section>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
+  <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
+  <meta name="generator" content="bookdown 0.3.16 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A tutorial for creating a ranking system for soccer teams and making predictions." />
+  <meta name="github-repo" content="wjakethompson/soccer" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
+  <meta name="twitter:site" content="@wjakethompson" />
+  <meta name="twitter:description" content="A tutorial for creating a ranking system for soccer teams and making predictions." />
+  
+
+<meta name="author" content="Jake Thompson">
+
+
+<meta name="date" content="2017-03-29">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="scrape-functions.html">
+<link rel="next" href="references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Soccer Predictions</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#european-soccer-format"><i class="fa fa-check"></i><b>1.1</b> European soccer format</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#dom-league-descrip"><i class="fa fa-check"></i><b>1.1.1</b> Domestic leagues</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#domestic-cups"><i class="fa fa-check"></i><b>1.1.2</b> Domestic cups</a></li>
+<li class="chapter" data-level="1.1.3" data-path="intro.html"><a href="intro.html#fifa-and-uefa-competitions"><i class="fa fa-check"></i><b>1.1.3</b> FIFA and UEFA Competitions</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#document-organization"><i class="fa fa-check"></i><b>1.2</b> Document organization</a></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#colophon"><i class="fa fa-check"></i><b>1.3</b> Colophon</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="define-model.html"><a href="define-model.html"><i class="fa fa-check"></i><b>2</b> Defining the Model</a><ul>
+<li class="chapter" data-level="2.1" data-path="define-model.html"><a href="define-model.html#biv-pois"><i class="fa fa-check"></i><b>2.1</b> The bivariate Poisson model</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="define-model.html"><a href="define-model.html#imp-bivpois"><i class="fa fa-check"></i><b>2.1.1</b> Implementing the bivariate Poisson model</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="define-model.html"><a href="define-model.html#gri"><i class="fa fa-check"></i><b>2.2</b> The game random intercept model</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="define-model.html"><a href="define-model.html#imp-gri"><i class="fa fa-check"></i><b>2.2.1</b> Implementing the game random intercept model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="simulation.html"><a href="simulation.html"><i class="fa fa-check"></i><b>3</b> Simulation Study</a><ul>
+<li class="chapter" data-level="3.1" data-path="simulation.html"><a href="simulation.html#data-generation"><i class="fa fa-check"></i><b>3.1</b> Data generation</a></li>
+<li class="chapter" data-level="3.2" data-path="simulation.html"><a href="simulation.html#model-est"><i class="fa fa-check"></i><b>3.2</b> Model estimation</a></li>
+<li class="chapter" data-level="3.3" data-path="simulation.html"><a href="simulation.html#running-the-simulation"><i class="fa fa-check"></i><b>3.3</b> Running the simulation</a></li>
+<li class="chapter" data-level="3.4" data-path="simulation.html"><a href="simulation.html#sim-results"><i class="fa fa-check"></i><b>3.4</b> Simulation results</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="simulation.html"><a href="simulation.html#sim-corr"><i class="fa fa-check"></i><b>3.4.1</b> Correlation between true and estimated parameters</a></li>
+<li class="chapter" data-level="3.4.2" data-path="simulation.html"><a href="simulation.html#sim-bias-mse"><i class="fa fa-check"></i><b>3.4.2</b> Estimation bias and mean square error</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
+<li class="chapter" data-level="4.2" data-path="gather-data.html"><a href="gather-data.html#non-domestic-competition-inclusion"><i class="fa fa-check"></i><b>4.2</b> Non-domestic competition inclusion</a></li>
+<li class="chapter" data-level="4.3" data-path="gather-data.html"><a href="gather-data.html#domestic-competition-inclusion"><i class="fa fa-check"></i><b>4.3</b> Domestic competition inclusion</a></li>
+<li class="chapter" data-level="4.4" data-path="gather-data.html"><a href="gather-data.html#collect-club-websites"><i class="fa fa-check"></i><b>4.4</b> Collect club websites</a></li>
+<li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#fit-real-data"><i class="fa fa-check"></i><b>5.1</b> Model estimation</a></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.2</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.2.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.2.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.2.2</b> Efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.3</b> Model fit</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="fit-model.html"><a href="fit-model.html#ppmc-score-dist"><i class="fa fa-check"></i><b>5.3.1</b> Score distributions</a></li>
+<li class="chapter" data-level="5.3.2" data-path="fit-model.html"><a href="fit-model.html#ppmc-mov-int"><i class="fa fa-check"></i><b>5.3.2</b> Margin of victory intervals</a></li>
+<li class="chapter" data-level="5.3.3" data-path="fit-model.html"><a href="fit-model.html#ppmc-prediction"><i class="fa fa-check"></i><b>5.3.3</b> Prediction error</a></li>
+<li class="chapter" data-level="5.3.4" data-path="fit-model.html"><a href="fit-model.html#posterior-predictive-check-summary"><i class="fa fa-check"></i><b>5.3.4</b> Posterior predictive check summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.4</b> Results</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
+<li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
+<li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#limitations-of-the-current-approach"><i class="fa fa-check"></i><b>7.1</b> Limitations of the current approach</a></li>
+<li class="chapter" data-level="7.2" data-path="conclusion.html"><a href="conclusion.html#future-directions"><i class="fa fa-check"></i><b>7.2</b> Future Directions</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="simulation-functions.html"><a href="simulation-functions.html"><i class="fa fa-check"></i><b>A</b> Simulation Functions</a><ul>
+<li class="chapter" data-level="A.1" data-path="simulation-functions.html"><a href="simulation-functions.html#bivpois-generate"><i class="fa fa-check"></i><b>A.1</b> Generate bivariate Poisson</a></li>
+<li class="chapter" data-level="A.2" data-path="simulation-functions.html"><a href="simulation-functions.html#gri-generate"><i class="fa fa-check"></i><b>A.2</b> Generate game random intercept</a></li>
+<li class="chapter" data-level="A.3" data-path="simulation-functions.html"><a href="simulation-functions.html#estimate-fun"><i class="fa fa-check"></i><b>A.3</b> Fit models to simualted data</a></li>
+<li class="chapter" data-level="A.4" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-cor"><i class="fa fa-check"></i><b>A.4</b> Plot correlation matrices</a><ul>
+<li class="chapter" data-level="A.4.1" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-comp"><i class="fa fa-check"></i><b>A.4.1</b> Plot components</a></li>
+<li class="chapter" data-level="A.4.2" data-path="simulation-functions.html"><a href="simulation-functions.html#ggally-plot"><i class="fa fa-check"></i><b>A.4.2</b> Plot creation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="B" data-path="scrape-functions.html"><a href="scrape-functions.html"><i class="fa fa-check"></i><b>B</b> Web Scraping Functions</a><ul>
+<li class="chapter" data-level="B.1" data-path="scrape-functions.html"><a href="scrape-functions.html#league-scrape"><i class="fa fa-check"></i><b>B.1</b> Scrape league pages</a></li>
+<li class="chapter" data-level="B.2" data-path="scrape-functions.html"><a href="scrape-functions.html#cup-scrape"><i class="fa fa-check"></i><b>B.2</b> Scrape international cups</a></li>
+<li class="chapter" data-level="B.3" data-path="scrape-functions.html"><a href="scrape-functions.html#dom-scrape"><i class="fa fa-check"></i><b>B.3</b> Scrape domestic cups</a></li>
+<li class="chapter" data-level="B.4" data-path="scrape-functions.html"><a href="scrape-functions.html#game-scrape"><i class="fa fa-check"></i><b>B.4</b> Scrape games</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="diagnostic-output.html"><a href="diagnostic-output.html"><i class="fa fa-check"></i><b>C</b> Model Diagnostics Output</a><ul>
+<li class="chapter" data-level="C.1" data-path="diagnostic-output.html"><a href="diagnostic-output.html#rhat-plot"><i class="fa fa-check"></i><b>C.1</b> Plot <span class="math inline">\(\hat{R}\)</span> values</a></li>
+<li class="chapter" data-level="C.2" data-path="diagnostic-output.html"><a href="diagnostic-output.html#plot-effective-sample-size-values"><i class="fa fa-check"></i><b>C.2</b> Plot effective sample size values</a></li>
+<li class="chapter" data-level="C.3" data-path="diagnostic-output.html"><a href="diagnostic-output.html#nuts-diagnostics-table"><i class="fa fa-check"></i><b>C.3</b> NUTS diagnostics table</a></li>
+<li class="chapter" data-level="C.4" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-sdp"><i class="fa fa-check"></i><b>C.4</b> PPMC score distribution plot</a></li>
+<li class="chapter" data-level="C.5" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-mov"><i class="fa fa-check"></i><b>C.5</b> PPMC margin of victory credible intervals</a></li>
+<li class="chapter" data-level="C.6" data-path="diagnostic-output.html"><a href="diagnostic-output.html#log-loss-comparison-table"><i class="fa fa-check"></i><b>C.6</b> Log loss comparison table</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Soccer Predictions Using Bayesian Mixed Effects Models</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="diagnostic-output" class="section level1">
+<h1><span class="header-section-number">C</span> Model Diagnostics Output</h1>
+<div id="rhat-plot" class="section level2">
+<h2><span class="header-section-number">C.1</span> Plot <span class="math inline">\(\hat{R}\)</span> values</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.data.frame</span>(<span class="kw">summary</span>(gri_stanfit)[[<span class="dv">1</span>]]) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Parameter =</span> <span class="kw">as.factor</span>(<span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">[.*]&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(.)))) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Parameter, <span class="dt">y =</span> Rhat, <span class="dt">color =</span> Parameter)) +
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">height =</span> <span class="dv">0</span>, <span class="dt">width =</span> <span class="fl">0.4</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) +
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="kw">aes</span>(<span class="dt">yintercept =</span> <span class="fl">1.1</span>), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(<span class="kw">italic</span>(R)))) +
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+</div>
+<div id="plot-effective-sample-size-values" class="section level2">
+<h2><span class="header-section-number">C.2</span> Plot effective sample size values</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.data.frame</span>(<span class="kw">summary</span>(gri_stanfit)[[<span class="dv">1</span>]]) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Parameter =</span> <span class="kw">as.factor</span>(<span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">[.*]&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(.)))) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Parameter, <span class="dt">y =</span> n_eff, <span class="dt">color =</span> Parameter)) +
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">height =</span> <span class="dv">0</span>, <span class="dt">width =</span> <span class="fl">0.4</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) +
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(<span class="kw">italic</span>(R)))) +
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+</div>
+<div id="nuts-diagnostics-table" class="section level2">
+<h2><span class="header-section-number">C.3</span> NUTS diagnostics table</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sp &lt;-<span class="st"> </span><span class="kw">get_sampler_params</span>(gri_stanfit, <span class="dt">inc_warmup =</span> <span class="ot">FALSE</span>)
+E &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">sapply</span>(sp, <span class="dt">FUN =</span> function(x) x[,<span class="st">&quot;energy__&quot;</span>]))
+EBFMI &lt;-<span class="st"> </span>upars /<span class="st"> </span><span class="kw">apply</span>(E, <span class="dv">2</span>, var)
+
+mean_accept &lt;-<span class="st"> </span><span class="kw">sapply</span>(sp, function(x) <span class="kw">mean</span>(x[, <span class="st">&quot;accept_stat__&quot;</span>]))
+max_treedepth &lt;-<span class="st"> </span><span class="kw">sapply</span>(sp, function(x) <span class="kw">max</span>(x[, <span class="st">&quot;treedepth__&quot;</span>]))
+
+<span class="kw">data_frame</span>(
+  <span class="dt">Chain =</span> <span class="kw">paste0</span>(<span class="st">&quot;Chain &quot;</span>, <span class="dv">1</span>:<span class="kw">length</span>(EBFMI)),
+  <span class="st">`</span><span class="dt">BFMI</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%0.3f&quot;</span>, EBFMI),
+  <span class="st">`</span><span class="dt">Mean Acceptance Rate</span><span class="st">`</span> =<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%0.3f&quot;</span>, mean_accept),
+  <span class="st">`</span><span class="dt">Max Treedepth</span><span class="st">`</span> =<span class="st"> </span>max_treedepth
+) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Diagnostic statistics for the NUTS algorithm.&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>)</code></pre></div>
+</div>
+<div id="ppmc-sdp" class="section level2">
+<h2><span class="header-section-number">C.4</span> PPMC score distribution plot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rep_data %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(replication %in%<span class="st"> </span><span class="dv">1</span>:<span class="dv">500</span>) %&gt;%
+<span class="st">  </span><span class="kw">gather</span>(<span class="dt">key =</span> team, <span class="dt">value =</span> score, home_score:away_score) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">team =</span> <span class="kw">factor</span>(team, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;home_score&quot;</span>, <span class="st">&quot;away_score&quot;</span>),
+    <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Home Score&quot;</span>, <span class="st">&quot;Away Score&quot;</span>))) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> score)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>team, <span class="dt">ncol =</span> <span class="dv">2</span>) +
+<span class="st">  </span><span class="kw">stat_density</span>(<span class="kw">aes</span>(<span class="dt">group =</span> replication, <span class="dt">color =</span> <span class="st">&quot;Replications&quot;</span>), <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>,
+    <span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">bw =</span> <span class="fl">0.5</span>, <span class="dt">position =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">stat_density</span>(
+    <span class="dt">data =</span> fit_data %&gt;%
+<span class="st">      </span><span class="kw">select</span>(h_goals, a_goals) %&gt;%
+<span class="st">      </span><span class="kw">gather</span>(<span class="dt">key =</span> team, <span class="dt">value =</span> score, h_goals:a_goals) %&gt;%
+<span class="st">      </span><span class="kw">mutate</span>(<span class="dt">team =</span> <span class="kw">factor</span>(team, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;h_goals&quot;</span>, <span class="st">&quot;a_goals&quot;</span>),
+        <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Home Score&quot;</span>, <span class="st">&quot;Away Score&quot;</span>))),
+    <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Observed&quot;</span>), <span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>, <span class="dt">bw =</span> <span class="fl">0.5</span>
+  ) +
+<span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;Observed&quot;</span> =<span class="st"> &quot;red&quot;</span>,
+    <span class="st">&quot;Replications&quot;</span> =<span class="st"> &quot;black&quot;</span>)) +
+<span class="st">  </span><span class="kw">theme_bw</span>() +
+<span class="st">  </span><span class="kw">theme</span>(
+    <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>
+  ) +
+<span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> <span class="kw">guide_legend</span>(<span class="dt">title =</span> <span class="ot">NULL</span>, <span class="dt">override.aes =</span> <span class="kw">list</span>(<span class="dt">alpha =</span> <span class="dv">1</span>)))</code></pre></div>
+</div>
+<div id="ppmc-mov" class="section level2">
+<h2><span class="header-section-number">C.5</span> PPMC margin of victory credible intervals</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">32011</span>)
+mov &lt;-<span class="st"> </span>rep_data %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mov =</span> home_score -<span class="st"> </span>away_score) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(game) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(
+    <span class="dt">mean =</span> <span class="kw">mean</span>(mov, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),
+    <span class="dt">pct025 =</span> <span class="kw">quantile</span>(mov, <span class="dt">probs =</span> <span class="fl">0.025</span>),
+    <span class="dt">pct25 =</span> <span class="kw">quantile</span>(mov, <span class="dt">probs =</span> <span class="fl">0.25</span>),
+    <span class="dt">pct50 =</span> <span class="kw">quantile</span>(mov, <span class="dt">probs =</span> <span class="fl">0.5</span>),
+    <span class="dt">pct75 =</span> <span class="kw">quantile</span>(mov, <span class="dt">probs =</span> <span class="fl">0.75</span>),
+    <span class="dt">pct975 =</span> <span class="kw">quantile</span>(mov, <span class="dt">probs =</span> <span class="fl">0.975</span>)
+  ) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">obs_mov =</span> fit_data$h_goals -<span class="st"> </span>fit_data$a_goals) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(
+    <span class="dt">cred50 =</span> obs_mov &gt;=<span class="st"> </span>pct25 &amp;<span class="st"> </span>obs_mov &lt;=<span class="st"> </span>pct75,
+    <span class="dt">cred95 =</span> obs_mov &gt;=<span class="st"> </span>pct025 &amp;<span class="st"> </span>obs_mov &lt;=<span class="st"> </span>pct975
+  )
+
+mov %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(obs_mov &gt;=<span class="st"> </span>-<span class="dv">5</span>, obs_mov &lt;=<span class="st"> </span><span class="dv">5</span>, pct025 &gt;=<span class="st"> </span>-<span class="dv">5</span>, pct975 &lt;=<span class="st"> </span><span class="dv">5</span>) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(cred50, cred95) %&gt;%
+<span class="st">  </span><span class="kw">sample_n</span>(<span class="dv">3</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(cred50), <span class="kw">desc</span>(cred95)) %&gt;%
+<span class="st">  </span><span class="kw">ungroup</span>() %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">game =</span> <span class="kw">factor</span>(game) %&gt;%<span class="st"> </span>forcats::<span class="kw">fct_inorder</span>()) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>() +
+<span class="st">  </span><span class="kw">geom_linerange</span>(<span class="kw">aes</span>(<span class="dt">x =</span> game, <span class="dt">ymin =</span> pct025, <span class="dt">ymax =</span> pct975,
+    <span class="dt">linetype =</span> <span class="st">&quot;95% Credible Interval&quot;</span>), <span class="dt">color =</span> <span class="st">&quot;#00BFC4&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_linerange</span>(<span class="kw">aes</span>(<span class="dt">x =</span> game, <span class="dt">ymin =</span> pct25, <span class="dt">ymax =</span> pct75,
+    <span class="dt">linetype =</span> <span class="st">&quot;50% Credible Interval&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;#00BFC4&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> game, <span class="dt">y =</span> obs_mov, <span class="dt">color =</span> <span class="st">&quot;Observed MOV&quot;</span>), <span class="dt">shape =</span> <span class="dv">18</span>,
+    <span class="dt">size =</span> <span class="dv">4</span>) +
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(-<span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">breaks =</span> <span class="kw">seq</span>(-<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1</span>)) +
+<span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;95% Credible Interval&quot;</span> =<span class="st"> &quot;dashed&quot;</span>,
+    <span class="st">&quot;50% Credible Interval&quot;</span> =<span class="st"> &quot;solid&quot;</span>)) +
+<span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;Observed MOV&quot;</span> =<span class="st"> &quot;#F8766D&quot;</span>)) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Game&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Home Team Margin of Victory&quot;</span>) +
+<span class="st">  </span><span class="kw">theme_bw</span>() +
+<span class="st">  </span><span class="kw">theme</span>(
+    <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+    <span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>(),
+    <span class="dt">panel.grid.minor.y =</span> <span class="kw">element_blank</span>()
+  ) +
+<span class="st">  </span><span class="kw">guides</span>(
+    <span class="dt">linetype =</span> <span class="kw">guide_legend</span>(<span class="dt">title =</span> <span class="ot">NULL</span>, <span class="dt">override.aes =</span> <span class="kw">list</span>(<span class="dt">size =</span> <span class="fl">0.5</span>)),
+    <span class="dt">color =</span> <span class="kw">guide_legend</span>(<span class="dt">title =</span> <span class="ot">NULL</span>)
+  )</code></pre></div>
+</div>
+<div id="log-loss-comparison-table" class="section level2">
+<h2><span class="header-section-number">C.6</span> Log loss comparison table</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(
+  <span class="dt">Model =</span> <span class="kw">c</span>(<span class="st">&quot;Game Random Intercept&quot;</span>, <span class="st">&quot;Data Average&quot;</span>, <span class="st">&quot;Equal Probabilities&quot;</span>,
+    <span class="st">&quot;Home Win&quot;</span>),
+  <span class="st">`</span><span class="dt">Log Loss</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(
+    avg_logloss,
+    <span class="kw">logloss</span>(<span class="dt">pred =</span> <span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">c</span>(<span class="kw">mean</span>(observations[,<span class="dv">1</span>]),
+      <span class="kw">mean</span>(observations[,<span class="dv">2</span>]), <span class="kw">mean</span>(observations[,<span class="dv">3</span>])), <span class="dt">nrow =</span> <span class="kw">nrow</span>(outcomes),
+      <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>), <span class="dt">obs =</span> observations),
+    <span class="kw">logloss</span>(<span class="dt">pred =</span> <span class="kw">matrix</span>(<span class="dt">data =</span> <span class="dv">1</span>/<span class="dv">3</span>, <span class="dt">nrow =</span> <span class="kw">nrow</span>(outcomes), <span class="dt">ncol =</span> <span class="dv">3</span>),
+      <span class="dt">obs =</span> observations),
+    <span class="kw">logloss</span>(<span class="dt">pred =</span> <span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow =</span> <span class="kw">nrow</span>(outcomes), <span class="dt">ncol =</span> <span class="dv">3</span>,
+      <span class="dt">byrow =</span> <span class="ot">TRUE</span>), <span class="dt">obs =</span> observations)
+  )  
+) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Log loss comparison to baseline models.&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>)</code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="scrape-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": true,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": null
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/wjakethompson/soccer/edit/master/model-diagnostics.Rmd",
+"text": "Edit"
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

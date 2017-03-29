@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
-  <meta name="generator" content="bookdown 0.3.9 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3.16 and GitBook 2.6.7">
 
   <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-06">
+<meta name="date" content="2017-03-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +134,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.4.1" data-path="simulation.html"><a href="simulation.html#sim-corr"><i class="fa fa-check"></i><b>3.4.1</b> Correlation between true and estimated parameters</a></li>
 <li class="chapter" data-level="3.4.2" data-path="simulation.html"><a href="simulation.html#sim-bias-mse"><i class="fa fa-check"></i><b>3.4.2</b> Estimation bias and mean square error</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#summary-of-findings-sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings {sim-concl}</a></li>
+<li class="chapter" data-level="3.5" data-path="simulation.html"><a href="simulation.html#sim-concl"><i class="fa fa-check"></i><b>3.5</b> Summary of findings</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="gather-data.html"><a href="gather-data.html"><i class="fa fa-check"></i><b>4</b> Gather Data</a><ul>
 <li class="chapter" data-level="4.1" data-path="gather-data.html"><a href="gather-data.html#domestic-league-inclusion"><i class="fa fa-check"></i><b>4.1</b> Domestic league inclusion</a></li>
@@ -144,12 +144,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5" data-path="gather-data.html"><a href="gather-data.html#scrape-game-data"><i class="fa fa-check"></i><b>4.5</b> Scrape game data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="fit-model.html"><a href="fit-model.html"><i class="fa fa-check"></i><b>5</b> Fitting the Model</a><ul>
-<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.1</b> MCMC diagnostics</a><ul>
-<li class="chapter" data-level="5.1.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.1.1</b> Convergence</a></li>
-<li class="chapter" data-level="5.1.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.1.2</b> Efficiency</a></li>
+<li class="chapter" data-level="5.1" data-path="fit-model.html"><a href="fit-model.html#fit-real-data"><i class="fa fa-check"></i><b>5.1</b> Model estimation</a></li>
+<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#diagnostics"><i class="fa fa-check"></i><b>5.2</b> MCMC diagnostics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="fit-model.html"><a href="fit-model.html#convergence"><i class="fa fa-check"></i><b>5.2.1</b> Convergence</a></li>
+<li class="chapter" data-level="5.2.2" data-path="fit-model.html"><a href="fit-model.html#efficiency"><i class="fa fa-check"></i><b>5.2.2</b> Efficiency</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.2</b> Model fit</a></li>
-<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.3</b> Results</a></li>
+<li class="chapter" data-level="5.3" data-path="fit-model.html"><a href="fit-model.html#model-fit"><i class="fa fa-check"></i><b>5.3</b> Model fit</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="fit-model.html"><a href="fit-model.html#ppmc-score-dist"><i class="fa fa-check"></i><b>5.3.1</b> Score distributions</a></li>
+<li class="chapter" data-level="5.3.2" data-path="fit-model.html"><a href="fit-model.html#ppmc-mov-int"><i class="fa fa-check"></i><b>5.3.2</b> Margin of victory intervals</a></li>
+<li class="chapter" data-level="5.3.3" data-path="fit-model.html"><a href="fit-model.html#ppmc-prediction"><i class="fa fa-check"></i><b>5.3.3</b> Prediction error</a></li>
+<li class="chapter" data-level="5.3.4" data-path="fit-model.html"><a href="fit-model.html#posterior-predictive-check-summary"><i class="fa fa-check"></i><b>5.3.4</b> Posterior predictive check summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.4</b> Results</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
@@ -171,6 +177,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="B.2" data-path="scrape-functions.html"><a href="scrape-functions.html#cup-scrape"><i class="fa fa-check"></i><b>B.2</b> Scrape international cups</a></li>
 <li class="chapter" data-level="B.3" data-path="scrape-functions.html"><a href="scrape-functions.html#dom-scrape"><i class="fa fa-check"></i><b>B.3</b> Scrape domestic cups</a></li>
 <li class="chapter" data-level="B.4" data-path="scrape-functions.html"><a href="scrape-functions.html#game-scrape"><i class="fa fa-check"></i><b>B.4</b> Scrape games</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="diagnostic-output.html"><a href="diagnostic-output.html"><i class="fa fa-check"></i><b>C</b> Model Diagnostics Output</a><ul>
+<li class="chapter" data-level="C.1" data-path="diagnostic-output.html"><a href="diagnostic-output.html#rhat-plot"><i class="fa fa-check"></i><b>C.1</b> Plot <span class="math inline">\(\hat{R}\)</span> values</a></li>
+<li class="chapter" data-level="C.2" data-path="diagnostic-output.html"><a href="diagnostic-output.html#plot-effective-sample-size-values"><i class="fa fa-check"></i><b>C.2</b> Plot effective sample size values</a></li>
+<li class="chapter" data-level="C.3" data-path="diagnostic-output.html"><a href="diagnostic-output.html#nuts-diagnostics-table"><i class="fa fa-check"></i><b>C.3</b> NUTS diagnostics table</a></li>
+<li class="chapter" data-level="C.4" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-sdp"><i class="fa fa-check"></i><b>C.4</b> PPMC score distribution plot</a></li>
+<li class="chapter" data-level="C.5" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-mov"><i class="fa fa-check"></i><b>C.5</b> PPMC margin of victory credible intervals</a></li>
+<li class="chapter" data-level="C.6" data-path="diagnostic-output.html"><a href="diagnostic-output.html#log-loss-comparison-table"><i class="fa fa-check"></i><b>C.6</b> Log loss comparison table</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -197,16 +211,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">3.1</span> Data generation</h2>
 <p>Data was simulated to mimic the major domestic European leagues. For each data set, 20 clubs were generated, with each club playing all other clubs twice, once at home, and once away, for a total of 380 games.</p>
 <p>For both data generating models, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> parameters were drawn from a <span class="math inline">\(\mathcal{N}(0,0.35)\)</span>. Both <span class="math inline">\(\rho\)</span> in the bivariate Poisson and <span class="math inline">\(\gamma\)</span> in the game random intercept model were sampled from a <span class="math inline">\(\mathcal{N}(0,0.1)\)</span> distribution. For all models, <span class="math inline">\(\mu\)</span> was set to 0, and <span class="math inline">\(\eta\)</span> was set to 0.5. These distributions were based on preliminary analyses using the 2015-16 English Premier League data.</p>
-<p>For each game, <span class="math inline">\(\lambda\)</span> values were calculated based on the parameters that were generated for each team (and game for the game random intercept model). Scores were then randomly generated using the <code>rpois()</code> function. Full data generation functions can be see in Appendix <a href="simulation-functions.html#bivpois-generate">A.1</a> and <a href="simulation-functions.html#gri-generate">A.2</a>. When simulating the data sets, the <strong>portableParallelSeeds</strong> package was used to ensure that the data generation was completely replicable, and that the random number streams were not overlapping <span class="citation">(Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span>.</p>
+<p>For each game, <span class="math inline">\(\lambda\)</span> values were calculated based on the parameters that were generated for each team (and game for the game random intercept model). Scores were then randomly generated using the <code>rpois()</code> function. Full data generation functions can be see in Appendix <a href="simulation-functions.html#bivpois-generate">A.1</a> and <a href="simulation-functions.html#gri-generate">A.2</a>. When simulating the data sets, the <strong>portableParallelSeeds</strong> package was used to ensure that the data generation was completely replicable, and that the random number streams were not overlapping <span class="citation">(P. E. Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span>.</p>
 </div>
 <div id="model-est" class="section level2">
 <h2><span class="header-section-number">3.2</span> Model estimation</h2>
 <p>In total, 200 data sets were generated: 100 from the bivariate Poisson, and 100 from the game random intercept model. For each data set, both the bivariate Poisson and game random intercept model were estimated. Thus, each model was estimated 100 times on a data set from the matching data generation method, and 100 times on mismatched data.</p>
-<p>For each estimation, 2 chains were run with 15000 iterations. The first 5000 iterations of each chain were discarded for burn-in. This resulted in a total of 20000 retained iterations that made up the final posterior distributions. The thinning interval was set to 1 (no thinning). Finally, the target proposal acceptance rate during the adaptation period was set to 0.99. This forces the algorithm to take smaller steps, which decreases efficiency. However, this also helps to eliminate divergent transitions, which are common when parameter estimates are close to their bounds, such as a variance very close to 0 <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">b</a>, <a href="#ref-stanwarn">2016</a><a href="#ref-stanwarn">a</a>)</span>. The full model estimation function can be seen in Appendix <a href="simulation-functions.html#estimate-fun">A.3</a>.</p>
+<p>For each estimation, 2 chains were run with 15000 iterations. The first 5000 iterations of each chain were discarded for burn-in. This resulted in a total of 20000 retained iterations that made up the final posterior distributions. The thinning interval was set to 1 (no thinning). Finally, the target proposal acceptance rate during the adaptation period was set to 0.99. This forces the algorithm to take smaller steps, which decreases efficiency. However, this also helps to eliminate divergent transitions, which are common when parameter estimates are close to their bounds, such as a variance very close to 0 <span class="citation">(Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">c</a>, <a href="#ref-stanwarn">2016</a><a href="#ref-stanwarn">a</a>)</span>. The full model estimation function can be seen in Appendix <a href="simulation-functions.html#estimate-fun">A.3</a>.</p>
 </div>
 <div id="running-the-simulation" class="section level2">
 <h2><span class="header-section-number">3.3</span> Running the simulation</h2>
-<p>The following code was used to run the simulation. I first define the total number of replications and the number of random streams needed for each replication. I then use <strong>portableParallelSeeds</strong> <span class="citation">(Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span> to create seeds for each replication, and save them. Data sets are then generated from each model, with the number of data sets from each model being equal to half of the total number of replications specified by <code>n_reps</code>. Finally, I create one list that contains all of the data sets, <code>simulation_data</code>, and map the simulation function to each element of that list using the <strong>purrr</strong> package <span class="citation">(Wickham, <a href="#ref-R-purrr">2016</a><a href="#ref-R-purrr">b</a>)</span>.</p>
+<p>The following code was used to run the simulation. I first define the total number of replications and the number of random streams needed for each replication. I then use <strong>portableParallelSeeds</strong> <span class="citation">(P. E. Johnson, <a href="#ref-R-portableParallelSeeds">2016</a>)</span> to create seeds for each replication, and save them. Data sets are then generated from each model, with the number of data sets from each model being equal to half of the total number of replications specified by <code>n_reps</code>. Finally, I create one list that contains all of the data sets, <code>simulation_data</code>, and map the simulation function to each element of that list using the <strong>purrr</strong> package <span class="citation">(Wickham, <a href="#ref-R-purrr">2016</a><a href="#ref-R-purrr">b</a>)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Define parameters for the simulation</span>
 n_reps &lt;-<span class="st"> </span><span class="dv">200</span>
 streams_per_rep &lt;-<span class="st"> </span><span class="dv">1</span>
@@ -255,13 +269,13 @@ plot_sim &lt;-<span class="st"> </span>simulation %&gt;%
     })</code></pre></div>
 <p>I then use the <strong>GGally</strong> package <span class="citation">(Schloerke et al., <a href="#ref-R-GGally">2016</a>)</span>, an extension of <strong>ggplot2</strong> <span class="citation">(Wickham &amp; Chang, <a href="#ref-R-ggplot2">2016</a>)</span> to plot a scatter plot matrix with correlations. I use the <code>round_any()</code> function from the <strong>plyr</strong> package <span class="citation">(Wickham, <a href="#ref-R-plyr">2016</a><a href="#ref-R-plyr">a</a>)</span> to set the limits on the axes. The functions to create the lower and upper triangles and the diagonal of the scatter plot matrix (<code>lowerFn()</code>, <code>upperFn()</code>, and <code>diagFn()</code> respectively) can be found in Appendix <a href="simulation-functions.html#ggally-comp">A.4.1</a>, and the code to put the plots together can be found in Appendix <a href="simulation-functions.html#ggally-plot">A.4.2</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:alpha-cor"></span>
-<img src="simulation_files/figure-html/alpha-cor-1.png" alt="Correlation between true and estimated alpha parameters under different generating and estimated models." width="70%" />
+<img src="simulation_files/figure-html/alpha-cor-1.png" alt="Correlation between true and estimated alpha parameters under different generating and estimated models." width="80%" />
 <p class="caption">
 Figure 3.1: Correlation between true and estimated alpha parameters under different generating and estimated models.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:delta-cor"></span>
-<img src="simulation_files/figure-html/delta-cor-1.png" alt="Correlation between true and estimated delta parameters under different generating and estimated models." width="70%" />
+<img src="simulation_files/figure-html/delta-cor-1.png" alt="Correlation between true and estimated delta parameters under different generating and estimated models." width="80%" />
 <p class="caption">
 Figure 3.2: Correlation between true and estimated delta parameters under different generating and estimated models.
 </p>
@@ -360,8 +374,8 @@ Figure 3.2: Correlation between true and estimated delta parameters under differ
 <p>These results indicate that the best choice of model would be the one that matches the data generation process. Unfortunately, when using real data, the exact data generation process is impossible to know. However, these findings also show that the cost of being wrong is much less when using the game random intercept model to estimate, compared to the bivariate Poisson model.</p>
 </div>
 </div>
-<div id="summary-of-findings-sim-concl" class="section level2">
-<h2><span class="header-section-number">3.5</span> Summary of findings {sim-concl}</h2>
+<div id="sim-concl" class="section level2">
+<h2><span class="header-section-number">3.5</span> Summary of findings</h2>
 <p>The findings from the simulation study indicate that the game random intercept model should be the preferred model for estimating the abilities of soccer teams. Across data generating models, the game random intercept model was better able to recover the true parameters (Section <a href="simulation.html#sim-corr">3.4.1</a>). Additionally, the game random intercept model had comparable bias and lower mean square error than the the bivariate Poisson model (Section <a href="simulation.html#sim-bias-mse">3.4.2</a>).</p>
 <p>Therefore, I will be using the game random intercept model moving forward for estimating the model on real data and predicting future games.</p>
 
@@ -373,7 +387,7 @@ Figure 3.2: Correlation between true and estimated delta parameters under differ
 <p>Johnson, P. E. (2016). <em>PortableParallelSeeds: Allow replication of simulations on parallel and serial computers</em>. Retrieved from <a href="https://CRAN.R-project.org/package=portableParallelSeeds" class="uri">https://CRAN.R-project.org/package=portableParallelSeeds</a></p>
 </div>
 <div id="ref-stan">
-<p>Stan Development Team. (2016b). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
+<p>Stan Development Team. (2016c). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
 </div>
 <div id="ref-stanwarn">
 <p>Stan Development Team. (2016a). <em>Brief guide to stan’s warnings</em>. Retrieved from <a href="http://mc-stan.org/misc/warnings.html" class="uri">http://mc-stan.org/misc/warnings.html</a></p>
