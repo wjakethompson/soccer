@@ -85,23 +85,25 @@ This section attempt to replicated the original data. At each each iteration of 
 
 Finally, the model can be estimated using the Stan interface **rstan** [@R-rstan]. The model is estimated with 3 chains, each with 4000 iterations. The first 2000 iterations from each chain are discarded as burn in. Additionally, a thinning interval of 2 was used. These decisions were made to decrease computation time, and to limit the size of the result `stanfit` objects, which become quite large. This leaves 1000 iterations from each chain, for a total of 3000 iterations that will make up the final posterior distributions. As in the simulation study, the target proposal acceptance rate during the adaptation period was set to 0.99 [see Section \@ref(model-est); @stan; @stanwarn].
 
-```{r estimate_stan, eval = TRUE}
+```{r estimate_stan, eval = FALSE}
 library(rstan)
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
   cores = 3, algorithm = "NUTS", seed = 9416,
   control = list(adapt_delta = 0.99, max_treedepth = 15))
-upars <- get_num_upars(gri_stanfit)
-# save(gri_stanfit, upars, file = "_data/gri_stanfit.rda")
 ```
 
 
 ## MCMC diagnostics {#diagnostics}
 
-```{r load_stanfit, include = FALSE, eval = FALSE}
+```{r load_stanfit, include = FALSE}
 library(rstan)
-load("_data/gri_stanfit.rda")
+load("_data/model_summary.rda")
+load("_data/sampler_params.rda")
+load("_data/upars.rda")
+load("_data/rep_data.rda")
+load("_data/model_params.rda")
 ```
 
 After estimating the model, before the parameters can be analyzed and inferences can be made, the model has to be checked to make sure it estimated correctly and completely. This diagnostic information is critical to Markov Chain Monte Carlo estimation, as with proper estimation, no valid inferences can be made. The code used to create the plot and tables used to display the diagnostic information can be seen in Appendix \@ref(diagnostic-output).
@@ -113,7 +115,7 @@ The first check is convergence. Convergence means that the MCMC chain found the 
 One way to assess convergence is through the $\hat{R}$ statistic [@bda3; @brooks1997]. The $\hat{R}$ statistic is also known as the potential scale reduction, and is a measure of how much variance there is between chains compared to the amount of variation within chains. Gelman and Rubin [-@gelman1992] suggest that in order to conclude the model has successfully converged, all $\hat{R}$ values should be less than 1.1. 
 
 ```{r rhat-plot, message = FALSE, fig.height = 7, fig.width = 10, fig.cap = "Rhat statistics for the estimated game random intercept model.", echo = FALSE}
-as.data.frame(summary(gri_stanfit)[[1]]) %>%
+model_summary %>%
   mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
   ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
   geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
@@ -129,7 +131,7 @@ Figure \@ref(fig:rhat-plot) shows that all of the $\hat{R}$ values are below the
 The second important check for MCMC estimation is the efficiency of the sampler. In other words, it is important to check that the algorithm adequately sampled the full posterior. There are several ways this can be examined. The first is by examing the effective sample size. This diagnostic takes into account the autocorrelation in the chain to determine the 'effective' number of independent draws from the posterior. If the chain is slow moving, the draws will be highly autocorrelated, and effective sample size will be well below the total number of iterations in the chain. However, low autocorrelations would indicate that the sampler is moving around the posterior fairly quickly, and the effictive sample size will be at or near the true sample size of the posterior. The effective sample size for all parameters can been seen in Figure \@ref(fig:neff-plot).
 
 ```{r neff-plot, message = FALSE, fig.height = 7, fig.width = 10, fig.cap = "Effective sample size for the estimated game random intercept model parameters.", echo = FALSE}
-as.data.frame(summary(gri_stanfit)[[1]]) %>%
+model_summary %>%
   mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
   ggplot(aes(x = Parameter, y = n_eff, color = Parameter)) +
   geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
@@ -141,12 +143,11 @@ as.data.frame(summary(gri_stanfit)[[1]]) %>%
 There are also measure of efficiency that are exclusive the No U-Turn Sampler [NUTS; @nuts]. For example the Bayesian Factor of Missing Information (BFMI) gives an estimate of how well the sampler adpated and explored the posterior distribution. The BFMI ranges from 0 to 1, with 0 and 1 representing poor and excellent estimation respectively. This is calculated for the chain overall [@betancourt2016].
 
 ```{r diag-tab, echo = FALSE}
-sp <- get_sampler_params(gri_stanfit, inc_warmup = FALSE)
-E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
+E <- as.matrix(sapply(sampler_params, FUN = function(x) x[,"energy__"]))
 EBFMI <- upars / apply(E, 2, var)
 
-mean_accept <- sapply(sp, function(x) mean(x[, "accept_stat__"]))
-max_treedepth <- sapply(sp, function(x) max(x[, "treedepth__"]))
+mean_accept <- sapply(sampler_params, function(x) mean(x[, "accept_stat__"]))
+max_treedepth <- sapply(sampler_params, function(x) max(x[, "treedepth__"]))
 
 data_frame(
   Chain = paste0("Chain ", 1:length(EBFMI)),
@@ -154,7 +155,8 @@ data_frame(
   `Mean Acceptance Rate` = sprintf("%0.3f", mean_accept),
   `Max Treedepth` = max_treedepth
 ) %>%
-  knitr::kable(caption = "Diagnostic statistics for the NUTS algorithm.", align = "c")
+  knitr::kable(caption = "Diagnostic statistics for the NUTS algorithm.",
+    align = "c")
 ```
 
 The BFMI values in Table \@ref(tab:diag-tab) indicate that the sampler was able to adequately visit the posterior distributions. Additionally, Table \@ref(tab:diag-tab) shows the mean acceptance rate for each chain. As expected, these values are very close to the 0.99 that was specified when the model was estimated (`control = list(adapt_delta = 0.99)`; Section \@ref(fit-real-data)). As noted in Sections \@ref(model-est) and \@ref(fit-real-data), a target acceptance rate this high is needed to prevent divergent transitions. This occurs due to the small variances of $\alpha$, $\delta$, and $\gamma$ that are estimated. The high target acceptance rate forces the sampler to take smaller steps, keeping the variances within reasonable ranges.
@@ -167,7 +169,7 @@ To assess model fit, I will use posterior predictive model checks. Posterior pre
 
 The first step is to extract the replicated data sets from the `stanfit` object using the **purrr** [@R-purrr] and **tidyr** [@R-tidyr] packages.
 
-```{r extract_rep, message = FALSE}
+```{r extract_rep, message = FALSE, eval = FALSE}
 library(purrr)
 library(tidyr)
 
@@ -175,6 +177,27 @@ home_rep <- rstan::extract(gri_stanfit, pars = "home_rep",
   permuted = TRUE)$home_rep
 away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
   permuted = TRUE)$away_rep
+
+home_rep <- t(home_rep) %>%
+  as_data_frame() %>% as.list()
+away_rep <- t(away_rep) %>%
+  as_data_frame() %>% as.list()
+counter <- seq_along(home_rep)
+
+rep_data <- pmap_df(.l = list(h = home_rep, a = away_rep, c = counter),
+  .f = function(h, a, c) {
+    data_frame(
+      replication = c,
+      game = seq_len(length(h)),
+      home_score = h,
+      away_score = a
+    )
+  })
+```
+
+```{r extract_rep, message = FALSE, echo = FALSE}
+library(purrr)
+library(tidyr)
 
 home_rep <- t(home_rep) %>%
   as_data_frame() %>% as.list()
@@ -379,14 +402,24 @@ Taken in totality, there is sufficient evidence of model fit for us to proceed w
 
 ## Results {#results}
 
-A ranking of the teams can be created by the goals they would be expected to score and concede against an average team at a neutral location. The larger the difference between these expected goals, the better team.
+A ranking of the teams can be created by the goals they would be expected to score and concede against an average team at a neutral location. The larger the difference between these expected goals, the better team. First we pull out the parameters we need from the model.
 
-```{r club-rank}
+```{r show-extract, eval = FALSE}
 params <- rstan::extract(gri_stanfit, pars = c("mu", "alpha", "delta"))
 alpha <- colMeans(params$alpha)
 delta <- colMeans(params$delta)
 mu <- mean(params$mu)
+```
 
+```{r noshow-extract, echo = FALSE}
+alpha <- colMeans(model_params$alpha)
+delta <- colMeans(model_params$delta)
+mu <- mean(model_params$mu)
+```
+
+Then we can compute the expected offense, defense, and margin for each team to create the rankings.
+
+```{r club-rank}
 rankings <- data_frame(
   Club = team_counts$team,
   Attacking = alpha,

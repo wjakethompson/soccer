@@ -367,14 +367,31 @@ stan_data <- list(
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
-  cores = 3, algorithm = "NUTS", control = list(adapt_delta = 0.99))
-upars <- get_num_upars(gri_stanfit)
-save(gri_stanfit, upars, file = "_data/gri_stanfit.rda")
+  cores = 3, algorithm = "NUTS", seed = 9416,
+  control = list(adapt_delta = 0.99, max_treedepth = 15))
 
-params <- rstan::extract(gri_stanfit, pars = c("mu", "alpha", "delta"))
-alpha <- colMeans(params$alpha)
-delta <- colMeans(params$delta)
-mu <- mean(params$mu)
+model_summary <- as.data.frame(summary(gri_stanfit)[[1]])
+save(model_summary, file = "_data/model_summary.rda")
+
+sampler_params <- get_sampler_params(gri_stanfit, inc_warmup = FALSE)
+save(sampler_params, file = "_data/sampler_params.rda")
+
+upars <- get_num_upars(gri_stanfit)
+save(upars, file = "_data/upars.rda")
+
+home_rep <- rstan::extract(gri_stanfit, pars = "home_rep",
+  permuted = TRUE)$home_rep
+away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
+  permuted = TRUE)$away_rep
+save(home_rep, away_rep, file = "_data/rep_data.rda")
+
+model_params <- rstan::extract(gri_stanfit, pars = c("mu", "eta", "alpha",
+  "delta"))
+save(model_params, file = "_data/model_params.rda")
+
+alpha <- colMeans(model_params$alpha)
+delta <- colMeans(model_params$delta)
+mu <- mean(model_params$mu)
 
 club_rankings <- data_frame(
   club = team_counts$team,
@@ -389,4 +406,4 @@ club_rankings <- data_frame(
   arrange(desc(exp_margin))
 
 save(club_rankings, file = "_data/club_rankings.rda")
-rm(list = ls()); gc()
+# rm(list = ls()); gc()
