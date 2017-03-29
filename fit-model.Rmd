@@ -169,7 +169,7 @@ To assess model fit, I will use posterior predictive model checks. Posterior pre
 
 The first step is to extract the replicated data sets from the `stanfit` object using the **purrr** [@R-purrr] and **tidyr** [@R-tidyr] packages.
 
-```{r extract_rep, message = FALSE, eval = FALSE}
+```{r extract_rep_show, message = FALSE, eval = FALSE}
 library(purrr)
 library(tidyr)
 
