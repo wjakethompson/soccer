@@ -161,7 +161,7 @@ data_frame(
 
 The BFMI values in Table \@ref(tab:diag-tab) indicate that the sampler was able to adequately visit the posterior distributions. Additionally, Table \@ref(tab:diag-tab) shows the mean acceptance rate for each chain. As expected, these values are very close to the 0.99 that was specified when the model was estimated (`control = list(adapt_delta = 0.99)`; Section \@ref(fit-real-data)). As noted in Sections \@ref(model-est) and \@ref(fit-real-data), a target acceptance rate this high is needed to prevent divergent transitions. This occurs due to the small variances of $\alpha$, $\delta$, and $\gamma$ that are estimated. The high target acceptance rate forces the sampler to take smaller steps, keeping the variances within reasonable ranges.
 
-The concern with setting the target acceptance this high is that for parameters with wider posteriors, the sampler will not be able to move fast enough. In the NUTS algorithm, at each iteration, the sampler looks for a place to "U-Turn" in a series of possible branches. If the sampler is terminating before the maximum possible tree depth (set to 15; see Section @\ref(fit-real-data)), then the algorithm is able to adequately find good values for the next iteration of the chain. Bumping up against the maximum allowed tree depth, or going beyond it, indicates that stepsize is too small [@stanwarn; @stanintro]. Because the Max Treedepth values in Table \@ref(tab:diag-tab) are all below the maximum specified, and the BFMI values are close to 1, there is strong evidence that the sampler was indeed able to adequately sample the posteriors.
+The concern with setting the target acceptance this high is that for parameters with wider posteriors, the sampler will not be able to move fast enough. In the NUTS algorithm, at each iteration, the sampler looks for a place to "U-Turn" in a series of possible branches. If the sampler is terminating before the maximum possible tree depth (set to 15; see Section \@ref(fit-real-data)), then the algorithm is able to adequately find good values for the next iteration of the chain. Bumping up against the maximum allowed tree depth, or going beyond it, indicates that stepsize is too small [@stanwarn; @stanintro]. Because the Max Treedepth values in Table \@ref(tab:diag-tab) are all below the maximum specified, and the BFMI values are close to 1, there is strong evidence that the sampler was indeed able to adequately sample the posteriors.
 
 ## Model fit {#model-fit}
 
@@ -443,11 +443,13 @@ rankings <- data_frame(
     `Expected Margin` = formatC(`Expected Margin`, digits = 2,
       drop0trailing = FALSE, format = "f")
   )
+```
 
+As we might expect, the top of the list is dominated by team leading the best European leagues and having success in the Champions League. `r rankings$Club[1]` comes in as the top team in rankings, followed by `r rankings$Club[2]`, `r rankings$Club[3]`, `r rankings$Club[4]`, and `r rankings$Club[5]` to round out the top 5. The top offense belongs to `r rankings %>% mutate(Attacking = as.numeric(Attacking)) %>% top_n(1, Attacking) %>% select(Club) %>% flatten_chr()` according to the model, while `r rankings %>% mutate(Defense = as.numeric(Defense)) %>% top_n(-1, Defense) %>% select(Club) %>% flatten_chr()` boasts the best defense.
+
+```{r club-rank-dt}
 DT::datatable(select(rankings, -Club), rownames = rankings$Club,
   options = list(pageLength = 10, scrollX = TRUE,
   columnDefs = list(list(className = 'dt-center', targets = 1:5))),
   caption = "Club rankings from game random intercept model")
 ```
-
-As we might expect, the top of the list is dominated by team leading the best European leagues and having success in the Champions League. `r rankings$Club[1]` comes in as the top team in rankings, followed by `r rankings$Club[2]`, `r rankings$Club[3]`, `r rankings$Club[4]`, and `r rankings$Club[5]` to round out the top 5. The top offense belongs to `r rankings %>% mutate(Attacking = as.numeric(Attacking)) %>% top_n(1, Attacking) %>% select(Club) %>% flatten_chr()` according to the model, while `r rankings %>% mutate(Defense = as.numeric(Defense)) %>% top_n(-1, Defense) %>% select(Club) %>% flatten_chr()` boasts the best defense.
