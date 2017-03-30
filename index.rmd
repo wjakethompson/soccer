@@ -10,7 +10,7 @@ biblio-style: apalike
 csl: apa.csl
 link-citations: yes
 nocite: |
-  @R-knitr, @R-rmarkdown, @R-DT, @R-parallel, @R-base
+  @R-knitr, @R-rmarkdown, @R-DT, @R-parallel, @R-base, @R-scales, @R-grid
 github-repo: wjakethompson/soccer
 twitter-handle: wjakethompson
 description: "A tutorial for creating a ranking system for soccer teams and making predictions."
@@ -31,6 +31,6 @@ This work is licensed under the [Creative Commons Attribution-NonCommercial-NoDe
 knitr::write_bib(
   c(.packages(), "bookdown", "knitr", "rmarkdown", "rvest", "purrr", "dplyr",
     "lubridate", "rstan", "ggplot2", "DT", "portableParallelSeeds", "parallel",
-    "methods", "GGally", "plyr", "tidyr"),
+    "methods", "GGally", "plyr", "tidyr", "scales", "grid"),
   "packages.bib")
 ```
