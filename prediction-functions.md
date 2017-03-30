@@ -233,8 +233,8 @@ predict_league <- function(league, games = full_data, chains = model_params,
       arrange(club) %>%
       spread(key = club, value = tot_points) %>%
       mutate(Champion = champ)
-    }, sim_games = future_games,
-    sim_league = league_table, team_codes = team_codes)
+    }, sim_games = future_games, sim_league = league_table,
+    team_codes = team_codes)
   
   champions <- data_frame(club = league_sim$Champion) %>%
     group_by(club) %>%
@@ -251,5 +251,135 @@ predict_league <- function(league, games = full_data, chains = model_params,
   
   league_table %>%
     left_join(sim_results, by = "club")
+}
+```
+
+## Predict Champions League {#predict-ucl}
+
+
+```r
+predict_ucl <- function(matchups = matchups, games = full_data,
+  chains = model_params, team_codes = team_counts) {
+  all_clubs <- flatten_chr(matchups)
+  
+  future_games <- games %>%
+    filter(competition == "UCL", home %in% all_clubs, away %in% all_clubs,
+      date >= ymd(Sys.Date()) - 30)
+  
+  data_list <- list(
+    mu = chains$mu %>% as.vector(),
+    eta = chains$eta %>% as.vector(),
+    alpha = t(chains$alpha) %>% as_data_frame() %>% as.list(),
+    delta = t(chains$delta) %>% as_data_frame() %>% as.list(),
+    sigma_g = chains$sigma_g %>% as.vector()
+  )
+  
+  ucl_sim <- pmap_df(.l = data_list, .f = function(mu, eta, alpha, delta,
+    sigma_g, sim_games, sim_ucl, team_codes) {
+    results <- as_data_frame(matrix(data = NA, nrow = 1, ncol = 1))
+    colnames(results) <- paste0("Round_", length(matchups))
+    repeat {
+      for (g in seq_len(nrow(sim_games))) {
+        if (sim_games$date[g] < ymd(Sys.Date())) {
+          next
+        }
+        home_code <- team_codes$code[which(team_codes$team ==
+            sim_games$home[g])]
+        away_code <- team_codes$code[which(team_codes$team ==
+            sim_games$away[g])]
+        
+        home_off <- alpha[home_code]
+        home_def <- delta[home_code]
+        away_off <- alpha[away_code]
+        away_def <- delta[away_code]
+        game_int <- rnorm(1, mean = 0, sd = sigma_g)
+        
+        if (length(matchups) == 1) {
+          sim_games$h_goals[g] <- rpois(1, lambda = exp(mu + home_off + away_def +
+            game_int))
+          sim_games$a_goals[g] <- rpois(1, lambda = exp(mu + away_off + home_def +
+            game_int))
+        } else {
+          sim_games$h_goals[g] <- rpois(1, lambda = exp(mu + eta + home_off +
+            away_def + game_int))
+          sim_games$a_goals[g] <- rpois(1, lambda = exp(mu + away_off + home_def +
+            game_int))
+        }
+      }
+      winners <- map_chr(.x = matchups, .f = function(x, games) {
+      games <- filter(games, home %in% x, away %in% x)
+      scores <- bind_rows(
+        select(games, club = home, h_goals) %>% mutate(a_goals = 0),
+        select(games, club = away, a_goals) %>% mutate(h_goals = 0)
+      ) %>%
+        group_by(club) %>%
+        summarize(h_goals = sum(h_goals), a_goals = sum(a_goals)) %>%
+        mutate(total_goals = h_goals + a_goals) %>%
+        arrange(desc(total_goals), desc(a_goals))
+      if (length(unique(scores$total_goals)) > 1) {
+        return(scores$club[1])
+      } else if (length(unique(scores$total_goals)) == 1 &&
+          length(matchups) == 1) {
+        return(sample(scores$club, 1))
+      } else if (length(unique(scores$total_goals)) == 1 &&
+          length(unique(scores$a_goals)) > 1) {
+        return(scores$club[1])
+      } else {
+        return(sample(scores$club, 1))
+      }
+    },
+        games = sim_games)
+      results[, paste0("Round_", length(winners))] <- paste(sort(winners),
+        collapse = ",")
+      if (length(winners) == 1) {
+        break
+      }
+      if (length(winners) == 2) {
+        matchups <- list(c(winners[1], winners[2]))
+        sim_games <- data_frame(date = ymd(Sys.Date()), home = winners[1],
+          away = winners[2], h_goals = NA, a_goals = NA, competition = "UCL",
+          home_game = 0)
+      } else {
+        new_match <- data_frame(club = winners) %>%
+          mutate(matchup = sample(rep(1:(length(winners) / 2), 2), length(winners),
+            replace = FALSE))
+        matchups <- list_along(seq_len(length(winners) / 2))
+        new_games <- list_along(seq_len(length(winners) / 2))
+        for (i in seq_along(matchups)) {
+          clubs <- new_match$club[which(new_match$matchup == i)]
+          matchups[[i]] <- clubs
+          new_games[[i]] <- data_frame(date = ymd(Sys.Date()),
+            home = sort(clubs), away = rev(sort(clubs)), h_goals = NA,
+            a_goals = NA, competition = "UCL", home_game = 1)
+        }
+        sim_games <- bind_rows(new_games)
+      }
+    }
+    return(results)
+  }, sim_games = future_games,
+    sim_ucl = matchups, team_codes = team_codes)
+  
+  round_results <- list_along(ucl_sim)
+  names(round_results) <- colnames(ucl_sim)
+  for (i in seq_along(round_results)) {
+    round_results[[i]] <- paste(ucl_sim[[i]], collapse = ",") %>%
+      strsplit(",") %>%
+      unlist()
+  }
+  total_sim <- length(round_results$Round_1)
+  final_results <- data_frame(club = sort(flatten_chr(matchups)),
+    Round_8 = 1, Round_4 = 1, Round_2 = 1, Round_1 = 1)
+  
+  for (i in seq_len(nrow(final_results))) {
+    club <- final_results$club[i]
+    for (r in seq_along(round_results)) {
+      final_results[[names(round_results)[r]]][i] <-
+        length(which(round_results[[r]] == club)) / total_sim
+    }
+  }
+  final_results %>%
+    select(Club = club, Quarterfinals = Round_8, Semifinals = Round_4,
+      Final = Round_2, Champion = Round_1) %>%
+    arrange(desc(Champion))
 }
 ```

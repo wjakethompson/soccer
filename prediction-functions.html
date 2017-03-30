@@ -200,6 +200,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="D.1" data-path="prediction-functions.html"><a href="prediction-functions.html#predict-game"><i class="fa fa-check"></i><b>D.1</b> Predict individual games</a></li>
 <li class="chapter" data-level="D.2" data-path="prediction-functions.html"><a href="prediction-functions.html#multi-plot"><i class="fa fa-check"></i><b>D.2</b> Plot multiple plots</a></li>
 <li class="chapter" data-level="D.3" data-path="prediction-functions.html"><a href="prediction-functions.html#predict-league"><i class="fa fa-check"></i><b>D.3</b> Predict leagues</a></li>
+<li class="chapter" data-level="D.4" data-path="prediction-functions.html"><a href="prediction-functions.html#predict-ucl"><i class="fa fa-check"></i><b>D.4</b> Predict Champions League</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -445,8 +446,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">      </span><span class="kw">arrange</span>(club) %&gt;%
 <span class="st">      </span><span class="kw">spread</span>(<span class="dt">key =</span> club, <span class="dt">value =</span> tot_points) %&gt;%
 <span class="st">      </span><span class="kw">mutate</span>(<span class="dt">Champion =</span> champ)
-    }, <span class="dt">sim_games =</span> future_games,
-    <span class="dt">sim_league =</span> league_table, <span class="dt">team_codes =</span> team_codes)
+    }, <span class="dt">sim_games =</span> future_games, <span class="dt">sim_league =</span> league_table,
+    <span class="dt">team_codes =</span> team_codes)
   
   champions &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">club =</span> league_sim$Champion) %&gt;%
 <span class="st">    </span><span class="kw">group_by</span>(club) %&gt;%
@@ -463,6 +464,133 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   
   league_table %&gt;%
 <span class="st">    </span><span class="kw">left_join</span>(sim_results, <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>)
+}</code></pre></div>
+</div>
+<div id="predict-ucl" class="section level2">
+<h2><span class="header-section-number">D.4</span> Predict Champions League</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predict_ucl &lt;-<span class="st"> </span>function(<span class="dt">matchups =</span> matchups, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) {
+  all_clubs &lt;-<span class="st"> </span><span class="kw">flatten_chr</span>(matchups)
+  
+  future_games &lt;-<span class="st"> </span>games %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(competition ==<span class="st"> &quot;UCL&quot;</span>, home %in%<span class="st"> </span>all_clubs, away %in%<span class="st"> </span>all_clubs,
+      date &gt;=<span class="st"> </span><span class="kw">ymd</span>(<span class="kw">Sys.Date</span>()) -<span class="st"> </span><span class="dv">30</span>)
+  
+  data_list &lt;-<span class="st"> </span><span class="kw">list</span>(
+    <span class="dt">mu =</span> chains$mu %&gt;%<span class="st"> </span><span class="kw">as.vector</span>(),
+    <span class="dt">eta =</span> chains$eta %&gt;%<span class="st"> </span><span class="kw">as.vector</span>(),
+    <span class="dt">alpha =</span> <span class="kw">t</span>(chains$alpha) %&gt;%<span class="st"> </span><span class="kw">as_data_frame</span>() %&gt;%<span class="st"> </span><span class="kw">as.list</span>(),
+    <span class="dt">delta =</span> <span class="kw">t</span>(chains$delta) %&gt;%<span class="st"> </span><span class="kw">as_data_frame</span>() %&gt;%<span class="st"> </span><span class="kw">as.list</span>(),
+    <span class="dt">sigma_g =</span> chains$sigma_g %&gt;%<span class="st"> </span><span class="kw">as.vector</span>()
+  )
+  
+  ucl_sim &lt;-<span class="st"> </span><span class="kw">pmap_df</span>(<span class="dt">.l =</span> data_list, <span class="dt">.f =</span> function(mu, eta, alpha, delta,
+    sigma_g, sim_games, sim_ucl, team_codes) {
+    results &lt;-<span class="st"> </span><span class="kw">as_data_frame</span>(<span class="kw">matrix</span>(<span class="dt">data =</span> <span class="ot">NA</span>, <span class="dt">nrow =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">1</span>))
+    <span class="kw">colnames</span>(results) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Round_&quot;</span>, <span class="kw">length</span>(matchups))
+    repeat {
+      for (g in <span class="kw">seq_len</span>(<span class="kw">nrow</span>(sim_games))) {
+        if (sim_games$date[g] &lt;<span class="st"> </span><span class="kw">ymd</span>(<span class="kw">Sys.Date</span>())) {
+          next
+        }
+        home_code &lt;-<span class="st"> </span>team_codes$code[<span class="kw">which</span>(team_codes$team ==
+<span class="st">            </span>sim_games$home[g])]
+        away_code &lt;-<span class="st"> </span>team_codes$code[<span class="kw">which</span>(team_codes$team ==
+<span class="st">            </span>sim_games$away[g])]
+        
+        home_off &lt;-<span class="st"> </span>alpha[home_code]
+        home_def &lt;-<span class="st"> </span>delta[home_code]
+        away_off &lt;-<span class="st"> </span>alpha[away_code]
+        away_def &lt;-<span class="st"> </span>delta[away_code]
+        game_int &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> sigma_g)
+        
+        if (<span class="kw">length</span>(matchups) ==<span class="st"> </span><span class="dv">1</span>) {
+          sim_games$h_goals[g] &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">exp</span>(mu +<span class="st"> </span>home_off +<span class="st"> </span>away_def +
+<span class="st">            </span>game_int))
+          sim_games$a_goals[g] &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">exp</span>(mu +<span class="st"> </span>away_off +<span class="st"> </span>home_def +
+<span class="st">            </span>game_int))
+        } else {
+          sim_games$h_goals[g] &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">exp</span>(mu +<span class="st"> </span>eta +<span class="st"> </span>home_off +
+<span class="st">            </span>away_def +<span class="st"> </span>game_int))
+          sim_games$a_goals[g] &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">exp</span>(mu +<span class="st"> </span>away_off +<span class="st"> </span>home_def +
+<span class="st">            </span>game_int))
+        }
+      }
+      winners &lt;-<span class="st"> </span><span class="kw">map_chr</span>(<span class="dt">.x =</span> matchups, <span class="dt">.f =</span> function(x, games) {
+      games &lt;-<span class="st"> </span><span class="kw">filter</span>(games, home %in%<span class="st"> </span>x, away %in%<span class="st"> </span>x)
+      scores &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(
+        <span class="kw">select</span>(games, <span class="dt">club =</span> home, h_goals) %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">a_goals =</span> <span class="dv">0</span>),
+        <span class="kw">select</span>(games, <span class="dt">club =</span> away, a_goals) %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">h_goals =</span> <span class="dv">0</span>)
+      ) %&gt;%
+<span class="st">        </span><span class="kw">group_by</span>(club) %&gt;%
+<span class="st">        </span><span class="kw">summarize</span>(<span class="dt">h_goals =</span> <span class="kw">sum</span>(h_goals), <span class="dt">a_goals =</span> <span class="kw">sum</span>(a_goals)) %&gt;%
+<span class="st">        </span><span class="kw">mutate</span>(<span class="dt">total_goals =</span> h_goals +<span class="st"> </span>a_goals) %&gt;%
+<span class="st">        </span><span class="kw">arrange</span>(<span class="kw">desc</span>(total_goals), <span class="kw">desc</span>(a_goals))
+      if (<span class="kw">length</span>(<span class="kw">unique</span>(scores$total_goals)) &gt;<span class="st"> </span><span class="dv">1</span>) {
+        <span class="kw">return</span>(scores$club[<span class="dv">1</span>])
+      } else if (<span class="kw">length</span>(<span class="kw">unique</span>(scores$total_goals)) ==<span class="st"> </span><span class="dv">1</span> &amp;&amp;
+<span class="st">          </span><span class="kw">length</span>(matchups) ==<span class="st"> </span><span class="dv">1</span>) {
+        <span class="kw">return</span>(<span class="kw">sample</span>(scores$club, <span class="dv">1</span>))
+      } else if (<span class="kw">length</span>(<span class="kw">unique</span>(scores$total_goals)) ==<span class="st"> </span><span class="dv">1</span> &amp;&amp;
+<span class="st">          </span><span class="kw">length</span>(<span class="kw">unique</span>(scores$a_goals)) &gt;<span class="st"> </span><span class="dv">1</span>) {
+        <span class="kw">return</span>(scores$club[<span class="dv">1</span>])
+      } else {
+        <span class="kw">return</span>(<span class="kw">sample</span>(scores$club, <span class="dv">1</span>))
+      }
+    },
+        <span class="dt">games =</span> sim_games)
+      results[, <span class="kw">paste0</span>(<span class="st">&quot;Round_&quot;</span>, <span class="kw">length</span>(winners))] &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">sort</span>(winners),
+        <span class="dt">collapse =</span> <span class="st">&quot;,&quot;</span>)
+      if (<span class="kw">length</span>(winners) ==<span class="st"> </span><span class="dv">1</span>) {
+        break
+      }
+      if (<span class="kw">length</span>(winners) ==<span class="st"> </span><span class="dv">2</span>) {
+        matchups &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(winners[<span class="dv">1</span>], winners[<span class="dv">2</span>]))
+        sim_games &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">date =</span> <span class="kw">ymd</span>(<span class="kw">Sys.Date</span>()), <span class="dt">home =</span> winners[<span class="dv">1</span>],
+          <span class="dt">away =</span> winners[<span class="dv">2</span>], <span class="dt">h_goals =</span> <span class="ot">NA</span>, <span class="dt">a_goals =</span> <span class="ot">NA</span>, <span class="dt">competition =</span> <span class="st">&quot;UCL&quot;</span>,
+          <span class="dt">home_game =</span> <span class="dv">0</span>)
+      } else {
+        new_match &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">club =</span> winners) %&gt;%
+<span class="st">          </span><span class="kw">mutate</span>(<span class="dt">matchup =</span> <span class="kw">sample</span>(<span class="kw">rep</span>(<span class="dv">1</span>:(<span class="kw">length</span>(winners) /<span class="st"> </span><span class="dv">2</span>), <span class="dv">2</span>), <span class="kw">length</span>(winners),
+            <span class="dt">replace =</span> <span class="ot">FALSE</span>))
+        matchups &lt;-<span class="st"> </span><span class="kw">list_along</span>(<span class="kw">seq_len</span>(<span class="kw">length</span>(winners) /<span class="st"> </span><span class="dv">2</span>))
+        new_games &lt;-<span class="st"> </span><span class="kw">list_along</span>(<span class="kw">seq_len</span>(<span class="kw">length</span>(winners) /<span class="st"> </span><span class="dv">2</span>))
+        for (i in <span class="kw">seq_along</span>(matchups)) {
+          clubs &lt;-<span class="st"> </span>new_match$club[<span class="kw">which</span>(new_match$matchup ==<span class="st"> </span>i)]
+          matchups[[i]] &lt;-<span class="st"> </span>clubs
+          new_games[[i]] &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">date =</span> <span class="kw">ymd</span>(<span class="kw">Sys.Date</span>()),
+            <span class="dt">home =</span> <span class="kw">sort</span>(clubs), <span class="dt">away =</span> <span class="kw">rev</span>(<span class="kw">sort</span>(clubs)), <span class="dt">h_goals =</span> <span class="ot">NA</span>,
+            <span class="dt">a_goals =</span> <span class="ot">NA</span>, <span class="dt">competition =</span> <span class="st">&quot;UCL&quot;</span>, <span class="dt">home_game =</span> <span class="dv">1</span>)
+        }
+        sim_games &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(new_games)
+      }
+    }
+    <span class="kw">return</span>(results)
+  }, <span class="dt">sim_games =</span> future_games,
+    <span class="dt">sim_ucl =</span> matchups, <span class="dt">team_codes =</span> team_codes)
+  
+  round_results &lt;-<span class="st"> </span><span class="kw">list_along</span>(ucl_sim)
+  <span class="kw">names</span>(round_results) &lt;-<span class="st"> </span><span class="kw">colnames</span>(ucl_sim)
+  for (i in <span class="kw">seq_along</span>(round_results)) {
+    round_results[[i]] &lt;-<span class="st"> </span><span class="kw">paste</span>(ucl_sim[[i]], <span class="dt">collapse =</span> <span class="st">&quot;,&quot;</span>) %&gt;%
+<span class="st">      </span><span class="kw">strsplit</span>(<span class="st">&quot;,&quot;</span>) %&gt;%
+<span class="st">      </span><span class="kw">unlist</span>()
+  }
+  total_sim &lt;-<span class="st"> </span><span class="kw">length</span>(round_results$Round_1)
+  final_results &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">club =</span> <span class="kw">sort</span>(<span class="kw">flatten_chr</span>(matchups)),
+    <span class="dt">Round_8 =</span> <span class="dv">1</span>, <span class="dt">Round_4 =</span> <span class="dv">1</span>, <span class="dt">Round_2 =</span> <span class="dv">1</span>, <span class="dt">Round_1 =</span> <span class="dv">1</span>)
+  
+  for (i in <span class="kw">seq_len</span>(<span class="kw">nrow</span>(final_results))) {
+    club &lt;-<span class="st"> </span>final_results$club[i]
+    for (r in <span class="kw">seq_along</span>(round_results)) {
+      final_results[[<span class="kw">names</span>(round_results)[r]]][i] &lt;-
+<span class="st">        </span><span class="kw">length</span>(<span class="kw">which</span>(round_results[[r]] ==<span class="st"> </span>club)) /<span class="st"> </span>total_sim
+    }
+  }
+  final_results %&gt;%
+<span class="st">    </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Quarterfinals =</span> Round_8, <span class="dt">Semifinals =</span> Round_4,
+      <span class="dt">Final =</span> Round_2, <span class="dt">Champion =</span> Round_1) %&gt;%
+<span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Champion))
 }</code></pre></div>
 
 </div>
