@@ -386,13 +386,12 @@ away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
 save(home_rep, away_rep, file = "_data/rep_data.rda")
 
 model_params <- rstan::extract(gri_stanfit, pars = c("mu", "eta", "alpha",
-  "delta"))
+  "delta", "sigma_g"))
 save(model_params, file = "_data/model_params.rda")
 
 alpha <- colMeans(model_params$alpha)
 delta <- colMeans(model_params$delta)
 mu <- mean(model_params$mu)
-
 club_rankings <- data_frame(
   club = team_counts$team,
   attacking = alpha,
@@ -404,6 +403,7 @@ club_rankings <- data_frame(
     exp_margin = exp_offense - exp_defense
   ) %>%
   arrange(desc(exp_margin))
-
 save(club_rankings, file = "_data/club_rankings.rda")
+
+save(team_counts, file = "_data/team_counts.rda")
 # rm(list = ls()); gc()
