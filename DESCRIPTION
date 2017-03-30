@@ -1,6 +1,6 @@
 Package: soccer
 Title: Soccer predictions using a Bayesian random intercepts model.
-Version: 0.1
+Version: 1.0
 Authors@R: c(
   person("Jake", "Thompson", , "wjakethompson@gmail.com", c("aut", "cre"))
   )
