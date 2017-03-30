@@ -12,3 +12,4 @@ libs
 *.rds
 _main.*
 bookdown*
+^_comps/_comps-responses_cache$
