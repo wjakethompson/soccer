@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-29">
+<meta name="date" content="2017-03-30">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -157,7 +157,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="5.4" data-path="fit-model.html"><a href="fit-model.html#results"><i class="fa fa-check"></i><b>5.4</b> Results</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a></li>
+<li class="chapter" data-level="6" data-path="predict.html"><a href="predict.html"><i class="fa fa-check"></i><b>6</b> Making Predictions</a><ul>
+<li class="chapter" data-level="6.1" data-path="predict.html"><a href="predict.html#predict-individual-games"><i class="fa fa-check"></i><b>6.1</b> Predict individual games</a></li>
+<li class="chapter" data-level="6.2" data-path="predict.html"><a href="predict.html#predict-domestic-leagues"><i class="fa fa-check"></i><b>6.2</b> Predict domestic leagues</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="predict.html"><a href="predict.html#epl"><i class="fa fa-check"></i><b>6.2.1</b> English Premier League</a></li>
+<li class="chapter" data-level="6.2.2" data-path="predict.html"><a href="predict.html#ligue1"><i class="fa fa-check"></i><b>6.2.2</b> French Ligue 1</a></li>
+<li class="chapter" data-level="6.2.3" data-path="predict.html"><a href="predict.html#bund"><i class="fa fa-check"></i><b>6.2.3</b> German Bundesliga</a></li>
+<li class="chapter" data-level="6.2.4" data-path="predict.html"><a href="predict.html#seriea"><i class="fa fa-check"></i><b>6.2.4</b> Italian Serie A</a></li>
+<li class="chapter" data-level="6.2.5" data-path="predict.html"><a href="predict.html#laliga"><i class="fa fa-check"></i><b>6.2.5</b> Spanish La Liga</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="predict.html"><a href="predict.html#uefa-champions-league"><i class="fa fa-check"></i><b>6.3</b> UEFA Champions League</a></li>
+</ul></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
 <li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#limitations-of-the-current-approach"><i class="fa fa-check"></i><b>7.1</b> Limitations of the current approach</a></li>
 <li class="chapter" data-level="7.2" data-path="conclusion.html"><a href="conclusion.html#future-directions"><i class="fa fa-check"></i><b>7.2</b> Future Directions</a></li>
@@ -186,6 +196,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="C.5" data-path="diagnostic-output.html"><a href="diagnostic-output.html#ppmc-mov"><i class="fa fa-check"></i><b>C.5</b> PPMC margin of victory credible intervals</a></li>
 <li class="chapter" data-level="C.6" data-path="diagnostic-output.html"><a href="diagnostic-output.html#log-loss-comparison-table"><i class="fa fa-check"></i><b>C.6</b> Log loss comparison table</a></li>
 </ul></li>
+<li class="chapter" data-level="D" data-path="prediction-functions.html"><a href="prediction-functions.html"><i class="fa fa-check"></i><b>D</b> Prediction Functions</a><ul>
+<li class="chapter" data-level="D.1" data-path="prediction-functions.html"><a href="prediction-functions.html#predict-game"><i class="fa fa-check"></i><b>D.1</b> Predict individual games</a></li>
+<li class="chapter" data-level="D.2" data-path="prediction-functions.html"><a href="prediction-functions.html#multi-plot"><i class="fa fa-check"></i><b>D.2</b> Plot multiple plots</a></li>
+<li class="chapter" data-level="D.3" data-path="prediction-functions.html"><a href="prediction-functions.html#predict-league"><i class="fa fa-check"></i><b>D.3</b> Predict leagues</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -206,7 +221,904 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="predict" class="section level1">
 <h1><span class="header-section-number">6</span> Making Predictions</h1>
+<p>To make predictions, I will use the retained iterations from the <code>gri_stanfit</code> object. Alternatively, I could use the means of the posterior distributions to calculate a single lambda for each score within each game. These lambda values could then be used to generate a sample of scores which could be used to predict the outcome of the game. However, this approach would ignore the uncertainty in the parameter estimates. A better solution would be to calculate lambda values at each iteration of the chain, using the current estimates of the parameters. Thus, at each iteration, it is possible to simulate a score for each team at each iteration, creating a posterior distribution for the score of each game.</p>
+<div id="predict-individual-games" class="section level2">
+<h2><span class="header-section-number">6.1</span> Predict individual games</h2>
+<p>First, I will extract the parameters we need from the fitted model, and load in the team codes associated with each team.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_params &lt;-<span class="st"> </span>rstan::<span class="kw">extract</span>(gri_stanfit, <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;mu&quot;</span>, <span class="st">&quot;eta&quot;</span>, <span class="st">&quot;alpha&quot;</span>,
+  <span class="st">&quot;delta&quot;</span>, <span class="st">&quot;sigma_g&quot;</span>))
+<span class="kw">load</span>(<span class="st">&quot;_data/team_counts.rda&quot;</span>)</code></pre></div>
+<p>I then use the <code>predict_games</code> function (see Appendix <a href="prediction-functions.html#predict-game">D.1</a>) to predict the outcome of a game between any two teams included in the model. For example, we can predict the winner of a game between Barcelona and Real Madrid played in Barcelona.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(purrr)
+prediction &lt;-<span class="st"> </span><span class="kw">predict_game</span>(<span class="dt">home =</span> <span class="st">&quot;Barcelona&quot;</span>, <span class="dt">away =</span> <span class="st">&quot;Real Madrid&quot;</span>,
+  <span class="dt">neutral =</span> <span class="ot">FALSE</span>, <span class="dt">visualize =</span> <span class="ot">TRUE</span>, <span class="dt">team_codes =</span> team_counts,
+  <span class="dt">chains =</span> model_params)
 
+prediction$predictions %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="st">`</span><span class="dt">Expected Goals</span><span class="st">`</span> =<span class="st"> </span>expected_goals,
+    <span class="st">`</span><span class="dt">Win Probability</span><span class="st">`</span> =<span class="st"> </span>prob_win, <span class="st">`</span><span class="dt">Tie Probability</span><span class="st">`</span> =<span class="st"> </span>prob_tie) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Prediction for Real Madrid at Barcelona&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre></div>
+<table>
+<caption><span id="tab:exp-predict">Table 6.1: </span>Prediction for Real Madrid at Barcelona</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Expected Goals</th>
+<th align="center">Win Probability</th>
+<th align="center">Tie Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Barcelona</td>
+<td align="center">2.65</td>
+<td align="center">0.607</td>
+<td align="center">0.166</td>
+</tr>
+<tr class="even">
+<td align="center">Real Madrid</td>
+<td align="center">1.60</td>
+<td align="center">0.227</td>
+<td align="center">0.166</td>
+</tr>
+</tbody>
+</table>
+<p>Because I specified <code>visualize = TRUE</code> in the call to <code>predict_game</code> we can use the <code>multiplot</code> function (Appendix <a href="prediction-functions.html#multi-plot">D.2</a>) to visualize the range of possible outcomes from the posteriors.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(grid)
+<span class="kw">multiplot</span>(<span class="dt">plotlist =</span> prediction$plots, <span class="dt">cols =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:exp-vis"></span>
+<img src="make-predictions_files/figure-html/exp-vis-1.png" alt="Visualizations for Real Madrid at Barcelona" width="80%" />
+<p class="caption">
+Figure 6.1: Visualizations for Real Madrid at Barcelona
+</p>
+</div>
+</div>
+<div id="predict-domestic-leagues" class="section level2">
+<h2><span class="header-section-number">6.2</span> Predict domestic leagues</h2>
+<p>To predict entire leagues, I follow the same general process, simulating an outcome for each retained iteration of the chain. The difference for leagues is that instead of simulating a single game at each iteration, we simulate the remainder of the league season, and calculate the league winner. This is all done by the <code>predict_league</code> function (Appendix <a href="prediction-functions.html#predict-league">D.3</a>).</p>
+<p>In order to simulate these outcome, I’ll first need to load in the full data set that includes future games</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
+<span class="kw">library</span>(rvest)
+<span class="kw">library</span>(tidyr)
+<span class="kw">library</span>(scales)
+
+<span class="kw">load</span>(<span class="st">&quot;_data/full_data.rda&quot;</span>)
+<span class="kw">load</span>(<span class="st">&quot;_data/club_rankings.rda&quot;</span>)</code></pre></div>
+<div id="epl" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> English Premier League</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict_league</span>(<span class="dt">league =</span> <span class="st">&quot;Premier League&quot;</span>, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(club_rankings, club, exp_offense, exp_defense),
+    <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(champ_pct)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">champ_pct =</span> <span class="kw">percent</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(champ_pct), <span class="dv">0</span>, champ_pct))) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Offense =</span> exp_offense, <span class="dt">Defense =</span> exp_defense,
+    <span class="st">`</span><span class="dt">Expected Points</span><span class="st">`</span> =<span class="st"> </span>sim_points, <span class="st">`</span><span class="dt">Championship Probability</span><span class="st">`</span> =<span class="st"> </span>champ_pct) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Premier League Championship Probabilities&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<caption><span id="tab:epl-sim">Table 6.2: </span>Premier League Championship Probabilities</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Offense</th>
+<th align="center">Defense</th>
+<th align="center">Expected Points</th>
+<th align="center">Championship Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Chelsea</td>
+<td align="center">1.83</td>
+<td align="center">0.77</td>
+<td align="center">86.5</td>
+<td align="center">89.6%</td>
+</tr>
+<tr class="even">
+<td align="center">Tottenham Hotspur</td>
+<td align="center">1.71</td>
+<td align="center">0.75</td>
+<td align="center">78.4</td>
+<td align="center">7.9%</td>
+</tr>
+<tr class="odd">
+<td align="center">Manchester City</td>
+<td align="center">1.77</td>
+<td align="center">0.82</td>
+<td align="center">75.1</td>
+<td align="center">1.8%</td>
+</tr>
+<tr class="even">
+<td align="center">Liverpool</td>
+<td align="center">1.74</td>
+<td align="center">0.82</td>
+<td align="center">74.0</td>
+<td align="center">0.7%</td>
+</tr>
+<tr class="odd">
+<td align="center">Manchester United</td>
+<td align="center">1.56</td>
+<td align="center">0.74</td>
+<td align="center">69.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Everton</td>
+<td align="center">1.38</td>
+<td align="center">0.87</td>
+<td align="center">62.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Arsenal</td>
+<td align="center">1.95</td>
+<td align="center">0.91</td>
+<td align="center">69.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">West Bromwich Albion</td>
+<td align="center">1.18</td>
+<td align="center">1.01</td>
+<td align="center">53.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Stoke City</td>
+<td align="center">1.07</td>
+<td align="center">1.04</td>
+<td align="center">46.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Southampton</td>
+<td align="center">1.09</td>
+<td align="center">0.88</td>
+<td align="center">44.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">AFC Bournemouth</td>
+<td align="center">1.22</td>
+<td align="center">1.21</td>
+<td align="center">43.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">West Ham United</td>
+<td align="center">1.18</td>
+<td align="center">1.24</td>
+<td align="center">42.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Burnley</td>
+<td align="center">1.02</td>
+<td align="center">0.96</td>
+<td align="center">43.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Watford</td>
+<td align="center">1.04</td>
+<td align="center">1.11</td>
+<td align="center">40.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Leicester City</td>
+<td align="center">1.20</td>
+<td align="center">1.11</td>
+<td align="center">42.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Crystal Palace</td>
+<td align="center">1.11</td>
+<td align="center">1.12</td>
+<td align="center">37.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Swansea City</td>
+<td align="center">1.29</td>
+<td align="center">1.25</td>
+<td align="center">38.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Hull City</td>
+<td align="center">1.07</td>
+<td align="center">1.12</td>
+<td align="center">35.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Middlesbrough</td>
+<td align="center">1.01</td>
+<td align="center">0.88</td>
+<td align="center">34.2</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Sunderland</td>
+<td align="center">0.87</td>
+<td align="center">1.13</td>
+<td align="center">29.4</td>
+<td align="center">0.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ligue1" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> French Ligue 1</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict_league</span>(<span class="dt">league =</span> <span class="st">&quot;Ligue 1&quot;</span>, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(club_rankings, club, exp_offense, exp_defense),
+    <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(champ_pct)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">champ_pct =</span> <span class="kw">percent</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(champ_pct), <span class="dv">0</span>, champ_pct))) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Offense =</span> exp_offense, <span class="dt">Defense =</span> exp_defense,
+    <span class="st">`</span><span class="dt">Expected Points</span><span class="st">`</span> =<span class="st"> </span>sim_points, <span class="st">`</span><span class="dt">Championship Probability</span><span class="st">`</span> =<span class="st"> </span>champ_pct) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Ligue 1 Championship Probabilities&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<caption><span id="tab:ligue1-sim">Table 6.3: </span>Ligue 1 Championship Probabilities</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Offense</th>
+<th align="center">Defense</th>
+<th align="center">Expected Points</th>
+<th align="center">Championship Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">AS Monaco</td>
+<td align="center">2.12</td>
+<td align="center">0.89</td>
+<td align="center">88.2</td>
+<td align="center">71.2%</td>
+</tr>
+<tr class="even">
+<td align="center">Paris Saint-Germain</td>
+<td align="center">1.90</td>
+<td align="center">0.75</td>
+<td align="center">86.1</td>
+<td align="center">28.6%</td>
+</tr>
+<tr class="odd">
+<td align="center">Nice</td>
+<td align="center">1.20</td>
+<td align="center">0.93</td>
+<td align="center">75.2</td>
+<td align="center">0.1%</td>
+</tr>
+<tr class="even">
+<td align="center">Lyon</td>
+<td align="center">1.65</td>
+<td align="center">0.96</td>
+<td align="center">67.2</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Marseille</td>
+<td align="center">1.25</td>
+<td align="center">1.00</td>
+<td align="center">58.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Bordeaux</td>
+<td align="center">1.16</td>
+<td align="center">1.08</td>
+<td align="center">57.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">St Etienne</td>
+<td align="center">0.92</td>
+<td align="center">0.83</td>
+<td align="center">54.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Stade Rennes</td>
+<td align="center">0.86</td>
+<td align="center">1.06</td>
+<td align="center">48.2</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Angers</td>
+<td align="center">1.00</td>
+<td align="center">1.05</td>
+<td align="center">48.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Guingamp</td>
+<td align="center">1.11</td>
+<td align="center">1.05</td>
+<td align="center">49.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Nantes</td>
+<td align="center">0.88</td>
+<td align="center">1.12</td>
+<td align="center">47.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Toulouse</td>
+<td align="center">1.00</td>
+<td align="center">0.93</td>
+<td align="center">48.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Metz</td>
+<td align="center">0.87</td>
+<td align="center">1.25</td>
+<td align="center">44.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Lille</td>
+<td align="center">0.88</td>
+<td align="center">1.01</td>
+<td align="center">44.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Montpellier</td>
+<td align="center">1.19</td>
+<td align="center">1.36</td>
+<td align="center">42.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Caen</td>
+<td align="center">0.97</td>
+<td align="center">1.32</td>
+<td align="center">41.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Dijon FCO</td>
+<td align="center">1.08</td>
+<td align="center">1.19</td>
+<td align="center">37.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">AS Nancy Lorraine</td>
+<td align="center">0.79</td>
+<td align="center">0.99</td>
+<td align="center">36.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Bastia</td>
+<td align="center">0.80</td>
+<td align="center">1.21</td>
+<td align="center">32.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Lorient</td>
+<td align="center">1.02</td>
+<td align="center">1.42</td>
+<td align="center">34.5</td>
+<td align="center">0.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="bund" class="section level3">
+<h3><span class="header-section-number">6.2.3</span> German Bundesliga</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict_league</span>(<span class="dt">league =</span> <span class="st">&quot;Bundesliga&quot;</span>, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(club_rankings, club, exp_offense, exp_defense),
+    <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(champ_pct)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">champ_pct =</span> <span class="kw">percent</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(champ_pct), <span class="dv">0</span>, champ_pct))) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Offense =</span> exp_offense, <span class="dt">Defense =</span> exp_defense,
+    <span class="st">`</span><span class="dt">Expected Points</span><span class="st">`</span> =<span class="st"> </span>sim_points, <span class="st">`</span><span class="dt">Championship Probability</span><span class="st">`</span> =<span class="st"> </span>champ_pct) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Bundesliga Championship Probabilities&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<caption><span id="tab:bund-sim">Table 6.4: </span>Bundesliga Championship Probabilities</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Offense</th>
+<th align="center">Defense</th>
+<th align="center">Expected Points</th>
+<th align="center">Championship Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Bayern Munich</td>
+<td align="center">2.09</td>
+<td align="center">0.68</td>
+<td align="center">82.2</td>
+<td align="center">100%</td>
+</tr>
+<tr class="even">
+<td align="center">RB Leipzig</td>
+<td align="center">1.39</td>
+<td align="center">0.93</td>
+<td align="center">63.5</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Borussia Dortmund</td>
+<td align="center">1.81</td>
+<td align="center">0.90</td>
+<td align="center">62.4</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">TSG Hoffenheim</td>
+<td align="center">1.41</td>
+<td align="center">0.91</td>
+<td align="center">58.7</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Hertha Berlin</td>
+<td align="center">1.18</td>
+<td align="center">0.94</td>
+<td align="center">53.8</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">FC Cologne</td>
+<td align="center">1.22</td>
+<td align="center">0.96</td>
+<td align="center">50.4</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Eintracht Frankfurt</td>
+<td align="center">0.96</td>
+<td align="center">0.88</td>
+<td align="center">47.6</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">SC Freiburg</td>
+<td align="center">1.13</td>
+<td align="center">1.18</td>
+<td align="center">46.4</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Schalke 04</td>
+<td align="center">1.32</td>
+<td align="center">0.87</td>
+<td align="center">48.0</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">Borussia Monchengladbach</td>
+<td align="center">1.25</td>
+<td align="center">0.97</td>
+<td align="center">45.0</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Bayer Leverkusen</td>
+<td align="center">1.28</td>
+<td align="center">1.03</td>
+<td align="center">43.3</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">Mainz</td>
+<td align="center">1.16</td>
+<td align="center">1.16</td>
+<td align="center">39.7</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Werder Bremen</td>
+<td align="center">1.16</td>
+<td align="center">1.23</td>
+<td align="center">39.3</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">FC Augsburg</td>
+<td align="center">0.93</td>
+<td align="center">1.05</td>
+<td align="center">38.1</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">VfL Wolfsburg</td>
+<td align="center">0.90</td>
+<td align="center">0.98</td>
+<td align="center">39.0</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">Hamburg SV</td>
+<td align="center">0.97</td>
+<td align="center">1.22</td>
+<td align="center">36.9</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">FC Ingolstadt 04</td>
+<td align="center">0.90</td>
+<td align="center">1.10</td>
+<td align="center">29.9</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">SV Darmstadt 98</td>
+<td align="center">0.79</td>
+<td align="center">1.27</td>
+<td align="center">22.4</td>
+<td align="center">0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="seriea" class="section level3">
+<h3><span class="header-section-number">6.2.4</span> Italian Serie A</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict_league</span>(<span class="dt">league =</span> <span class="st">&quot;Serie A&quot;</span>, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(club_rankings, club, exp_offense, exp_defense),
+    <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(champ_pct)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">champ_pct =</span> <span class="kw">percent</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(champ_pct), <span class="dv">0</span>, champ_pct))) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Offense =</span> exp_offense, <span class="dt">Defense =</span> exp_defense,
+    <span class="st">`</span><span class="dt">Expected Points</span><span class="st">`</span> =<span class="st"> </span>sim_points, <span class="st">`</span><span class="dt">Championship Probability</span><span class="st">`</span> =<span class="st"> </span>champ_pct) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Serie A Championship Probabilities&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<caption><span id="tab:seriea-sim">Table 6.5: </span>Serie A Championship Probabilities</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Offense</th>
+<th align="center">Defense</th>
+<th align="center">Expected Points</th>
+<th align="center">Championship Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Juventus</td>
+<td align="center">1.61</td>
+<td align="center">0.71</td>
+<td align="center">90.7</td>
+<td align="center">90.6%</td>
+</tr>
+<tr class="even">
+<td align="center">AS Roma</td>
+<td align="center">1.71</td>
+<td align="center">0.87</td>
+<td align="center">82.4</td>
+<td align="center">8.2%</td>
+</tr>
+<tr class="odd">
+<td align="center">Napoli</td>
+<td align="center">1.70</td>
+<td align="center">0.98</td>
+<td align="center">78.1</td>
+<td align="center">1.3%</td>
+</tr>
+<tr class="even">
+<td align="center">Lazio</td>
+<td align="center">1.39</td>
+<td align="center">0.88</td>
+<td align="center">72.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Internazionale</td>
+<td align="center">1.43</td>
+<td align="center">1.08</td>
+<td align="center">69.2</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Atalanta</td>
+<td align="center">1.28</td>
+<td align="center">0.95</td>
+<td align="center">69.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">AC Milan</td>
+<td align="center">1.22</td>
+<td align="center">0.95</td>
+<td align="center">67.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Fiorentina</td>
+<td align="center">1.34</td>
+<td align="center">1.02</td>
+<td align="center">63.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Sampdoria</td>
+<td align="center">1.03</td>
+<td align="center">0.99</td>
+<td align="center">52.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Torino</td>
+<td align="center">1.49</td>
+<td align="center">1.14</td>
+<td align="center">54.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Chievo Verona</td>
+<td align="center">1.04</td>
+<td align="center">1.04</td>
+<td align="center">49.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Udinese</td>
+<td align="center">1.07</td>
+<td align="center">1.06</td>
+<td align="center">47.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Bologna</td>
+<td align="center">0.98</td>
+<td align="center">1.08</td>
+<td align="center">44.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Cagliari</td>
+<td align="center">1.13</td>
+<td align="center">1.35</td>
+<td align="center">43.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Sassuolo</td>
+<td align="center">1.11</td>
+<td align="center">1.18</td>
+<td align="center">41.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Genoa</td>
+<td align="center">1.01</td>
+<td align="center">1.18</td>
+<td align="center">38.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Empoli</td>
+<td align="center">0.72</td>
+<td align="center">1.14</td>
+<td align="center">30.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Palermo</td>
+<td align="center">0.82</td>
+<td align="center">1.31</td>
+<td align="center">24.4</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Crotone</td>
+<td align="center">0.77</td>
+<td align="center">1.21</td>
+<td align="center">21.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">US Pescara</td>
+<td align="center">0.93</td>
+<td align="center">1.46</td>
+<td align="center">21.1</td>
+<td align="center">0.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="laliga" class="section level3">
+<h3><span class="header-section-number">6.2.5</span> Spanish La Liga</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict_league</span>(<span class="dt">league =</span> <span class="st">&quot;La Liga&quot;</span>, <span class="dt">games =</span> full_data,
+  <span class="dt">chains =</span> model_params, <span class="dt">team_codes =</span> team_counts) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(club_rankings, club, exp_offense, exp_defense),
+    <span class="dt">by =</span> <span class="st">&quot;club&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(champ_pct)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">champ_pct =</span> <span class="kw">percent</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(champ_pct), <span class="dv">0</span>, champ_pct))) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="dt">Club =</span> club, <span class="dt">Offense =</span> exp_offense, <span class="dt">Defense =</span> exp_defense,
+    <span class="st">`</span><span class="dt">Expected Points</span><span class="st">`</span> =<span class="st"> </span>sim_points, <span class="st">`</span><span class="dt">Championship Probability</span><span class="st">`</span> =<span class="st"> </span>champ_pct) %&gt;%
+<span class="st">  </span>knitr::<span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;La Liga Championship Probabilities&quot;</span>,
+    <span class="dt">align =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<caption><span id="tab:laliga-sim">Table 6.6: </span>La Liga Championship Probabilities</caption>
+<thead>
+<tr class="header">
+<th align="center">Club</th>
+<th align="center">Offense</th>
+<th align="center">Defense</th>
+<th align="center">Expected Points</th>
+<th align="center">Championship Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Barcelona</td>
+<td align="center">2.28</td>
+<td align="center">0.84</td>
+<td align="center">85.2</td>
+<td align="center">51.6%</td>
+</tr>
+<tr class="even">
+<td align="center">Real Madrid</td>
+<td align="center">2.03</td>
+<td align="center">0.95</td>
+<td align="center">85.5</td>
+<td align="center">48.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Sevilla FC</td>
+<td align="center">1.36</td>
+<td align="center">0.94</td>
+<td align="center">74.0</td>
+<td align="center">0.3%</td>
+</tr>
+<tr class="even">
+<td align="center">Atletico Madrid</td>
+<td align="center">1.45</td>
+<td align="center">0.73</td>
+<td align="center">73.7</td>
+<td align="center">0.1%</td>
+</tr>
+<tr class="odd">
+<td align="center">Villarreal</td>
+<td align="center">1.08</td>
+<td align="center">0.81</td>
+<td align="center">63.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Real Sociedad</td>
+<td align="center">1.27</td>
+<td align="center">1.06</td>
+<td align="center">62.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Athletic Bilbao</td>
+<td align="center">1.10</td>
+<td align="center">0.96</td>
+<td align="center">57.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Eibar</td>
+<td align="center">1.26</td>
+<td align="center">1.08</td>
+<td align="center">54.2</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Espanyol</td>
+<td align="center">1.15</td>
+<td align="center">0.99</td>
+<td align="center">54.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Alavés</td>
+<td align="center">0.99</td>
+<td align="center">0.87</td>
+<td align="center">53.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Celta Vigo</td>
+<td align="center">1.28</td>
+<td align="center">0.99</td>
+<td align="center">54.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Las Palmas</td>
+<td align="center">1.28</td>
+<td align="center">1.17</td>
+<td align="center">47.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Real Betis</td>
+<td align="center">0.94</td>
+<td align="center">1.14</td>
+<td align="center">41.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Valencia</td>
+<td align="center">1.19</td>
+<td align="center">1.28</td>
+<td align="center">42.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Málaga</td>
+<td align="center">1.04</td>
+<td align="center">1.23</td>
+<td align="center">37.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Deportivo La Coruña</td>
+<td align="center">1.03</td>
+<td align="center">1.11</td>
+<td align="center">39.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Leganes</td>
+<td align="center">0.79</td>
+<td align="center">1.10</td>
+<td align="center">36.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Sporting Gijón</td>
+<td align="center">0.97</td>
+<td align="center">1.35</td>
+<td align="center">31.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Granada</td>
+<td align="center">0.85</td>
+<td align="center">1.37</td>
+<td align="center">27.6</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Osasuna</td>
+<td align="center">0.87</td>
+<td align="center">1.47</td>
+<td align="center">20.0</td>
+<td align="center">0.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="uefa-champions-league" class="section level2">
+<h2><span class="header-section-number">6.3</span> UEFA Champions League</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">matchups &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="kw">c</span>(<span class="st">&quot;Barcelona&quot;</span>, <span class="st">&quot;Juventus&quot;</span>),
+  <span class="kw">c</span>(<span class="st">&quot;AS Monaco&quot;</span>, <span class="st">&quot;Borussia Dortmund&quot;</span>),
+  <span class="kw">c</span>(<span class="st">&quot;Bayern Munich&quot;</span>, <span class="st">&quot;Real Madrid&quot;</span>),
+  <span class="kw">c</span>(<span class="st">&quot;Leicester City&quot;</span>, <span class="st">&quot;Atletico Madrid&quot;</span>)
+)</code></pre></div>
+
+</div>
 </div>
             </section>
 
