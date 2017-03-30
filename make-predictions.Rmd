@@ -305,11 +305,10 @@ predict_league(league = "Premier League", games = full_data,
   chains = model_params, team_codes = team_counts) %>%
   left_join(select(club_rankings, club, exp_offense, exp_defense),
     by = "club") %>%
+  arrange(desc(champ_pct)) %>%
   mutate(champ_pct = percent(ifelse(is.na(champ_pct), 0, champ_pct))) %>%
   select(Club = club, Offense = exp_offense, Defense = exp_defense,
-    `Goals Scored` = goals_for, `Goals Allowed` = goals_against,
-    Points = points, `Expected Points` = sim_points,
-    `Championship Probability` = champ_pct) %>%
+    `Expected Points` = sim_points, `Championship Probability` = champ_pct) %>%
   knitr::kable(caption = "Premier League Championship Probabilities",
     align = "c", digits = 2)
 ```
@@ -321,11 +320,10 @@ predict_league(league = "Ligue 1", games = full_data,
   chains = model_params, team_codes = team_counts) %>%
   left_join(select(club_rankings, club, exp_offense, exp_defense),
     by = "club") %>%
+  arrange(desc(champ_pct)) %>%
   mutate(champ_pct = percent(ifelse(is.na(champ_pct), 0, champ_pct))) %>%
   select(Club = club, Offense = exp_offense, Defense = exp_defense,
-    `Goals Scored` = goals_for, `Goals Allowed` = goals_against,
-    Points = points, `Expected Points` = sim_points,
-    `Championship Probability` = champ_pct) %>%
+    `Expected Points` = sim_points, `Championship Probability` = champ_pct) %>%
   knitr::kable(caption = "Ligue 1 Championship Probabilities",
     align = "c", digits = 2)
 ```
@@ -337,11 +335,10 @@ predict_league(league = "Bundesliga", games = full_data,
   chains = model_params, team_codes = team_counts) %>%
   left_join(select(club_rankings, club, exp_offense, exp_defense),
     by = "club") %>%
+  arrange(desc(champ_pct)) %>%
   mutate(champ_pct = percent(ifelse(is.na(champ_pct), 0, champ_pct))) %>%
   select(Club = club, Offense = exp_offense, Defense = exp_defense,
-    `Goals Scored` = goals_for, `Goals Allowed` = goals_against,
-    Points = points, `Expected Points` = sim_points,
-    `Championship Probability` = champ_pct) %>%
+    `Expected Points` = sim_points, `Championship Probability` = champ_pct) %>%
   knitr::kable(caption = "Bundesliga Championship Probabilities",
     align = "c", digits = 2)
 ```
@@ -353,11 +350,10 @@ predict_league(league = "Serie A", games = full_data,
   chains = model_params, team_codes = team_counts) %>%
   left_join(select(club_rankings, club, exp_offense, exp_defense),
     by = "club") %>%
+  arrange(desc(champ_pct)) %>%
   mutate(champ_pct = percent(ifelse(is.na(champ_pct), 0, champ_pct))) %>%
   select(Club = club, Offense = exp_offense, Defense = exp_defense,
-    `Goals Scored` = goals_for, `Goals Allowed` = goals_against,
-    Points = points, `Expected Points` = sim_points,
-    `Championship Probability` = champ_pct) %>%
+    `Expected Points` = sim_points, `Championship Probability` = champ_pct) %>%
   knitr::kable(caption = "Serie A Championship Probabilities",
     align = "c", digits = 2)
 ```
@@ -369,13 +365,56 @@ predict_league(league = "La Liga", games = full_data,
   chains = model_params, team_codes = team_counts) %>%
   left_join(select(club_rankings, club, exp_offense, exp_defense),
     by = "club") %>%
+  arrange(desc(champ_pct)) %>%
   mutate(champ_pct = percent(ifelse(is.na(champ_pct), 0, champ_pct))) %>%
   select(Club = club, Offense = exp_offense, Defense = exp_defense,
-    `Goals Scored` = goals_for, `Goals Allowed` = goals_against,
-    Points = points, `Expected Points` = sim_points,
-    `Championship Probability` = champ_pct) %>%
+    `Expected Points` = sim_points, `Championship Probability` = champ_pct) %>%
   knitr::kable(caption = "La Liga Championship Probabilities",
     align = "c", digits = 2)
 ```
 
 ## UEFA Champions League
+
+```{r define-matchups}
+matchups <- list(
+  c("Barcelona", "Juventus"),
+  c("AS Monaco", "Borussia Dortmund"),
+  c("Bayern Munich", "Real Madrid"),
+  c("Leicester City", "Atletico Madrid")
+)
+```
+
+```{r ucl-func, eval = FALSE, include = FALSE}
+chains <- model_params
+team_codes <- team_counts
+predict_ucl <- function(matchups = matchups, games = full_data,
+  chains = model_params, team_codes = team_counts) {
+  
+  future_games <- games %>%
+    filter(competition == "UCL", date >= ymd(Sys.Date()))
+  
+  data_list <- list(
+    mu = chains$mu %>% as.vector(),
+    eta = chains$eta %>% as.vector(),
+    alpha = t(chains$alpha) %>% as_data_frame() %>% as.list(),
+    delta = t(chains$delta) %>% as_data_frame() %>% as.list(),
+    sigma_g = chains$sigma_g %>% as.vector()
+  )
+  
+  mu <- data_list$mu[1]
+  eta <- data_list$eta[1]
+  alpha <- data_list$alpha[[1]]
+  delta <- data_list$delta[[1]]
+  sigma_g <- data_list$sigma_g[1]
+  sim_games <- future_games
+  team_codes <- team_codes
+  sim_ucl <- matchups
+  
+  
+  ucl_sim <- pmap_df(.l = data_list, .f = function(mu, eta, alpha, delta,
+    sigma_g, sim_games, sim_league, team_codes) {
+    
+    }, sim_games = future_games, sim_ucl = matchups, team_codes = team_codes)
+}
+```
+
