@@ -1,11 +1,16 @@
 
 # Conclusion {#conclusion}
 
+The goals of this project was to predict the outcomes of the major European domestic soccer leagues and the UEFA Champions League by creating rating system to accurately predict the outcomes of games. To create this rating system, I tested two possible Bayesian mixed effects models, finding that the game random intercept model provided better recovery of team parameters than the alternative bivariate Poisson model (Section \@ref(simulation)).
 
+The game random intercept model (defined in Section \@ref(gri)), was then used to estimate team ratings for soccer clubs all across Europe. An analysis of model fit (Section \@ref(model-fit)) showed that the model was adequately fitting the real data. Thus, I was able to create a ranking of the teams based on their offensive and defensive ratings (Section \@ref(results)). The ratings were then used to create predictions for the outcomes of the English Premier League (Table \@ref(tab:epl-sim)), French League 1 (Table \@ref(tab:ligue1-sim)), German Bundesliga (Table \@ref(tab:bund-sim)), Italian Serie A (Table \@ref(tab:seriea-sim)), and the Spanish La Liga (Table \@ref(tab:laliga-sim)).
 
-## Limitations of the current approach
+Finally, I was also able to predict the outcome of the Champions League using the ratings (Table \@ref(tab:ucl-sim)).
 
+## Limitations and future directions
 
+There are several ways in which the current model could be improved. First, the current model uses only a basic set of predictors: a constant home field advantage and offensive and defensive effects for each team. Adding additional predictors may improve the predictive ability of the model. For example, I could add interactions between the home field advantage and the team effects to get team specific home field advantages. Additionally, I could incorporate rest by adding days since a teams last game as a predictor, or distance traveled.
 
-## Future Directions
+In addition to adding parameters, I could also change the outcome variable. Instead of using actual goals scored by each team, I could use expected goals scored and allowed by using shot location data. This would be a better indicator of offensive and defensive ability, as expected goals would indicate the ability of a team to create or prevent scoring opportunities, regardless of whether the shot went actually went in or not.
 
+Finally, the current modeling approach doesn't take into account changes in team composition over the course of a season. All games are from the current season are included and weighted equally. Thus, if a team loses a key player, or transfers in new talent, the club ratings won't immediately reflect that change. It will take several games to see the impact in the ratings, and even then the ratings will be strongly affected by the performance prior to the change (depending on how many games are played before and after the change). Thus, it may be more predictive to add additional weight to more recent games, or even add a trendline to the prediction of team effects that could be based on recent performance.

@@ -169,8 +169,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.3" data-path="predict.html"><a href="predict.html#uefa-champions-league"><i class="fa fa-check"></i><b>6.3</b> UEFA Champions League</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a><ul>
-<li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#limitations-of-the-current-approach"><i class="fa fa-check"></i><b>7.1</b> Limitations of the current approach</a></li>
-<li class="chapter" data-level="7.2" data-path="conclusion.html"><a href="conclusion.html#future-directions"><i class="fa fa-check"></i><b>7.2</b> Future Directions</a></li>
+<li class="chapter" data-level="7.1" data-path="conclusion.html"><a href="conclusion.html#limitations-and-future-directions"><i class="fa fa-check"></i><b>7.1</b> Limitations and future directions</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="simulation-functions.html"><a href="simulation-functions.html"><i class="fa fa-check"></i><b>A</b> Simulation Functions</a><ul>
@@ -222,11 +221,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="conclusion" class="section level1">
 <h1><span class="header-section-number">7</span> Conclusion</h1>
-<div id="limitations-of-the-current-approach" class="section level2">
-<h2><span class="header-section-number">7.1</span> Limitations of the current approach</h2>
-</div>
-<div id="future-directions" class="section level2">
-<h2><span class="header-section-number">7.2</span> Future Directions</h2>
+<p>The goals of this project was to predict the outcomes of the major European domestic soccer leagues and the UEFA Champions League by creating rating system to accurately predict the outcomes of games. To create this rating system, I tested two possible Bayesian mixed effects models, finding that the game random intercept model provided better recovery of team parameters than the alternative bivariate Poisson model (Section <a href="simulation.html#simulation">3</a>).</p>
+<p>The game random intercept model (defined in Section <a href="define-model.html#gri">2.2</a>), was then used to estimate team ratings for soccer clubs all across Europe. An analysis of model fit (Section <a href="fit-model.html#model-fit">5.3</a>) showed that the model was adequately fitting the real data. Thus, I was able to create a ranking of the teams based on their offensive and defensive ratings (Section <a href="fit-model.html#results">5.4</a>). The ratings were then used to create predictions for the outcomes of the English Premier League (Table <a href="predict.html#tab:epl-sim">6.2</a>), French League 1 (Table <a href="predict.html#tab:ligue1-sim">6.3</a>), German Bundesliga (Table <a href="predict.html#tab:bund-sim">6.4</a>), Italian Serie A (Table <a href="predict.html#tab:seriea-sim">6.5</a>), and the Spanish La Liga (Table <a href="predict.html#tab:laliga-sim">6.6</a>).</p>
+<p>Finally, I was also able to predict the outcome of the Champions League using the ratings (Table <a href="predict.html#tab:ucl-sim">6.7</a>).</p>
+<div id="limitations-and-future-directions" class="section level2">
+<h2><span class="header-section-number">7.1</span> Limitations and future directions</h2>
+<p>There are several ways in which the current model could be improved. First, the current model uses only a basic set of predictors: a constant home field advantage and offensive and defensive effects for each team. Adding additional predictors may improve the predictive ability of the model. For example, I could add interactions between the home field advantage and the team effects to get team specific home field advantages. Additionally, I could incorporate rest by adding days since a teams last game as a predictor, or distance traveled.</p>
+<p>In addition to adding parameters, I could also change the outcome variable. Instead of using actual goals scored by each team, I could use expected goals scored and allowed by using shot location data. This would be a better indicator of offensive and defensive ability, as expected goals would indicate the ability of a team to create or prevent scoring opportunities, regardless of whether the shot went actually went in or not.</p>
+<p>Finally, the current modeling approach doesn’t take into account changes in team composition over the course of a season. All games are from the current season are included and weighted equally. Thus, if a team loses a key player, or transfers in new talent, the club ratings won’t immediately reflect that change. It will take several games to see the impact in the ratings, and even then the ratings will be strongly affected by the performance prior to the change (depending on how many games are played before and after the change). Thus, it may be more predictive to add additional weight to more recent games, or even add a trendline to the prediction of team effects that could be based on recent performance.</p>
 
 </div>
 </div>
