@@ -107,7 +107,7 @@ DT::datatable(full_urls, options = list(pageLength = 5, scrollX = TRUE),
 
 ## Scrape game data
 
-Now that all of the team URLs have been collected, I can scrape the game data from each team's page on ESPN. To do this, I'll define a new scraper function, `scrape_team()` (see Appendix \@ref(game-scrape)). Then this function gets mapped to all of the club URLs, using the same process that was used for the league URLs. Note that I also use the **lubridate** package [@R-lubridate] to format dates within the `scrape_team()` function.
+Now that all of the team URLs have been collected, I can scrape the game data from each team's page on ESPN. To do this, I'll define a new scraper function, `scrape_team` (see Appendix \@ref(game-scrape)). Then this function gets mapped to all of the club URLs, using the same process that was used for the league URLs. Note that I also use the **lubridate** package [@R-lubridate] to format dates within the `scrape_team` function.
 
 ```{r get_games, eval = FALSE}
 library(lubridate)
