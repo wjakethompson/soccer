@@ -6,33 +6,31 @@ bibliography: comps_ref.bib
 biblio-style: apalike
 csl: apa.csl
 link-citations: yes
-output: pdf_document
+output: bookdown::pdf_document2
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = TRUE,
-  out.width = "80%",
+  cache = FALSE,
+  echo = FALSE,
+  out.width = "70%",
   fig.align = 'center',
   fig.show = "hold"
 )
+library(methods)
 ```
 
-## Introduction
+# Introduction
 
 This document is a compressed version of a more detailed document available [online](https://wjakethompson.github.io/soccer/). Specifically, this document aims to answers the specific questions for my written comprehensive examination. As such, this document may reference parts of the more complete document, but will also be comprehensive in containing all information needed to adequately address the questions.
 
-## Gather data
+# Gather data
 
-The first step to this analysis is to gather the data for the English Premier League. For this analysis, I will scrape the data from [ESPN](http://www.espnfc.us/). I will first define a function that can scrape the team names and webpages from the league page. This functions uses the **purrr** [@R-purrr] and **rvest** [@R-rvest] packages to scrape the information, and **dplyr** [@R-dplyr] to format the output.
+The first step to this analysis is to gather the data for the English Premier League. For this analysis, I will scrape the data from [ESPN](http://www.espnfc.us/). To scrape the data, I define two functions, `scrape_league` and `scrape_team`. The `scrape_league` function takes in an ESPN URL for a given league and returns the league standings, as well as a URL for the homepage each club in the league. The `scrape_team` function takes the club specific URLs and scrapes the match schedule and results from each club. Both functions use a combination of the **purrr** [@R-purrr], **rvest** [@R-rvest], **dplyr** [@R-dplyr], and **lubridate** [@R-lubridate] packages to retrieve and format this information.
 
-```{r league-func, message = FALSE}
-library(dplyr)
-library(purrr)
-library(rvest)
-
+```{r league-func, include = FALSE}
 scrape_league <- function(x) {
   cont <- TRUE
   while(cont) {
@@ -77,17 +75,7 @@ scrape_league <- function(x) {
 }
 ```
 
-We can then scrape use the `scrape_league` function to get the team names and URLs.
-
-```{r scrape-teams}
-safe_read_html <- safely(read_html)
-epl <- scrape_league("http://www.espnfc.us/english-premier-league/23/table")
-epl
-```
-
-I then define a function for scraping the game information from each team's webpage.
-
-```{r game-func}
+```{r game-func, include = FALSE}
 scrape_team <- function(x, y) {
     x <- gsub("/index", "/fixtures", x, fixed = TRUE)
     
@@ -183,12 +171,20 @@ scrape_team <- function(x, y) {
 }
 ```
 
-And then I use that function to scrape game data. After the game data is scraped, I filter to only include games within the Premier League, and do some cleaning (e.g., replace ESPN abbreviations with the real club name).
-
-```{r scrape-games, message = FALSE}
+```{r scrape-data, message = FALSE, echo = TRUE}
+library(dplyr)
 library(lubridate)
-epl_games <- map2_df(.x = epl$club_url, .y = epl$club, .f = scrape_team)
+library(purrr)
+library(rvest)
 
+safe_read_html <- safely(read_html)
+epl <- scrape_league("http://www.espnfc.us/english-premier-league/23/table")
+epl_games <- map2_df(.x = epl$club_url, .y = epl$club, .f = scrape_team)
+```
+
+After the game data is scraped, I filter to only include games within the Premier League, and do some cleaning (e.g., replace ESPN abbreviations with the real club name). The beginning of the data set can be seen in Table \@ref(tab:format-games).
+
+```{r format-games, message = FALSE}
 team_lookup <- select(epl_games, -team_data)
 
 epl_games <- bind_rows(epl_games$team_data) %>%
@@ -214,9 +210,619 @@ epl_games <- bind_rows(epl_games$team_data) %>%
 knitr::kable(head(epl_games), caption = "English Premier League Games")
 ```
 
-## Estimate the models
+# Estimate the models
 
-I estimate the bivariate Poisson and the game random intercept model using Stan [@R-rstan; @stan]. 
+I estimate the bivariate Poisson and the game random intercept model using Stan [@R-rstan; @stan]. The Stan code for the bivariate Poisson model and the game random intercept model can be seen in Appendix \@ref(bip-model) and \@ref(gri-model) respectively. For each model, I estimate the offensive and defensive parameters for each team as random effects with a mean of 0 and an estimated variance. I also use a non-centered parameterization. This means that I define dummy parameters on a $\mathcal{N}(0,1)$ scale, and then transform the values using the estimated random effect variances. This improves the efficiency of the estimator, and prevents the sampler from getting stuck when the estimated variances are small [@stanwarn; @betancourt2016]. More details about each model can be seen in Section [2](https://wjakethompson.github.io/soccer/define-model.html). 
 
+```{stan stan_bivpois, output.var = "bivpois", echo = FALSE}
+data {
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
+}
+parameters {
+  vector[num_clubs] raw_alpha;                  // attacking intercepts
+  vector[num_clubs] raw_delta;                  // defending intercepts
+  vector[num_clubs] raw_rho;                    // covariance intercepts
 
-## References
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_r;                            // covariance sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_clubs] rho;
+  
+  alpha = raw_alpha * sigma_a;
+  delta = raw_delta * sigma_d;
+  rho = raw_rho * sigma_r;
+}
+model {
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+  vector[num_games] lambda3;
+
+  // priors
+  raw_alpha ~ normal(0, 1);
+  raw_delta ~ normal(0, 1);
+  raw_rho ~ normal(0, 1);
+  mu ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_r ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
+    lambda3[g] = exp(rho[home[g]] + rho[away[g]]);
+  }
+  h_goals ~ poisson(lambda1 + lambda3);
+  a_goals ~ poisson(lambda2 + lambda3);
+}
+generated quantities {
+  real lambda1_rep[num_games];
+  real lambda2_rep[num_games];
+  real lambda3_rep[num_games];
+  int home_rep[num_games];
+  int away_rep[num_games];
+  
+  for (g in 1:num_games) {
+    lambda1_rep[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]]);
+    lambda2_rep[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
+    lambda3_rep[g] = exp(rho[home[g]] + rho[away[g]]);
+
+    home_rep[g] = poisson_rng(lambda1_rep[g] + lambda3_rep[g]);
+    away_rep[g] = poisson_rng(lambda2_rep[g] + lambda3_rep[g]);
+  }
+}
+```
+
+```{stan stan_gri, output.var = "gri", echo = FALSE}
+data {
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
+}
+parameters {
+  vector[num_clubs] raw_alpha;                      // attacking intercepts
+  vector[num_clubs] raw_delta;                      // defending intercepts
+  vector[num_games] raw_gamma;                      // game intercepts
+
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_g;                            // game sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_games] gamma;
+
+  alpha = sigma_a * raw_alpha;
+  delta = sigma_d * raw_delta;
+  gamma = sigma_g * raw_gamma;
+}
+model {
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+
+  // priors
+  raw_alpha ~ normal(0, 1);                         // attacking random effects
+  raw_delta ~ normal(0, 1);                         // defending random effects
+  raw_gamma ~ normal(0, 1);                         // game random effects
+  mu ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_g ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]] + gamma[g]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]] + gamma[g]);
+  }
+  h_goals ~ poisson(lambda1);
+  a_goals ~ poisson(lambda2);
+}
+generated quantities {
+  int home_rep[num_games];
+  int away_rep[num_games];
+  
+  for (g in 1:num_games) {
+    home_rep[g] = poisson_rng(exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]] + gamma[g]));
+    away_rep[g] = poisson_rng(exp(mu + alpha[away[g]] + delta[home[g]] + gamma[g]));
+  }
+}
+```
+
+Because Stan can only take in numerical data, I first have to assign each team a numerical code to track which offensive and defensive effects belong to each team. I can then format the data for use in **rstan**, and estimate each model.
+
+```{r team_counts}
+team_counts <- table(c(epl_games$home, epl_games$away)) %>%
+  as_data_frame() %>%
+  arrange(desc(n)) %>%
+  filter(n >= 5) %>%
+  select(team = Var1, games = n) %>%
+  arrange(team) %>%
+  mutate(code = seq_len(nrow(.)))
+  
+fit_data <- epl_games %>%
+  left_join(select(team_counts, -games), by = c("home" = "team")) %>%
+  rename(home_code = code) %>%
+  left_join(select(team_counts, -games), by = c("away" = "team")) %>%
+  rename(away_code = code) %>%
+  filter(!is.na(home_code), !is.na(away_code)) %>%
+  mutate(home_game = 1)
+```
+
+```{r fit_models, message = FALSE, echo = TRUE}
+library(rstan)
+
+stan_data <- list(
+  num_clubs = nrow(team_counts),
+  num_games = nrow(fit_data),
+  home = fit_data$home_code,
+  away = fit_data$away_code,
+  h_goals = fit_data$h_goals,
+  a_goals = fit_data$a_goals,
+  homeg = fit_data$home_game
+)
+
+bip_stanfit <- sampling(bivpois, data = stan_data, chains = 3, iter = 7000,
+  warmup = 2000, init = "random", thin = 5, cores = 3, algorithm = "NUTS",
+  seed = 32011, control = list(adapt_delta = 0.99, max_treedepth = 15))
+
+gri_stanfit <- sampling(gri, data = stan_data, chains = 3, iter = 7000,
+  warmup = 2000, init = "random", thin = 5, cores = 3, algorithm = "NUTS",
+  seed = 32011, control = list(adapt_delta = 0.99, max_treedepth = 15))
+```
+
+# Results
+
+## Model convergence
+
+Before examing the model results, it is important to ensure that the models have converged. Figures \@ref(fig:bip-rhat-plot) and \@ref(fig:gri-rhat-plot) show the $\hat{R}$ statistics for each model. If all values are below 1.1, then we can infer convergence of the chains. Both Figures \@ref(fig:bip-rhat-plot) and \@ref(fig:gri-rhat-plot) indicate that both models adequately converged.
+
+```{r bip-rhat-plot, message = FALSE, fig.height = 7, fig.width = 10, fig.cap = "Rhat statistics for the estimated bivariate Poisson model.", echo = FALSE}
+as.data.frame(summary(bip_stanfit)[[1]]) %>%
+  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
+  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
+  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
+  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
+  labs(y = expression(hat(italic(R)))) +
+  theme_bw()
+```
+
+```{r gri-rhat-plot, message = FALSE, fig.height = 7, fig.width = 10, fig.cap = "Rhat statistics for the estimated game random intercept model.", echo = FALSE}
+as.data.frame(summary(gri_stanfit)[[1]]) %>%
+  mutate(Parameter = as.factor(gsub("\\[.*]", "", rownames(.)))) %>%
+  ggplot(aes(x = Parameter, y = Rhat, color = Parameter)) +
+  geom_jitter(height = 0, width = 0.4, show.legend = FALSE) +
+  geom_hline(aes(yintercept = 1.1), linetype = "dashed") +
+  labs(y = expression(hat(italic(R)))) +
+  theme_bw()
+```
+
+## Ratings comparison
+
+To get ratings for each team, I will calculate the expected goals scored and conceded for each team against an average team at a neutral location. I can then compute and expected score margin, which can be used to rank the overall ability of each team. As can be seen in Table \@ref(tab:create-ratings), the offensive and defensive effects estimated in the bivariate Poisson model (BIP) are smaller in magnitude than those of the game random intercept model (GRI). Figure \@ref(fig:net-scatter) shows a comparison of the net ratings between the models. Here we can see that although the scale is smaller for the BIP model, there is a strong relationship between the two.
+
+```{r create-ratings, echo = FALSE}
+bip_params <- rstan::extract(bip_stanfit, pars = c("mu", "alpha", "delta", "rho"))
+bip_mu <- mean(bip_params$mu)
+bip_alpha <- colMeans(bip_params$alpha)
+bip_delta <- colMeans(bip_params$delta)
+bip_rho <- colMeans(bip_params$rho)
+
+gri_params <- rstan::extract(gri_stanfit, pars = c("mu", "alpha", "delta"))
+gri_mu <- mean(gri_params$mu)
+gri_alpha <- colMeans(gri_params$alpha)
+gri_delta <- colMeans(gri_params$delta)
+
+rankings <- data_frame(
+  club = team_counts$team,
+  bip_alpha, bip_delta, bip_rho,
+  gri_alpha, gri_delta
+) %>%
+  left_join(select(epl, club, points), by = "club") %>%
+  mutate(
+    points = as.numeric(points),
+    bip_offense = exp(bip_mu + bip_alpha + bip_rho),
+    bip_defense = exp(bip_mu + bip_delta + bip_rho),
+    gri_offense = exp(gri_mu + gri_alpha),
+    gri_defense = exp(gri_mu + gri_delta),
+    bip_net = bip_offense - bip_defense,
+    gri_net = gri_offense - gri_defense
+  ) %>%
+  select(Club = club, `League Points` = points, `BIP Net` = bip_net,
+    `GRI Net` = gri_net) %>%
+  arrange(desc(`League Points`))
+knitr::kable(rankings, caption = "Model Ratings", align = "c", digits = 2)
+```
+
+```{r net-scatter, fig.cap = "Comparison of net rating across models.", echo = FALSE}
+ggplot(rankings, aes(x = `BIP Net`, y = `GRI Net`)) +
+  geom_point() +
+  theme_bw()
+```
+
+We can also compare the net ratings to the league standings by looking at the correlations between the net ratings and the points each team has scored in the league thus far. Table \@ref(tab:points-corr) shows that the GRI model ratings are more highly correlated with league standings. This provides preliminary evidence that the GRI model may be better suited to the data. However, a more thorough examination of model fit is needed to confirm this.
+
+```{r points-corr, echo = FALSE}
+corrs <- cor(select(rankings, `League Points`, `BIP Net`, `GRI Net`))
+knitr::kable(corrs, caption = "Correlation matrix of net ratings and league points.", digits = 3, align = "c")
+```
+
+# Model fit
+
+Model fit can be assessed by posterior predictive model checks. Posterior predictive model checks refer to the generation of a replicated data set at each iteration of the MCMC chains. At each iteration, the current values of the parameters are used to generate a new data set. Thus, it is possible to get replicated data sets that take into account the uncertainty in the parameter estimates, and compare these replicated data sets to the observed data.
+
+```{r rep-data, message = FALSE}
+library(tidyr)
+
+# Bivariate Poisson
+bip_home_rep <- rstan::extract(bip_stanfit, pars = "home_rep",
+  permuted = TRUE)$home_rep
+bip_away_rep <- rstan::extract(bip_stanfit, pars = "away_rep",
+  permuted = TRUE)$away_rep
+
+bip_home_rep <- t(bip_home_rep) %>%
+  as_data_frame() %>% as.list()
+bip_away_rep <- t(bip_away_rep) %>%
+  as_data_frame() %>% as.list()
+bip_counter <- seq_along(bip_home_rep)
+
+bip_rep_data <- pmap_df(.l = list(h = bip_home_rep, a = bip_away_rep,
+  c = bip_counter), .f = function(h, a, c) {
+    data_frame(
+      replication = c,
+      game = seq_len(length(h)),
+      home_score = h,
+      away_score = a
+    )
+  })
+
+# Game random intercept
+gri_home_rep <- rstan::extract(gri_stanfit, pars = "home_rep",
+  permuted = TRUE)$home_rep
+gri_away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
+  permuted = TRUE)$away_rep
+
+gri_home_rep <- t(gri_home_rep) %>%
+  as_data_frame() %>% as.list()
+gri_away_rep <- t(gri_away_rep) %>%
+  as_data_frame() %>% as.list()
+gri_counter <- seq_along(gri_home_rep)
+
+gri_rep_data <- pmap_df(.l = list(h = gri_home_rep, a = gri_away_rep,
+  c = gri_counter), .f = function(h, a, c) {
+    data_frame(
+      replication = c,
+      game = seq_len(length(h)),
+      home_score = h,
+      away_score = a
+    )
+  })
+```
+
+## Recovery of score distributions
+
+One way to compare the replicated data sets to the observed data is to look at the distributions of goals scores by the home and away teams. Figures \@ref(fig:bip-score-dist) and \@ref(fig:gri-score-dist) show that both models are able to recover the observed score distribution without any glaring deviations.
+
+```{r bip-score-dist, fig.height = 4, fig.width = 6, fig.cap = "Bivariate Poisson recovery of observed score distributions.", echo = FALSE}
+bip_rep_data %>%
+  filter(replication %in% 1:500) %>%
+  gather(key = team, value = score, home_score:away_score) %>%
+  mutate(team = factor(team, levels = c("home_score", "away_score"),
+    labels = c("Home Score", "Away Score"))) %>%
+  ggplot(mapping = aes(x = score)) +
+  facet_wrap(~ team, ncol = 2) +
+  stat_density(aes(group = replication, color = "Replications"), geom = "line",
+    alpha = 0.2, bw = 0.5, position = "identity") +
+  stat_density(
+    data = fit_data %>%
+      select(h_goals, a_goals) %>%
+      gather(key = team, value = score, h_goals:a_goals) %>%
+      mutate(team = factor(team, levels = c("h_goals", "a_goals"),
+        labels = c("Home Score", "Away Score"))),
+    aes(color = "Observed"), geom = "line", alpha = 0.8, bw = 0.5, size = 1
+  ) +
+  scale_color_manual(values = c("Observed" = "red",
+    "Replications" = "black")) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(color = guide_legend(title = NULL, override.aes = list(alpha = 1)))
+```
+
+```{r gri-score-dist, fig.height = 4, fig.width = 6, fig.cap = "Game random intercept recovery of observed score distributions.", echo = FALSE}
+gri_rep_data %>%
+  filter(replication %in% 1:500) %>%
+  gather(key = team, value = score, home_score:away_score) %>%
+  mutate(team = factor(team, levels = c("home_score", "away_score"),
+    labels = c("Home Score", "Away Score"))) %>%
+  ggplot(mapping = aes(x = score)) +
+  facet_wrap(~ team, ncol = 2) +
+  stat_density(aes(group = replication, color = "Replications"), geom = "line",
+    alpha = 0.2, bw = 0.5, position = "identity") +
+  stat_density(
+    data = fit_data %>%
+      select(h_goals, a_goals) %>%
+      gather(key = team, value = score, h_goals:a_goals) %>%
+      mutate(team = factor(team, levels = c("h_goals", "a_goals"),
+        labels = c("Home Score", "Away Score"))),
+    aes(color = "Observed"), geom = "line", alpha = 0.8, bw = 0.5, size = 1
+  ) +
+  scale_color_manual(values = c("Observed" = "red",
+    "Replications" = "black")) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(color = guide_legend(title = NULL, override.aes = list(alpha = 1)))
+```
+
+## Prediction error
+
+```{r outcome-probs}
+bip_outcomes <- bip_rep_data %>%
+  mutate(mov = home_score - away_score) %>%
+  group_by(game) %>%
+  summarize(
+    win_prob = length(which(mov > 0)) / n(),
+    tie_prob = length(which(mov == 0)) / n(),
+    loss_prob = length(which(mov < 0)) / n()
+  ) %>%
+  mutate(
+    most_likely = ifelse(win_prob > tie_prob & win_prob > loss_prob, "win",
+      ifelse(tie_prob > win_prob & tie_prob > loss_prob, "tie", "loss"))
+  ) %>%
+  mutate(
+    obs_mov = fit_data$h_goals - fit_data$a_goals,
+    outcome = ifelse(obs_mov > 0, "win", ifelse(obs_mov == 0, "tie", "loss"))
+  )
+
+gri_outcomes <- gri_rep_data %>%
+  mutate(mov = home_score - away_score) %>%
+  group_by(game) %>%
+  summarize(
+    win_prob = length(which(mov > 0)) / n(),
+    tie_prob = length(which(mov == 0)) / n(),
+    loss_prob = length(which(mov < 0)) / n()
+  ) %>%
+  mutate(
+    most_likely = ifelse(win_prob > tie_prob & win_prob > loss_prob, "win",
+      ifelse(tie_prob > win_prob & tie_prob > loss_prob, "tie", "loss"))
+  ) %>%
+  mutate(
+    obs_mov = fit_data$h_goals - fit_data$a_goals,
+    outcome = ifelse(obs_mov > 0, "win", ifelse(obs_mov == 0, "tie", "loss"))
+  )
+```
+
+Alternatively, we could use the replicated data sets to get probabilities for the outcomes of each game (i.e., in what percent of the replicated data sets did the home team win, lose, or tie each game). The outcome probabilities can then be compared to the observed results to evaluate which model had lower prediction error. Using the predictions from the replicated data sets, the bivariate Poisson model gave the observed outcome the highest probability in `r sprintf("%0.1f", (length(which(bip_outcomes$most_likely == bip_outcomes$outcome)) / nrow(bip_outcomes)) * 100)` percent of the games, compared to `r sprintf("%0.1f", (length(which(gri_outcomes$most_likely == gri_outcomes$outcome)) / nrow(gri_outcomes)) * 100)` percent in the game random intercept model.
+
+One problem with this approach is that it doesn't take into the actual values of the probabilities. For example, take two games where the home team won. In the first game, the home team had a 60 percent chance of winning. In the second game, the home teams had a 90 percent chance of winning. In both cases, the most likely outcome matches the observed outcome, so both instances are assigned a one in the binary loss function as a correct prediction. Alternatively, we could use the log loss function to look at how far the probability was from the observed event [@altun2003]. In this example, the second game would be a better prediction, and have a lower log loss, because a probability of 0.9 is closer to the observed outcome (1) than a probability of 0.6.
+
+The log loss for multiple games is defined in equation \@ref(eq:logloss).
+
+\begin{equation}
+logloss = - \frac{1}{N}\sum_{i=1}^N\sum_{j=1}^My_{ij}\log(p_{ij})
+(\#eq:logloss)
+\end{equation}
+
+In equation \@ref(eq:logloss), $N$ is number of observations (in this case the number of games), $M$ is the number of outcomes (for soccer games this is 3: win, loss, and tie), $y_{ij}$ is a binary indicator of whether outcome $M$ occured for observation $N$ (1) or not (0), and $p_{ij}$ is the probability of outcome $M$ for observation $N$. Thus, the log loss for a set of predictions is the log of the probability of the observed outcomes, summed over all observations. In the case of perfect predictions, the probability of the observed outcome would be 1, and the log probability would be 0. This means that the closer the log loss is to 0, the better the predictions are [@roy2001].
+
+```{r logloss-func}
+logloss <- function(pred, obs){
+  eps <- 1e-15
+  pred <- pmin(pmax(pred, eps), 1 - eps)
+  (-1 / nrow(obs)) * sum(obs * log(pred) + (1 - obs) * log(1 - pred)) 
+}
+```
+
+```{r calc-log-loss}
+bip_predictions <- bip_outcomes %>%
+  select(win_prob, tie_prob, loss_prob) %>%
+  as.matrix()
+gri_predictions <- gri_outcomes %>%
+  select(win_prob, tie_prob, loss_prob) %>%
+  as.matrix()
+observations <- bip_outcomes %>%
+  mutate(
+    obs_win = ifelse(outcome == "win", 1, 0),
+    obs_tie = ifelse(outcome == "tie", 1, 0),
+    obs_loss = ifelse(outcome == "loss", 1, 0)
+  ) %>%
+  select(obs_win, obs_tie, obs_loss) %>%
+  as.matrix()
+bip_logloss <- logloss(pred = bip_predictions, obs = observations)
+gri_logloss <- logloss(pred = gri_predictions, obs = observations)
+```
+
+The log loss for predictions from the replicated data sets is `r sprintf("%0.3f", bip_logloss)` in the bivariate Poisson model, and `r sprintf("%0.3f", gri_logloss)` in the game random intercept model. In isolation, the log loss can be hard to interpret. Instead, it is often useful to compare to baseline models. Table \@ref(tab:logloss-tab) shows the log loss for a variety of models. In the data average model, the probability of each outcome is set to the overall average for the entire data set. In the equal probabilities model, the probability for each outcome is set to 0.33. Finally, in the home win model, the probability of the home team winning is set to 1 and the probability of the other outcomes is set to 0. Both the bivariate Poisson and game random intercept models out perform all baseline models, but the game random intercept model out performs the bivariate Poisson model.
+
+These findings suggest that the game random intercept model is providing better model-data fit. This is consistent with the findings of a small simulation study I conducted, which found that the game random intercept model was better able to recover the true parameters (Section [3](https://wjakethompson.github.io/soccer/simulation.html)). Given these findings, I would recommend using the game random intercept model for predictions moving forward. Accordingly, predictions based on this model for the major European domestic leagues (including the English Premier League) and the UEFA Champions League can be seen in Section [6](https://wjakethompson.github.io/soccer/predict.html).
+
+```{r logloss-tab, echo = FALSE}
+data_frame(
+  Model = c("Bivariate Poisson", "Game Random Intercept", "Data Average",
+    "Equal Probabilities", "Home Win"),
+  `Log Loss` = c(
+    bip_logloss,
+    gri_logloss,
+    logloss(pred = matrix(data = c(mean(observations[,1]),
+      mean(observations[,2]), mean(observations[,3])), nrow = nrow(bip_outcomes),
+      ncol = 3, byrow = TRUE), obs = observations),
+    logloss(pred = matrix(data = 1/3, nrow = nrow(bip_outcomes), ncol = 3),
+      obs = observations),
+    logloss(pred = matrix(data = c(1, 0, 0), nrow = nrow(bip_outcomes), ncol = 3,
+      byrow = TRUE), obs = observations)
+  )  
+) %>%
+  arrange(`Log Loss`) %>%
+  knitr::kable(caption = "Log loss comparison to baseline models.", digits = 3,
+    align = "c")
+```
+
+# (APPENDIX) Appendix {-}
+
+# Appendix {-}
+
+# Stan Models
+
+## Bivariate Poisson
+
+```{stan stan_bivpois_app, output.var = "bivpois", echo = TRUE, eval = FALSE}
+data {
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
+}
+parameters {
+  vector[num_clubs] raw_alpha;                  // attacking intercepts
+  vector[num_clubs] raw_delta;                  // defending intercepts
+  vector[num_clubs] raw_rho;                    // covariance intercepts
+
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_r;                            // covariance sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_clubs] rho;
+  
+  alpha = raw_alpha * sigma_a;
+  delta = raw_delta * sigma_d;
+  rho = raw_rho * sigma_r;
+}
+model {
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+  vector[num_games] lambda3;
+
+  // priors
+  raw_alpha ~ normal(0, 1);
+  raw_delta ~ normal(0, 1);
+  raw_rho ~ normal(0, 1);
+  mu ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_r ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
+    lambda3[g] = exp(rho[home[g]] + rho[away[g]]);
+  }
+  h_goals ~ poisson(lambda1 + lambda3);
+  a_goals ~ poisson(lambda2 + lambda3);
+}
+generated quantities {
+  real lambda1_rep[num_games];
+  real lambda2_rep[num_games];
+  real lambda3_rep[num_games];
+  int home_rep[num_games];
+  int away_rep[num_games];
+  
+  for (g in 1:num_games) {
+    lambda1_rep[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]]);
+    lambda2_rep[g] = exp(mu + alpha[away[g]] + delta[home[g]]);
+    lambda3_rep[g] = exp(rho[home[g]] + rho[away[g]]);
+
+    home_rep[g] = poisson_rng(lambda1_rep[g] + lambda3_rep[g]);
+    away_rep[g] = poisson_rng(lambda2_rep[g] + lambda3_rep[g]);
+  }
+}
+```
+
+## Game random intercept
+
+```{stan stan_gri_app, output.var = "gri", echo = TRUE, eval = FALSE}
+data {
+  int<lower=1> num_clubs;                           // number of clubs
+  int<lower=1> num_games;                           // number of games
+  int<lower=1,upper=num_clubs> home[num_games];     // home club for game g
+  int<lower=1,upper=num_clubs> away[num_games];     // away club for game g
+  int<lower=0> h_goals[num_games];                  // home goals for game g
+  int<lower=0> a_goals[num_games];                  // away goals for game g
+  int<lower=0,upper=1> homeg[num_games];            // home field for game g
+}
+parameters {
+  vector[num_clubs] raw_alpha;                      // attacking intercepts
+  vector[num_clubs] raw_delta;                      // defending intercepts
+  vector[num_games] raw_gamma;                      // game intercepts
+
+  real mu;                                          // fixed intercept
+  real eta;                                         // homefield
+  real<lower=0> sigma_a;                            // attacking sd
+  real<lower=0> sigma_d;                            // defending sd
+  real<lower=0> sigma_g;                            // game sd
+}
+transformed parameters {
+  vector[num_clubs] alpha;
+  vector[num_clubs] delta;
+  vector[num_games] gamma;
+
+  alpha = sigma_a * raw_alpha;
+  delta = sigma_d * raw_delta;
+  gamma = sigma_g * raw_gamma;
+}
+model {
+  vector[num_games] lambda1;
+  vector[num_games] lambda2;
+
+  // priors
+  raw_alpha ~ normal(0, 1);                         // attacking random effects
+  raw_delta ~ normal(0, 1);                         // defending random effects
+  raw_gamma ~ normal(0, 1);                         // game random effects
+  mu ~ normal(0, 10);
+  eta ~ normal(0, 10);
+  sigma_a ~ normal(0, 10);
+  sigma_d ~ normal(0, 10);
+  sigma_g ~ normal(0, 10);
+
+  // likelihood
+  for (g in 1:num_games) {
+    lambda1[g] = exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]] + gamma[g]);
+    lambda2[g] = exp(mu + alpha[away[g]] + delta[home[g]] + gamma[g]);
+  }
+  h_goals ~ poisson(lambda1);
+  a_goals ~ poisson(lambda2);
+}
+generated quantities {
+  int home_rep[num_games];
+  int away_rep[num_games];
+  
+  for (g in 1:num_games) {
+    home_rep[g] = poisson_rng(exp(mu + (eta * homeg[g]) + alpha[home[g]] + delta[away[g]] + gamma[g]));
+    away_rep[g] = poisson_rng(exp(mu + alpha[away[g]] + delta[home[g]] + gamma[g]));
+  }
+}
+```
+
+# References 
