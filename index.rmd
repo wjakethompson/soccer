@@ -8,7 +8,6 @@ documentclass: book
 bibliography: [refs.bib, packages.bib]
 biblio-style: apalike
 csl: apa.csl
-link-citations: yes
 nocite: |
   @R-knitr, @R-rmarkdown, @R-DT, @R-parallel, @R-base, @R-scales, @R-grid
 github-repo: wjakethompson/soccer
