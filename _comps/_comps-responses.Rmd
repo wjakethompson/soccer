@@ -1,5 +1,5 @@
 ---
-title: "Comprehensive Examination Responses"
+title: "Comprehensive Examination Responses: Templin"
 author: "Jake Thompson"
 date: "`r Sys.Date()`"
 bibliography: comps_ref.bib
@@ -349,7 +349,7 @@ generated quantities {
 }
 ```
 
-Because Stan can only take in numerical data, I first have to assign each team a numerical code to track which offensive and defensive effects belong to each team. I can then format the data for use in **rstan**, and estimate each model.
+Because Stan can only take in numerical data, I first have to assign each team a numerical code to each team. I can then format the data for use in **rstan**, and estimate each model.
 
 ```{r team_counts}
 team_counts <- table(c(epl_games$home, epl_games$away)) %>%
@@ -469,7 +469,7 @@ knitr::kable(corrs, caption = "Correlation matrix of net ratings and league poin
 
 # Model fit
 
-Model fit can be assessed by posterior predictive model checks. Posterior predictive model checks refer to the generation of a replicated data set at each iteration of the MCMC chains. At each iteration, the current values of the parameters are used to generate a new data set. Thus, it is possible to get replicated data sets that take into account the uncertainty in the parameter estimates, and compare these replicated data sets to the observed data.
+Model fit can be assessed by posterior predictive model checks. Posterior predictive checks involve simulating replications of the data using the values of the Markov chain, and then comparing the replicated data to the observed data [@bda3]. This means that replicated data sets take into account the uncertainty in the parameter estimates, as a new replicated data set is created at each iteration of the Markov chain. These data sets can then be used to look for systematic differences in the characterics of the observed and simulated data, often through visualizations [@gelmanhill2006].
 
 ```{r rep-data, message = FALSE}
 library(tidyr)
