@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-03-30">
+<meta name="date" content="2017-04-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -245,7 +245,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   (X_A,\ X_B) \sim BP(\lambda_1,\ \lambda_2,\ \lambda_0)
 \tag{2.3}
 \end{equation}\]</span>
-<p>In this parameterization, <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> are Poisson distributed with means equal to <span class="math inline">\(\lambda_1 + \lambda_3\)</span> and <span class="math inline">\(\lambda_2 + \lambda_3\)</span> respectively, with <span class="math inline">\(\lambda_3\)</span> representing the covariance between <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> <span class="citation">(AlMuhayfith, Alzaid, &amp; Omair, <a href="#ref-AlMuhayfith2016">2016</a>; Griffiths &amp; Milne, <a href="#ref-griffiths1978">1978</a>; Kawamura, <a href="#ref-kawamura1973">1973</a>)</span>. We can model these parameters just as we would model, for example, means in a normal distribution. Thus, for a given game, <span class="math inline">\(i\)</span>,</p>
+<p>In this parameterization, <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> are Poisson distributed with means equal to <span class="math inline">\(\lambda_1 + \lambda_3\)</span> and <span class="math inline">\(\lambda_2 + \lambda_3\)</span> respectively, with <span class="math inline">\(\lambda_3\)</span> representing the covariance between <span class="math inline">\(X_A\)</span> and <span class="math inline">\(X_B\)</span> <span class="citation">(AlMuhayfith, Alzaid, &amp; Omair, 2016; Griffiths &amp; Milne, 1978; Kawamura, 1973)</span>. We can model these parameters just as we would model, for example, means in a normal distribution. Thus, for a given game, <span class="math inline">\(i\)</span>,</p>
 <span class="math display" id="eq:bipois-regress">\[\begin{equation}
 \begin{split}
   (X_{Ai},\ X_{Bi}) &amp; \sim BP(\lambda_{1i},\ \lambda_{2i},\ \lambda_{0i}),\\
@@ -255,7 +255,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 \end{split}
 \tag{2.4}
 \end{equation}\]</span>
-<p>where <span class="math inline">\(\omega\)</span> represents a matrix of independent variable, and <span class="math inline">\(\beta\)</span> denotes the regression coefficients <span class="citation">(Karlis &amp; Ntzoufras, <a href="#ref-karlis2003">2003</a>, <a href="#ref-karlis2005">2005</a>)</span>. When predicting soccer games, the independent variables are the teams that are playing, and the regression coefficients represent the offensive or defensive strength of the teams <span class="citation">(Groll, Kneib, Mayr, &amp; Schauberger, <a href="#ref-groll2016">2016</a>)</span>. Specifically, we can model the two scores, <span class="math inline">\(X\)</span>, for teams <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, from a given game, <span class="math inline">\(i\)</span>, as</p>
+<p>where <span class="math inline">\(\omega\)</span> represents a matrix of independent variable, and <span class="math inline">\(\beta\)</span> denotes the regression coefficients <span class="citation">(Karlis &amp; Ntzoufras, 2003, 2005)</span>. When predicting soccer games, the independent variables are the teams that are playing, and the regression coefficients represent the offensive or defensive strength of the teams <span class="citation">(Groll, Kneib, Mayr, &amp; Schauberger, 2016)</span>. Specifically, we can model the two scores, <span class="math inline">\(X\)</span>, for teams <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, from a given game, <span class="math inline">\(i\)</span>, as</p>
 <span class="math display" id="eq:lambda0" id="eq:lambda2" id="eq:lambda1">\[\begin{align}
   log(X_{Ai}) &amp;= \lambda_{1i} + \lambda_{0i}, \notag \\
   log(X_{Bi}) &amp;= \lambda_{2i} + \lambda_{0i}, \notag \\
@@ -263,12 +263,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   \lambda_{2i} &amp;= \mu + \alpha_B + \delta_A, \tag{2.6} \\
   \lambda_{0i} &amp;= \rho_A + \rho_B \tag{2.7}
 \end{align}\]</span>
-<p>Here, <span class="math inline">\(\mu\)</span> denotes the overall intercept, or the expected log goals for a team not playing at home, and <span class="math inline">\(\eta\)</span> represents the increase in expected log goals for a team playing at home. <span class="math inline">\(H_i\)</span> is a dummy variable indicating whether game <span class="math inline">\(i\)</span> was played at the home team’s stadium (1) or a neutral site (0). The estimates of team ability come from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span>, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, <span class="math inline">\(\rho\)</span> denotes the change in expected covariance for each team <span class="citation">(Whitaker, <a href="#ref-whitaker2011">2011</a>)</span>.</p>
+<p>Here, <span class="math inline">\(\mu\)</span> denotes the overall intercept, or the expected log goals for a team not playing at home, and <span class="math inline">\(\eta\)</span> represents the increase in expected log goals for a team playing at home. <span class="math inline">\(H_i\)</span> is a dummy variable indicating whether game <span class="math inline">\(i\)</span> was played at the home team’s stadium (1) or a neutral site (0). The estimates of team ability come from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span>, which represent the attacking and defensive abilities of the given team respectively. These can be modeled as fixed effects, or as random effects. Finally, <span class="math inline">\(\rho\)</span> denotes the change in expected covariance for each team <span class="citation">(Whitaker, 2011)</span>.</p>
 <div id="imp-bivpois" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Implementing the bivariate Poisson model</h3>
-<p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, <a href="#ref-R-rstan">2017</a>)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
+<p>The bivariate Poisson model can be fit using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo, Gabry, &amp; Goodrich, 2017)</span>. In the model code, I have modeled <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\delta\)</span>, and <span class="math inline">\(\rho\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. This means that positive <span class="math inline">\(\alpha\)</span> values and negative <span class="math inline">\(\delta\)</span> are good, as team wants the attack to add goals above the average, and the defense to result in the opponent have below average goals.</p>
 <p>All parameters have non-information priors. The priors were specified as normal with a mean of 0 and standard deviation of 10. This specification provides a diffuse range of plausible values for the parameter, allowing the likelihood to dominate. However, the use of a diffuse normal prior also prevents arbitrary boundaries from being set for a uniformly distributed prior.</p>
-<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">c</a>)</span>.</p>
+<p>I have also reparameterized the random effects so that Stan can sample from a <span class="math inline">\(\mathcal{N}(0,\ 1)\)</span>, which reduces computation time and increases the efficiency of the sampler to avoid divergent transitions <span class="citation">(Betancourt, 2016, 2017; Stan Development Team, 2016c)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -338,7 +338,7 @@ model {
 <p>Thus, although both models take into account the dependency between the two scores in a given game, the models make different assumptions about the nature of this dependency.</p>
 <div id="imp-gri" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Implementing the game random intercept model</h3>
-<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., <a href="#ref-R-rstan">2017</a>)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. Diffuse normal priors are specified in the same way as for the bivariate Poisson model. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Betancourt, <a href="#ref-betancourt2016">2016</a>, <a href="#ref-betancourt2017">2017</a>; Stan Development Team, <a href="#ref-stan">2016</a><a href="#ref-stan">c</a>)</span>.</p>
+<p>The game random intercept model can be estimated using the following Stan code and the <strong>rstan</strong> package <span class="citation">(Guo et al., 2017)</span>. As with the bivariate Poisson model, I have modeled <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\delta\)</span> as random effects so that <span class="math inline">\(\mu\)</span> represents the overall mean. Diffuse normal priors are specified in the same way as for the bivariate Poisson model. The random effects are also reparameterized in the same way as they were in the bivariate Poisson to reduce computation time and increase efficiency <span class="citation">(Betancourt, 2016, 2017; Stan Development Team, 2016c)</span>.</p>
 <pre class="stan"><code>data {
   int&lt;lower=1&gt; num_clubs;                           // number of clubs
   int&lt;lower=1&gt; num_games;                           // number of games
@@ -392,42 +392,6 @@ model {
 }</code></pre>
 
 </div>
-</div>
-</div>
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-AlMuhayfith2016">
-<p>AlMuhayfith, F. E., Alzaid, A. A., &amp; Omair, M. A. (2016). On bivariate poisson regression models. <em>Journal of King Saud University - Science</em>, <em>28</em>(2), 178–189. <a href="https://doi.org/10.1016/j.jksus.2015.09.003" class="uri">https://doi.org/10.1016/j.jksus.2015.09.003</a></p>
-</div>
-<div id="ref-griffiths1978">
-<p>Griffiths, R., &amp; Milne, R. (1978). A class of bivariate poisson processes. <em>Journal of Multivariate Analysis</em>, <em>8</em>(3), 380–395. <a href="https://doi.org/10.1016/0047-259X(78)90061-1" class="uri">https://doi.org/10.1016/0047-259X(78)90061-1</a></p>
-</div>
-<div id="ref-kawamura1973">
-<p>Kawamura, K. (1973). The structure of bivariate poisson distribution. <em>Kodai Math. Sem. Rep.</em>, <em>25</em>(2), 246–256. <a href="https://doi.org/10.2996/kmj/1138846776" class="uri">https://doi.org/10.2996/kmj/1138846776</a></p>
-</div>
-<div id="ref-karlis2003">
-<p>Karlis, D., &amp; Ntzoufras, I. (2003). Analysis of sports data by using bivariate poisson models. <em>The Statistician</em>, <em>52</em>, 381–393.</p>
-</div>
-<div id="ref-karlis2005">
-<p>Karlis, D., &amp; Ntzoufras, I. (2005). Bivariate poisson and diagonal inflated bivariate poisson regression models in r. <em>Journal of Statistical Software</em>, <em>14</em>(10), 1–17.</p>
-</div>
-<div id="ref-groll2016">
-<p>Groll, A., Kneib, T., Mayr, A., &amp; Schauberger, G. (2016). Who’s the favourite? A bivariate poisson model for the uefa european football championship 2016. Retrieved from <a href="http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8" class="uri">http://nbn-resolving.de/urn/resolver.pl?urn=nbn:de:bvb:19-epub-29028-8</a></p>
-</div>
-<div id="ref-whitaker2011">
-<p>Whitaker, G. (2011, May). <em>The bivariate poisson distribution and its applications to football</em> (PhD thesis). Newcastle University.</p>
-</div>
-<div id="ref-R-rstan">
-<p>Guo, J., Gabry, J., &amp; Goodrich, B. (2017). <em>Rstan: R interface to stan</em>. Retrieved from <a href="https://CRAN.R-project.org/package=rstan" class="uri">https://CRAN.R-project.org/package=rstan</a></p>
-</div>
-<div id="ref-betancourt2016">
-<p>Betancourt, M. (2016). <em>Diagnosing suboptimal cotangent disintegrations in hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1604.00695" class="uri">https://arxiv.org/abs/1604.00695</a></p>
-</div>
-<div id="ref-betancourt2017">
-<p>Betancourt, M. (2017). <em>A conceptual introduction to hamiltonian monte carlo</em>. Retrieved from <a href="https://arxiv.org/abs/1701.02434" class="uri">https://arxiv.org/abs/1701.02434</a></p>
-</div>
-<div id="ref-stan">
-<p>Stan Development Team. (2016c). <em>Stan modeling language: User’s guide and reference manual</em>. Retrieved from <a href="http://mc-stan.org/documentation/" class="uri">http://mc-stan.org/documentation/</a></p>
 </div>
 </div>
             </section>

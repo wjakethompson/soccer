@@ -2,14 +2,13 @@
 --- 
 title: "Soccer Predictions Using Bayesian Mixed Effects Models"
 author: "Jake Thompson"
-date: "2017-03-30"
+date: "2017-04-04"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
 bibliography: [refs.bib, packages.bib]
 biblio-style: apalike
 csl: apa.csl
-link-citations: yes
 nocite: |
   @R-knitr, @R-rmarkdown, @R-DT, @R-parallel, @R-base, @R-scales, @R-grid
 github-repo: wjakethompson/soccer
