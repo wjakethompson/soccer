@@ -419,9 +419,42 @@ as.data.frame(summary(gri_stanfit)[[1]]) %>%
 
 ## Ratings comparison
 
-To get ratings for each team, I will calculate the expected goals scored and conceded for each team against an average team at a neutral location. I can then compute and expected score margin, which can be used to rank the overall ability of each team. As can be seen in Table \@ref(tab:create-ratings), the offensive and defensive effects estimated in the bivariate Poisson model (BIP) are smaller in magnitude than those of the game random intercept model (GRI). Figure \@ref(fig:net-scatter) shows a comparison of the net ratings between the models. Here we can see that although the scale is smaller for the BIP model, there is a strong relationship between the two.
+To get ratings for each team, I will calculate the expected goals scored and conceded for each team against an average team at a neutral location. I can then compute and expected score margin, which can be used to rank the overall ability of each team. As can be seen in Table \@ref(tab:effect-ratings), the offensive and defensive effects estimated in the bivariate Poisson model (BIP) are smaller in magnitude than those of the game random intercept model (GRI). Table \@ref(tab:net-ratings) shows the net rating for each team under each model, along with the points each team has accrued in the league so far.
 
-```{r create-ratings, echo = FALSE}
+```{r effect-ratings, echo = FALSE}
+bip_params <- rstan::extract(bip_stanfit, pars = c("mu", "alpha", "delta", "rho"))
+bip_mu <- mean(bip_params$mu)
+bip_alpha <- colMeans(bip_params$alpha)
+bip_delta <- colMeans(bip_params$delta)
+bip_rho <- colMeans(bip_params$rho)
+
+gri_params <- rstan::extract(gri_stanfit, pars = c("mu", "alpha", "delta"))
+gri_mu <- mean(gri_params$mu)
+gri_alpha <- colMeans(gri_params$alpha)
+gri_delta <- colMeans(gri_params$delta)
+
+rankings <- data_frame(
+  club = team_counts$team,
+  bip_alpha, bip_delta, bip_rho,
+  gri_alpha, gri_delta
+) %>%
+  left_join(select(epl, club, points), by = "club") %>%
+  mutate(
+    points = as.numeric(points),
+    bip_offense = exp(bip_mu + bip_alpha + bip_rho),
+    bip_defense = exp(bip_mu + bip_delta + bip_rho),
+    gri_offense = exp(gri_mu + gri_alpha),
+    gri_defense = exp(gri_mu + gri_delta),
+    bip_net = bip_offense - bip_defense,
+    gri_net = gri_offense - gri_defense
+  ) %>%
+  arrange(desc(points)) %>%
+  select(Club = club, `BIP Offense` = bip_offense, `GRI Offense` = gri_offense,
+    `BIP Defense` = bip_defense, `GRI Defense` = gri_defense)
+knitr::kable(rankings, caption = "Model Expected Goals", align = "c", digits = 2)
+```
+
+```{r net-ratings, echo = FALSE}
 bip_params <- rstan::extract(bip_stanfit, pars = c("mu", "alpha", "delta", "rho"))
 bip_mu <- mean(bip_params$mu)
 bip_alpha <- colMeans(bip_params$alpha)
@@ -451,8 +484,26 @@ rankings <- data_frame(
   select(Club = club, `League Points` = points, `BIP Net` = bip_net,
     `GRI Net` = gri_net) %>%
   arrange(desc(`League Points`))
-knitr::kable(rankings, caption = "Model Ratings", align = "c", digits = 2)
+
+new_rankings <- data_frame(
+  club = team_counts$team,
+  bip_alpha, bip_delta, bip_rho,
+  gri_alpha, gri_delta
+) %>%
+  left_join(select(epl, club, points), by = "club") %>%
+  mutate(
+    points = as.numeric(points),
+    bip_offense = exp(bip_mu + bip_alpha + bip_rho),
+    bip_defense = exp(bip_mu + bip_delta + bip_rho),
+    gri_offense = exp(gri_mu + gri_alpha),
+    gri_defense = exp(gri_mu + gri_delta),
+    bip_net = bip_offense - bip_defense,
+    gri_net = gri_offense - gri_defense
+  )
+knitr::kable(rankings, caption = "Model Net Ratings", align = "c", digits = 2)
 ```
+
+Using the bivariate Poisson model, `r new_rankings %>% top_n(1, bip_net) %>% select(club) %>% flatten_chr()` comes in as the top team. Under the game random intercept model, `r new_rankings %>% top_n(1, gri_net) %>% select(club) %>% flatten_chr()` is the top team. Figure \@ref(fig:net-scatter) shows a comparison of the net ratings between the models. Here we can see that although the scale is smaller for the BIP model, there is a strong relationship between the two.
 
 ```{r net-scatter, fig.cap = "Comparison of net rating across models.", echo = FALSE}
 ggplot(rankings, aes(x = `BIP Net`, y = `GRI Net`)) +
