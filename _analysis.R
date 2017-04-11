@@ -367,7 +367,7 @@ stan_data <- list(
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
-  cores = 3, algorithm = "NUTS", seed = 9416,
+  cores = 3, algorithm = "NUTS", seed = 32011,
   control = list(adapt_delta = 0.99, max_treedepth = 15))
 
 model_summary <- as.data.frame(summary(gri_stanfit)[[1]])
@@ -406,4 +406,4 @@ club_rankings <- data_frame(
 save(club_rankings, file = "_data/club_rankings.rda")
 
 save(team_counts, file = "_data/team_counts.rda")
-# rm(list = ls()); gc()
+rm(list = ls()); gc()
