@@ -47,7 +47,7 @@ devtools:::print.session_info(session_info)
 #>  language (EN)                        
 #>  collate  en_US.UTF-8                 
 #>  tz       America/Chicago             
-#>  date     2017-03-28
+#>  date     2017-04-11
 #> Packages ------------------------------------------------------------------
 #>  package               * version    date      
 #>  assertthat              0.1        2013-12-06
