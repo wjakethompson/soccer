@@ -381,10 +381,8 @@ Simulating the UEFA Champions League is very similar to the process used for sim
 
 ```{r define-matchups}
 matchups <- list(
-  c("Barcelona", "Juventus"),
-  c("AS Monaco", "Borussia Dortmund"),
-  c("Bayern Munich", "Real Madrid"),
-  c("Leicester City", "Atletico Madrid")
+  c("Real Madrid", "Atletico Madrid"),
+  c("AS Monaco", "Juventus")
 )
 ```
 
