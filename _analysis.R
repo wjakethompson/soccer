@@ -367,7 +367,7 @@ stan_data <- list(
 
 gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
-  cores = 3, algorithm = "NUTS", seed = 32011,
+  cores = 3, algorithm = "NUTS", seed = 71715,
   control = list(adapt_delta = 0.99, max_treedepth = 15))
 
 model_summary <- as.data.frame(summary(gri_stanfit)[[1]])
