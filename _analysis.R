@@ -365,25 +365,25 @@ stan_data <- list(
   homeg = fit_data$home_game
 )
 
-gri_stanfit <- stan(file = "_data/stan-models/gri.stan", data = stan_data,
+gri_stanfit <- stan(file = "_data/stan-models/gri_ppmc.stan", data = stan_data,
   chains = 3, iter = 7000, warmup = 2000, init = "random", thin = 5,
   cores = 3, algorithm = "NUTS", seed = 71715,
   control = list(adapt_delta = 0.99, max_treedepth = 15))
 
-# model_summary <- as.data.frame(summary(gri_stanfit)[[1]])
-# save(model_summary, file = "_data/model_summary.rda")
-# 
-# sampler_params <- get_sampler_params(gri_stanfit, inc_warmup = FALSE)
-# save(sampler_params, file = "_data/sampler_params.rda")
-# 
-# upars <- get_num_upars(gri_stanfit)
-# save(upars, file = "_data/upars.rda")
-# 
-# home_rep <- rstan::extract(gri_stanfit, pars = "home_rep",
-#   permuted = TRUE)$home_rep
-# away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
-#   permuted = TRUE)$away_rep
-# save(home_rep, away_rep, file = "_data/rep_data.rda")
+model_summary <- as.data.frame(summary(gri_stanfit)[[1]])
+save(model_summary, file = "_data/model_summary.rda")
+
+sampler_params <- get_sampler_params(gri_stanfit, inc_warmup = FALSE)
+save(sampler_params, file = "_data/sampler_params.rda")
+
+upars <- get_num_upars(gri_stanfit)
+save(upars, file = "_data/upars.rda")
+
+home_rep <- rstan::extract(gri_stanfit, pars = "home_rep",
+  permuted = TRUE)$home_rep
+away_rep <- rstan::extract(gri_stanfit, pars = "away_rep",
+  permuted = TRUE)$away_rep
+save(home_rep, away_rep, file = "_data/rep_data.rda")
 
 model_params <- rstan::extract(gri_stanfit, pars = c("mu", "eta", "alpha",
   "delta", "sigma_g"))
