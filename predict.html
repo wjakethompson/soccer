@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
-  <meta name="generator" content="bookdown 0.3.18 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3.19 and GitBook 2.6.7">
 
   <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-04-21">
+<meta name="date" content="2017-05-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -254,15 +254,15 @@ prediction$predictions %&gt;%
 <tbody>
 <tr class="odd">
 <td align="center">Barcelona</td>
-<td align="center">2.62</td>
-<td align="center">0.574</td>
-<td align="center">0.187</td>
+<td align="center">2.76</td>
+<td align="center">0.591</td>
+<td align="center">0.171</td>
 </tr>
 <tr class="even">
 <td align="center">Real Madrid</td>
-<td align="center">1.70</td>
-<td align="center">0.239</td>
-<td align="center">0.187</td>
+<td align="center">1.74</td>
+<td align="center">0.238</td>
+<td align="center">0.171</td>
 </tr>
 </tbody>
 </table>
@@ -314,142 +314,142 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 <tbody>
 <tr class="odd">
 <td align="center">Chelsea</td>
-<td align="center">1.81</td>
-<td align="center">0.77</td>
-<td align="center">87.5</td>
-<td align="center">84.2%</td>
+<td align="center">1.93</td>
+<td align="center">0.78</td>
+<td align="center">90.2</td>
+<td align="center">92.5%</td>
 </tr>
 <tr class="even">
 <td align="center">Tottenham Hotspur</td>
 <td align="center">1.81</td>
-<td align="center">0.71</td>
-<td align="center">82.5</td>
-<td align="center">15.6%</td>
+<td align="center">0.72</td>
+<td align="center">84.6</td>
+<td align="center">7.5%</td>
 </tr>
 <tr class="odd">
-<td align="center">Manchester City</td>
-<td align="center">1.82</td>
+<td align="center">Liverpool</td>
+<td align="center">1.73</td>
 <td align="center">0.81</td>
-<td align="center">76.2</td>
-<td align="center">0.1%</td>
+<td align="center">75.2</td>
+<td align="center">0.0%</td>
 </tr>
 <tr class="even">
-<td align="center">Liverpool</td>
-<td align="center">1.75</td>
+<td align="center">Manchester City</td>
+<td align="center">1.80</td>
 <td align="center">0.81</td>
-<td align="center">76.3</td>
-<td align="center">0.1%</td>
+<td align="center">74.7</td>
+<td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Manchester United</td>
-<td align="center">1.55</td>
-<td align="center">0.71</td>
-<td align="center">70.9</td>
+<td align="center">1.54</td>
+<td align="center">0.69</td>
+<td align="center">71.1</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Arsenal</td>
-<td align="center">1.94</td>
-<td align="center">0.92</td>
-<td align="center">69.7</td>
+<td align="center">1.90</td>
+<td align="center">0.91</td>
+<td align="center">69.5</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Everton</td>
-<td align="center">1.45</td>
-<td align="center">0.89</td>
-<td align="center">64.5</td>
+<td align="center">1.41</td>
+<td align="center">0.90</td>
+<td align="center">62.4</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">West Bromwich Albion</td>
-<td align="center">1.11</td>
+<td align="center">1.09</td>
 <td align="center">0.98</td>
-<td align="center">49.6</td>
+<td align="center">47.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Southampton</td>
 <td align="center">1.08</td>
-<td align="center">0.86</td>
-<td align="center">48.4</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Watford</td>
-<td align="center">1.03</td>
-<td align="center">1.09</td>
-<td align="center">44.9</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Stoke City</td>
-<td align="center">1.06</td>
-<td align="center">1.04</td>
-<td align="center">44.9</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Leicester City</td>
-<td align="center">1.25</td>
-<td align="center">1.09</td>
-<td align="center">43.8</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">West Ham United</td>
-<td align="center">1.17</td>
-<td align="center">1.24</td>
-<td align="center">41.8</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Burnley</td>
-<td align="center">0.99</td>
-<td align="center">0.95</td>
-<td align="center">42.5</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Crystal Palace</td>
-<td align="center">1.18</td>
-<td align="center">1.10</td>
-<td align="center">40.9</td>
+<td align="center">0.88</td>
+<td align="center">46.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">AFC Bournemouth</td>
+<td align="center">1.25</td>
+<td align="center">1.19</td>
+<td align="center">45.4</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Leicester City</td>
+<td align="center">1.24</td>
+<td align="center">1.06</td>
+<td align="center">45.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Stoke City</td>
+<td align="center">1.02</td>
+<td align="center">1.04</td>
+<td align="center">43.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Watford</td>
+<td align="center">1.00</td>
+<td align="center">1.10</td>
+<td align="center">42.9</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Burnley</td>
+<td align="center">1.00</td>
+<td align="center">0.95</td>
+<td align="center">43.4</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">West Ham United</td>
+<td align="center">1.13</td>
 <td align="center">1.20</td>
-<td align="center">1.21</td>
-<td align="center">42.0</td>
+<td align="center">41.7</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Crystal Palace</td>
+<td align="center">1.17</td>
+<td align="center">1.10</td>
+<td align="center">40.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Hull City</td>
 <td align="center">1.13</td>
-<td align="center">1.16</td>
-<td align="center">36.3</td>
+<td align="center">1.13</td>
+<td align="center">37.7</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Swansea City</td>
-<td align="center">1.22</td>
 <td align="center">1.23</td>
-<td align="center">34.2</td>
+<td align="center">1.20</td>
+<td align="center">36.2</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Middlesbrough</td>
 <td align="center">0.99</td>
-<td align="center">0.89</td>
-<td align="center">30.9</td>
+<td align="center">0.92</td>
+<td align="center">30.6</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Sunderland</td>
-<td align="center">0.84</td>
+<td align="center">0.81</td>
 <td align="center">1.15</td>
-<td align="center">26.1</td>
+<td align="center">23.8</td>
 <td align="center">0.0%</td>
 </tr>
 </tbody>
@@ -480,143 +480,143 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">Paris Saint-Germain</td>
-<td align="center">1.98</td>
-<td align="center">0.73</td>
-<td align="center">88.5</td>
-<td align="center">54.9%</td>
+<td align="center">AS Monaco</td>
+<td align="center">2.07</td>
+<td align="center">0.92</td>
+<td align="center">91.8</td>
+<td align="center">95.6%</td>
 </tr>
 <tr class="even">
-<td align="center">AS Monaco</td>
-<td align="center">2.11</td>
-<td align="center">0.89</td>
-<td align="center">87.4</td>
-<td align="center">45.0%</td>
+<td align="center">Paris Saint-Germain</td>
+<td align="center">1.99</td>
+<td align="center">0.73</td>
+<td align="center">87.3</td>
+<td align="center">4.4%</td>
 </tr>
 <tr class="odd">
 <td align="center">Nice</td>
-<td align="center">1.26</td>
-<td align="center">0.93</td>
-<td align="center">79.2</td>
-<td align="center">0.1%</td>
+<td align="center">1.28</td>
+<td align="center">0.92</td>
+<td align="center">81.1</td>
+<td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Lyon</td>
-<td align="center">1.63</td>
-<td align="center">0.96</td>
-<td align="center">63.0</td>
+<td align="center">1.62</td>
+<td align="center">0.99</td>
+<td align="center">62.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
-<td align="center">Marseille</td>
-<td align="center">1.27</td>
-<td align="center">0.97</td>
-<td align="center">60.2</td>
+<td align="center">Bordeaux</td>
+<td align="center">1.16</td>
+<td align="center">1.03</td>
+<td align="center">60.1</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
-<td align="center">Bordeaux</td>
-<td align="center">1.18</td>
-<td align="center">1.06</td>
-<td align="center">59.5</td>
+<td align="center">Marseille</td>
+<td align="center">1.31</td>
+<td align="center">0.97</td>
+<td align="center">60.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">St Etienne</td>
-<td align="center">0.90</td>
-<td align="center">0.86</td>
-<td align="center">51.6</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Guingamp</td>
-<td align="center">1.12</td>
-<td align="center">1.06</td>
-<td align="center">52.0</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Stade Rennes</td>
-<td align="center">0.86</td>
-<td align="center">1.07</td>
-<td align="center">48.6</td>
+<td align="center">0.91</td>
+<td align="center">0.85</td>
+<td align="center">53.3</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Nantes</td>
 <td align="center">0.88</td>
+<td align="center">1.09</td>
+<td align="center">51.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Stade Rennes</td>
+<td align="center">0.85</td>
+<td align="center">1.07</td>
+<td align="center">47.5</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Guingamp</td>
+<td align="center">1.06</td>
 <td align="center">1.12</td>
-<td align="center">47.8</td>
+<td align="center">48.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
-<td align="center">Toulouse</td>
-<td align="center">0.98</td>
-<td align="center">0.91</td>
-<td align="center">48.0</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Montpellier</td>
-<td align="center">1.18</td>
-<td align="center">1.30</td>
-<td align="center">44.4</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Angers</td>
-<td align="center">0.98</td>
-<td align="center">1.04</td>
-<td align="center">45.1</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
 <td align="center">Lille</td>
-<td align="center">0.87</td>
+<td align="center">0.93</td>
+<td align="center">0.98</td>
+<td align="center">47.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Toulouse</td>
+<td align="center">0.99</td>
+<td align="center">0.91</td>
+<td align="center">47.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Montpellier</td>
+<td align="center">1.14</td>
+<td align="center">1.32</td>
+<td align="center">42.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Angers</td>
 <td align="center">1.00</td>
-<td align="center">43.4</td>
+<td align="center">1.07</td>
+<td align="center">42.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Metz</td>
-<td align="center">0.87</td>
-<td align="center">1.34</td>
-<td align="center">41.2</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Caen</td>
-<td align="center">0.94</td>
-<td align="center">1.33</td>
-<td align="center">38.1</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">AS Nancy Lorraine</td>
-<td align="center">0.81</td>
-<td align="center">0.99</td>
-<td align="center">37.6</td>
+<td align="center">0.89</td>
+<td align="center">1.39</td>
+<td align="center">41.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Lorient</td>
-<td align="center">1.05</td>
-<td align="center">1.37</td>
-<td align="center">37.7</td>
+<td align="center">1.08</td>
+<td align="center">1.38</td>
+<td align="center">38.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Dijon FCO</td>
 <td align="center">1.08</td>
-<td align="center">1.17</td>
-<td align="center">35.8</td>
+<td align="center">1.18</td>
+<td align="center">36.8</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Caen</td>
+<td align="center">0.92</td>
+<td align="center">1.41</td>
+<td align="center">35.4</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">AS Nancy Lorraine</td>
+<td align="center">0.80</td>
+<td align="center">0.99</td>
+<td align="center">35.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Bastia</td>
-<td align="center">0.78</td>
-<td align="center">1.17</td>
-<td align="center">32.6</td>
+<td align="center">0.77</td>
+<td align="center">1.16</td>
+<td align="center">33.3</td>
 <td align="center">0.0%</td>
 </tr>
 </tbody>
@@ -648,128 +648,128 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 <tbody>
 <tr class="odd">
 <td align="center">Bayern Munich</td>
-<td align="center">2.08</td>
-<td align="center">0.68</td>
-<td align="center">80.8</td>
+<td align="center">2.13</td>
+<td align="center">0.70</td>
+<td align="center">80.1</td>
 <td align="center">100%</td>
 </tr>
 <tr class="even">
 <td align="center">RB Leipzig</td>
-<td align="center">1.47</td>
-<td align="center">0.89</td>
-<td align="center">68.3</td>
+<td align="center">1.43</td>
+<td align="center">0.87</td>
+<td align="center">66.8</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
 <td align="center">TSG Hoffenheim</td>
-<td align="center">1.49</td>
-<td align="center">0.91</td>
-<td align="center">63.0</td>
+<td align="center">1.48</td>
+<td align="center">0.89</td>
+<td align="center">62.6</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
 <td align="center">Borussia Dortmund</td>
-<td align="center">1.82</td>
-<td align="center">0.92</td>
-<td align="center">62.9</td>
+<td align="center">1.83</td>
+<td align="center">0.91</td>
+<td align="center">63.0</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Hertha Berlin</td>
-<td align="center">1.13</td>
-<td align="center">0.92</td>
-<td align="center">50.7</td>
-<td align="center">0%</td>
-</tr>
-<tr class="even">
-<td align="center">FC Cologne</td>
-<td align="center">1.21</td>
-<td align="center">0.99</td>
-<td align="center">47.7</td>
-<td align="center">0%</td>
-</tr>
-<tr class="odd">
-<td align="center">SC Freiburg</td>
 <td align="center">1.10</td>
-<td align="center">1.23</td>
-<td align="center">46.9</td>
+<td align="center">0.91</td>
+<td align="center">50.6</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
 <td align="center">Werder Bremen</td>
-<td align="center">1.29</td>
+<td align="center">1.35</td>
 <td align="center">1.20</td>
-<td align="center">44.6</td>
+<td align="center">47.9</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">SC Freiburg</td>
+<td align="center">1.09</td>
+<td align="center">1.25</td>
+<td align="center">47.0</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">FC Cologne</td>
+<td align="center">1.18</td>
+<td align="center">0.95</td>
+<td align="center">46.6</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Borussia Monchengladbach</td>
-<td align="center">1.28</td>
-<td align="center">0.98</td>
-<td align="center">47.3</td>
+<td align="center">1.30</td>
+<td align="center">0.99</td>
+<td align="center">47.6</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
-<td align="center">Eintracht Frankfurt</td>
-<td align="center">0.93</td>
+<td align="center">Schalke 04</td>
+<td align="center">1.37</td>
 <td align="center">0.88</td>
-<td align="center">44.7</td>
+<td align="center">46.6</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
-<td align="center">Schalke 04</td>
-<td align="center">1.33</td>
-<td align="center">0.89</td>
-<td align="center">45.1</td>
+<td align="center">Eintracht Frankfurt</td>
+<td align="center">0.95</td>
+<td align="center">0.87</td>
+<td align="center">45.2</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
 <td align="center">Bayer Leverkusen</td>
-<td align="center">1.27</td>
-<td align="center">1.00</td>
-<td align="center">43.3</td>
+<td align="center">1.26</td>
+<td align="center">1.04</td>
+<td align="center">40.2</td>
+<td align="center">0%</td>
+</tr>
+<tr class="odd">
+<td align="center">FC Augsburg</td>
+<td align="center">0.99</td>
+<td align="center">1.15</td>
+<td align="center">37.3</td>
+<td align="center">0%</td>
+</tr>
+<tr class="even">
+<td align="center">Mainz</td>
+<td align="center">1.17</td>
+<td align="center">1.15</td>
+<td align="center">36.9</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
 <td align="center">VfL Wolfsburg</td>
-<td align="center">0.95</td>
-<td align="center">1.02</td>
-<td align="center">38.2</td>
+<td align="center">0.92</td>
+<td align="center">1.07</td>
+<td align="center">36.5</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
 <td align="center">Hamburg SV</td>
-<td align="center">0.98</td>
-<td align="center">1.20</td>
-<td align="center">39.5</td>
-<td align="center">0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Mainz</td>
-<td align="center">1.14</td>
-<td align="center">1.15</td>
-<td align="center">37.5</td>
-<td align="center">0%</td>
-</tr>
-<tr class="even">
-<td align="center">FC Augsburg</td>
-<td align="center">0.93</td>
-<td align="center">1.13</td>
-<td align="center">36.8</td>
+<td align="center">0.96</td>
+<td align="center">1.26</td>
+<td align="center">36.4</td>
 <td align="center">0%</td>
 </tr>
 <tr class="odd">
 <td align="center">FC Ingolstadt 04</td>
-<td align="center">0.96</td>
-<td align="center">1.15</td>
-<td align="center">33.4</td>
+<td align="center">0.95</td>
+<td align="center">1.16</td>
+<td align="center">32.4</td>
 <td align="center">0%</td>
 </tr>
 <tr class="even">
 <td align="center">SV Darmstadt 98</td>
-<td align="center">0.79</td>
-<td align="center">1.32</td>
-<td align="center">21.9</td>
+<td align="center">0.84</td>
+<td align="center">1.29</td>
+<td align="center">25.9</td>
 <td align="center">0%</td>
 </tr>
 </tbody>
@@ -801,142 +801,142 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 <tbody>
 <tr class="odd">
 <td align="center">Juventus</td>
-<td align="center">1.61</td>
-<td align="center">0.66</td>
+<td align="center">1.66</td>
+<td align="center">0.64</td>
 <td align="center">92.0</td>
-<td align="center">94.8%</td>
+<td align="center">99.2%</td>
 </tr>
 <tr class="even">
 <td align="center">AS Roma</td>
-<td align="center">1.73</td>
-<td align="center">0.85</td>
-<td align="center">83.4</td>
-<td align="center">4.5%</td>
+<td align="center">1.75</td>
+<td align="center">0.87</td>
+<td align="center">82.3</td>
+<td align="center">0.7%</td>
 </tr>
 <tr class="odd">
 <td align="center">Napoli</td>
-<td align="center">1.77</td>
-<td align="center">0.94</td>
-<td align="center">80.9</td>
-<td align="center">0.6%</td>
+<td align="center">1.76</td>
+<td align="center">0.92</td>
+<td align="center">81.7</td>
+<td align="center">0.1%</td>
 </tr>
 <tr class="even">
 <td align="center">Lazio</td>
-<td align="center">1.40</td>
-<td align="center">0.91</td>
-<td align="center">71.0</td>
+<td align="center">1.49</td>
+<td align="center">0.92</td>
+<td align="center">74.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Atalanta</td>
-<td align="center">1.33</td>
-<td align="center">0.92</td>
-<td align="center">70.0</td>
+<td align="center">1.37</td>
+<td align="center">0.93</td>
+<td align="center">71.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">AC Milan</td>
-<td align="center">1.27</td>
-<td align="center">0.94</td>
-<td align="center">67.6</td>
+<td align="center">1.24</td>
+<td align="center">0.95</td>
+<td align="center">64.5</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Internazionale</td>
-<td align="center">1.42</td>
-<td align="center">1.11</td>
-<td align="center">64.7</td>
+<td align="center">1.44</td>
+<td align="center">1.13</td>
+<td align="center">62.2</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Fiorentina</td>
-<td align="center">1.34</td>
-<td align="center">1.02</td>
-<td align="center">61.6</td>
+<td align="center">1.36</td>
+<td align="center">1.06</td>
+<td align="center">60.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Torino</td>
-<td align="center">1.50</td>
-<td align="center">1.15</td>
-<td align="center">53.7</td>
+<td align="center">1.51</td>
+<td align="center">1.14</td>
+<td align="center">54.4</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Sampdoria</td>
-<td align="center">1.06</td>
+<td align="center">1.05</td>
 <td align="center">0.99</td>
-<td align="center">52.7</td>
+<td align="center">50.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Udinese</td>
-<td align="center">1.10</td>
-<td align="center">1.05</td>
-<td align="center">48.3</td>
+<td align="center">1.08</td>
+<td align="center">1.09</td>
+<td align="center">48.1</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Cagliari</td>
-<td align="center">1.23</td>
-<td align="center">1.34</td>
-<td align="center">45.7</td>
+<td align="center">1.20</td>
+<td align="center">1.32</td>
+<td align="center">45.6</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Chievo Verona</td>
-<td align="center">0.99</td>
-<td align="center">1.08</td>
-<td align="center">45.2</td>
+<td align="center">1.01</td>
+<td align="center">1.09</td>
+<td align="center">45.7</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
-<td align="center">Bologna</td>
-<td align="center">0.93</td>
-<td align="center">1.06</td>
-<td align="center">42.0</td>
+<td align="center">Sassuolo</td>
+<td align="center">1.15</td>
+<td align="center">1.16</td>
+<td align="center">43.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
-<td align="center">Sassuolo</td>
-<td align="center">1.11</td>
-<td align="center">1.16</td>
-<td align="center">42.1</td>
+<td align="center">Bologna</td>
+<td align="center">1.00</td>
+<td align="center">1.06</td>
+<td align="center">43.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Genoa</td>
-<td align="center">0.99</td>
-<td align="center">1.25</td>
-<td align="center">36.0</td>
+<td align="center">0.97</td>
+<td align="center">1.29</td>
+<td align="center">34.0</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Empoli</td>
-<td align="center">0.72</td>
+<td align="center">0.75</td>
 <td align="center">1.12</td>
-<td align="center">32.2</td>
+<td align="center">33.4</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Crotone</td>
-<td align="center">0.81</td>
-<td align="center">1.17</td>
-<td align="center">26.6</td>
+<td align="center">0.83</td>
+<td align="center">1.15</td>
+<td align="center">28.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Palermo</td>
-<td align="center">0.79</td>
-<td align="center">1.34</td>
-<td align="center">22.0</td>
+<td align="center">0.83</td>
+<td align="center">1.37</td>
+<td align="center">23.7</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">US Pescara</td>
-<td align="center">0.91</td>
-<td align="center">1.43</td>
-<td align="center">20.1</td>
+<td align="center">0.89</td>
+<td align="center">1.44</td>
+<td align="center">18.5</td>
 <td align="center">0.0%</td>
 </tr>
 </tbody>
@@ -967,143 +967,143 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">Real Madrid</td>
-<td align="center">2.13</td>
-<td align="center">0.94</td>
-<td align="center">87.7</td>
-<td align="center">70.9%</td>
+<td align="center">Barcelona</td>
+<td align="center">2.30</td>
+<td align="center">0.83</td>
+<td align="center">87.9</td>
+<td align="center">65.6%</td>
 </tr>
 <tr class="even">
-<td align="center">Barcelona</td>
-<td align="center">2.23</td>
-<td align="center">0.84</td>
-<td align="center">84.6</td>
-<td align="center">29.0%</td>
+<td align="center">Real Madrid</td>
+<td align="center">2.18</td>
+<td align="center">0.94</td>
+<td align="center">87.6</td>
+<td align="center">34.4%</td>
 </tr>
 <tr class="odd">
-<td align="center">Sevilla FC</td>
-<td align="center">1.32</td>
-<td align="center">0.93</td>
-<td align="center">75.5</td>
-<td align="center">0.1%</td>
-</tr>
-<tr class="even">
 <td align="center">Atletico Madrid</td>
 <td align="center">1.43</td>
-<td align="center">0.68</td>
-<td align="center">76.3</td>
+<td align="center">0.67</td>
+<td align="center">77.0</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Sevilla FC</td>
+<td align="center">1.33</td>
+<td align="center">0.94</td>
+<td align="center">72.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Villarreal</td>
-<td align="center">1.12</td>
-<td align="center">0.83</td>
-<td align="center">62.8</td>
+<td align="center">1.15</td>
+<td align="center">0.82</td>
+<td align="center">67.1</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Athletic Bilbao</td>
-<td align="center">1.18</td>
-<td align="center">0.97</td>
-<td align="center">61.0</td>
+<td align="center">1.21</td>
+<td align="center">0.93</td>
+<td align="center">66.1</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Real Sociedad</td>
-<td align="center">1.28</td>
-<td align="center">1.05</td>
-<td align="center">61.5</td>
+<td align="center">1.29</td>
+<td align="center">1.04</td>
+<td align="center">64.9</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Eibar</td>
-<td align="center">1.31</td>
-<td align="center">1.06</td>
-<td align="center">58.3</td>
+<td align="center">1.26</td>
+<td align="center">1.03</td>
+<td align="center">57.2</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Espanyol</td>
-<td align="center">1.14</td>
-<td align="center">0.97</td>
-<td align="center">57.5</td>
+<td align="center">1.09</td>
+<td align="center">0.98</td>
+<td align="center">54.8</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
-<td align="center">Celta Vigo</td>
-<td align="center">1.33</td>
-<td align="center">1.00</td>
-<td align="center">53.3</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
 <td align="center">Alavés</td>
-<td align="center">0.95</td>
-<td align="center">0.88</td>
-<td align="center">51.3</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="even">
-<td align="center">Valencia</td>
-<td align="center">1.24</td>
-<td align="center">1.24</td>
-<td align="center">47.5</td>
+<td align="center">0.97</td>
+<td align="center">0.86</td>
+<td align="center">52.4</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
-<td align="center">Las Palmas</td>
-<td align="center">1.32</td>
-<td align="center">1.25</td>
-<td align="center">45.6</td>
+<td align="center">Celta Vigo</td>
+<td align="center">1.28</td>
+<td align="center">1.03</td>
+<td align="center">48.2</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
+<td align="center">Málaga</td>
+<td align="center">1.08</td>
+<td align="center">1.15</td>
+<td align="center">45.1</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
+<td align="center">Valencia</td>
+<td align="center">1.22</td>
+<td align="center">1.25</td>
+<td align="center">44.4</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="even">
+<td align="center">Las Palmas</td>
+<td align="center">1.27</td>
+<td align="center">1.32</td>
+<td align="center">42.3</td>
+<td align="center">0.0%</td>
+</tr>
+<tr class="odd">
 <td align="center">Real Betis</td>
 <td align="center">0.94</td>
-<td align="center">1.14</td>
-<td align="center">40.3</td>
-<td align="center">0.0%</td>
-</tr>
-<tr class="odd">
-<td align="center">Málaga</td>
-<td align="center">1.01</td>
 <td align="center">1.17</td>
-<td align="center">40.0</td>
+<td align="center">40.2</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Deportivo La Coruña</td>
-<td align="center">1.00</td>
-<td align="center">1.14</td>
-<td align="center">37.7</td>
+<td align="center">1.02</td>
+<td align="center">1.19</td>
+<td align="center">35.6</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Leganes</td>
-<td align="center">0.80</td>
+<td align="center">0.83</td>
 <td align="center">1.12</td>
-<td align="center">33.2</td>
+<td align="center">33.5</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Sporting Gijón</td>
-<td align="center">0.95</td>
-<td align="center">1.33</td>
-<td align="center">28.5</td>
+<td align="center">0.96</td>
+<td align="center">1.35</td>
+<td align="center">27.6</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="odd">
 <td align="center">Granada</td>
-<td align="center">0.81</td>
+<td align="center">0.78</td>
 <td align="center">1.40</td>
-<td align="center">24.8</td>
+<td align="center">22.6</td>
 <td align="center">0.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Osasuna</td>
-<td align="center">0.88</td>
-<td align="center">1.44</td>
-<td align="center">22.7</td>
+<td align="center">0.91</td>
+<td align="center">1.51</td>
+<td align="center">21.8</td>
 <td align="center">0.0%</td>
 </tr>
 </tbody>
@@ -1146,39 +1146,39 @@ Figure 6.1: Visualizations for Real Madrid at Barcelona
 <tbody>
 <tr class="odd">
 <td align="center">Juventus</td>
-<td align="center">1.61</td>
-<td align="center">0.66</td>
+<td align="center">1.66</td>
+<td align="center">0.64</td>
 <td align="center">100%</td>
 <td align="center">100%</td>
-<td align="center">51.9%</td>
-<td align="center">27.7%</td>
+<td align="center">90.5%</td>
+<td align="center">48.7%</td>
 </tr>
 <tr class="even">
 <td align="center">Real Madrid</td>
-<td align="center">2.13</td>
+<td align="center">2.18</td>
 <td align="center">0.94</td>
 <td align="center">100%</td>
 <td align="center">100%</td>
-<td align="center">54.3%</td>
-<td align="center">26.2%</td>
+<td align="center">94.7%</td>
+<td align="center">43.6%</td>
 </tr>
 <tr class="odd">
 <td align="center">AS Monaco</td>
-<td align="center">2.11</td>
-<td align="center">0.89</td>
+<td align="center">2.07</td>
+<td align="center">0.92</td>
 <td align="center">100%</td>
 <td align="center">100%</td>
-<td align="center">48.1%</td>
-<td align="center">25.0%</td>
+<td align="center">9.5%</td>
+<td align="center">5.0%</td>
 </tr>
 <tr class="even">
 <td align="center">Atletico Madrid</td>
 <td align="center">1.43</td>
-<td align="center">0.68</td>
+<td align="center">0.67</td>
 <td align="center">100%</td>
 <td align="center">100%</td>
-<td align="center">45.7%</td>
-<td align="center">21.1%</td>
+<td align="center">5.3%</td>
+<td align="center">2.7%</td>
 </tr>
 </tbody>
 </table>
@@ -1236,7 +1236,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(script.src))
       script.src  = script.src.replace(/^https?:/, '');
     document.getElementsByTagName("head")[0].appendChild(script);

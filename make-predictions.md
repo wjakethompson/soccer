@@ -42,8 +42,8 @@ Table: (\#tab:exp-predict)Prediction for Real Madrid at Barcelona
 
     Club        Expected Goals    Win Probability    Tie Probability 
 -------------  ----------------  -----------------  -----------------
-  Barcelona          2.62              0.574              0.187      
- Real Madrid         1.70              0.239              0.187      
+  Barcelona          2.76              0.591              0.171      
+ Real Madrid         1.74              0.238              0.171      
 
 Because I specified `visualize = TRUE` in the call to `predict_game` we can use the `multiplot` function (Appendix \@ref(multi-plot)) to visualize the range of possible outcomes from the posteriors.
 
@@ -101,26 +101,26 @@ Table: (\#tab:epl-sim)Premier League Championship Probabilities
 
          Club            Offense    Defense    Expected Points    Championship Probability 
 ----------------------  ---------  ---------  -----------------  --------------------------
-       Chelsea            1.81       0.77           87.5                   84.2%           
-  Tottenham Hotspur       1.81       0.71           82.5                   15.6%           
-   Manchester City        1.82       0.81           76.2                    0.1%           
-      Liverpool           1.75       0.81           76.3                    0.1%           
-  Manchester United       1.55       0.71           70.9                    0.0%           
-       Arsenal            1.94       0.92           69.7                    0.0%           
-       Everton            1.45       0.89           64.5                    0.0%           
- West Bromwich Albion     1.11       0.98           49.6                    0.0%           
-     Southampton          1.08       0.86           48.4                    0.0%           
-       Watford            1.03       1.09           44.9                    0.0%           
-      Stoke City          1.06       1.04           44.9                    0.0%           
-    Leicester City        1.25       1.09           43.8                    0.0%           
-   West Ham United        1.17       1.24           41.8                    0.0%           
-       Burnley            0.99       0.95           42.5                    0.0%           
-    Crystal Palace        1.18       1.10           40.9                    0.0%           
-   AFC Bournemouth        1.20       1.21           42.0                    0.0%           
-      Hull City           1.13       1.16           36.3                    0.0%           
-     Swansea City         1.22       1.23           34.2                    0.0%           
-    Middlesbrough         0.99       0.89           30.9                    0.0%           
-      Sunderland          0.84       1.15           26.1                    0.0%           
+       Chelsea            1.93       0.78           90.2                   92.5%           
+  Tottenham Hotspur       1.81       0.72           84.6                    7.5%           
+      Liverpool           1.73       0.81           75.2                    0.0%           
+   Manchester City        1.80       0.81           74.7                    0.0%           
+  Manchester United       1.54       0.69           71.1                    0.0%           
+       Arsenal            1.90       0.91           69.5                    0.0%           
+       Everton            1.41       0.90           62.4                    0.0%           
+ West Bromwich Albion     1.09       0.98           47.9                    0.0%           
+     Southampton          1.08       0.88           46.9                    0.0%           
+   AFC Bournemouth        1.25       1.19           45.4                    0.0%           
+    Leicester City        1.24       1.06           45.0                    0.0%           
+      Stoke City          1.02       1.04           43.0                    0.0%           
+       Watford            1.00       1.10           42.9                    0.0%           
+       Burnley            1.00       0.95           43.4                    0.0%           
+   West Ham United        1.13       1.20           41.7                    0.0%           
+    Crystal Palace        1.17       1.10           40.8                    0.0%           
+      Hull City           1.13       1.13           37.7                    0.0%           
+     Swansea City         1.23       1.20           36.2                    0.0%           
+    Middlesbrough         0.99       0.92           30.6                    0.0%           
+      Sunderland          0.81       1.15           23.8                    0.0%           
 
 ### French Ligue 1 {#ligue1}
 
@@ -144,26 +144,26 @@ Table: (\#tab:ligue1-sim)Ligue 1 Championship Probabilities
 
         Club            Offense    Defense    Expected Points    Championship Probability 
 ---------------------  ---------  ---------  -----------------  --------------------------
- Paris Saint-Germain     1.98       0.73           88.5                   54.9%           
-      AS Monaco          2.11       0.89           87.4                   45.0%           
-        Nice             1.26       0.93           79.2                    0.1%           
-        Lyon             1.63       0.96           63.0                    0.0%           
-      Marseille          1.27       0.97           60.2                    0.0%           
-      Bordeaux           1.18       1.06           59.5                    0.0%           
-     St Etienne          0.90       0.86           51.6                    0.0%           
-      Guingamp           1.12       1.06           52.0                    0.0%           
-    Stade Rennes         0.86       1.07           48.6                    0.0%           
-       Nantes            0.88       1.12           47.8                    0.0%           
-      Toulouse           0.98       0.91           48.0                    0.0%           
-     Montpellier         1.18       1.30           44.4                    0.0%           
-       Angers            0.98       1.04           45.1                    0.0%           
-        Lille            0.87       1.00           43.4                    0.0%           
-        Metz             0.87       1.34           41.2                    0.0%           
-        Caen             0.94       1.33           38.1                    0.0%           
-  AS Nancy Lorraine      0.81       0.99           37.6                    0.0%           
-       Lorient           1.05       1.37           37.7                    0.0%           
-      Dijon FCO          1.08       1.17           35.8                    0.0%           
-       Bastia            0.78       1.17           32.6                    0.0%           
+      AS Monaco          2.07       0.92           91.8                   95.6%           
+ Paris Saint-Germain     1.99       0.73           87.3                    4.4%           
+        Nice             1.28       0.92           81.1                    0.0%           
+        Lyon             1.62       0.99           62.8                    0.0%           
+      Bordeaux           1.16       1.03           60.1                    0.0%           
+      Marseille          1.31       0.97           60.0                    0.0%           
+     St Etienne          0.91       0.85           53.3                    0.0%           
+       Nantes            0.88       1.09           51.1                    0.0%           
+    Stade Rennes         0.85       1.07           47.5                    0.0%           
+      Guingamp           1.06       1.12           48.9                    0.0%           
+        Lille            0.93       0.98           47.0                    0.0%           
+      Toulouse           0.99       0.91           47.3                    0.0%           
+     Montpellier         1.14       1.32           42.3                    0.0%           
+       Angers            1.00       1.07           42.8                    0.0%           
+        Metz             0.89       1.39           41.8                    0.0%           
+       Lorient           1.08       1.38           38.0                    0.0%           
+      Dijon FCO          1.08       1.18           36.8                    0.0%           
+        Caen             0.92       1.41           35.4                    0.0%           
+  AS Nancy Lorraine      0.80       0.99           35.0                    0.0%           
+       Bastia            0.77       1.16           33.3                    0.0%           
 
 ### German Bundesliga {#bund}
 
@@ -187,24 +187,24 @@ Table: (\#tab:bund-sim)Bundesliga Championship Probabilities
 
            Club              Offense    Defense    Expected Points    Championship Probability 
 --------------------------  ---------  ---------  -----------------  --------------------------
-      Bayern Munich           2.08       0.68           80.8                    100%           
-        RB Leipzig            1.47       0.89           68.3                     0%            
-      TSG Hoffenheim          1.49       0.91           63.0                     0%            
-    Borussia Dortmund         1.82       0.92           62.9                     0%            
-      Hertha Berlin           1.13       0.92           50.7                     0%            
-        FC Cologne            1.21       0.99           47.7                     0%            
-       SC Freiburg            1.10       1.23           46.9                     0%            
-      Werder Bremen           1.29       1.20           44.6                     0%            
- Borussia Monchengladbach     1.28       0.98           47.3                     0%            
-   Eintracht Frankfurt        0.93       0.88           44.7                     0%            
-        Schalke 04            1.33       0.89           45.1                     0%            
-     Bayer Leverkusen         1.27       1.00           43.3                     0%            
-      VfL Wolfsburg           0.95       1.02           38.2                     0%            
-        Hamburg SV            0.98       1.20           39.5                     0%            
-          Mainz               1.14       1.15           37.5                     0%            
-       FC Augsburg            0.93       1.13           36.8                     0%            
-     FC Ingolstadt 04         0.96       1.15           33.4                     0%            
-     SV Darmstadt 98          0.79       1.32           21.9                     0%            
+      Bayern Munich           2.13       0.70           80.1                    100%           
+        RB Leipzig            1.43       0.87           66.8                     0%            
+      TSG Hoffenheim          1.48       0.89           62.6                     0%            
+    Borussia Dortmund         1.83       0.91           63.0                     0%            
+      Hertha Berlin           1.10       0.91           50.6                     0%            
+      Werder Bremen           1.35       1.20           47.9                     0%            
+       SC Freiburg            1.09       1.25           47.0                     0%            
+        FC Cologne            1.18       0.95           46.6                     0%            
+ Borussia Monchengladbach     1.30       0.99           47.6                     0%            
+        Schalke 04            1.37       0.88           46.6                     0%            
+   Eintracht Frankfurt        0.95       0.87           45.2                     0%            
+     Bayer Leverkusen         1.26       1.04           40.2                     0%            
+       FC Augsburg            0.99       1.15           37.3                     0%            
+          Mainz               1.17       1.15           36.9                     0%            
+      VfL Wolfsburg           0.92       1.07           36.5                     0%            
+        Hamburg SV            0.96       1.26           36.4                     0%            
+     FC Ingolstadt 04         0.95       1.16           32.4                     0%            
+     SV Darmstadt 98          0.84       1.29           25.9                     0%            
 
 ### Italian Serie A {#seriea}
 
@@ -228,26 +228,26 @@ Table: (\#tab:seriea-sim)Serie A Championship Probabilities
 
       Club         Offense    Defense    Expected Points    Championship Probability 
 ----------------  ---------  ---------  -----------------  --------------------------
-    Juventus        1.61       0.66           92.0                   94.8%           
-    AS Roma         1.73       0.85           83.4                    4.5%           
-     Napoli         1.77       0.94           80.9                    0.6%           
-     Lazio          1.40       0.91           71.0                    0.0%           
-    Atalanta        1.33       0.92           70.0                    0.0%           
-    AC Milan        1.27       0.94           67.6                    0.0%           
- Internazionale     1.42       1.11           64.7                    0.0%           
-   Fiorentina       1.34       1.02           61.6                    0.0%           
-     Torino         1.50       1.15           53.7                    0.0%           
-   Sampdoria        1.06       0.99           52.7                    0.0%           
-    Udinese         1.10       1.05           48.3                    0.0%           
-    Cagliari        1.23       1.34           45.7                    0.0%           
- Chievo Verona      0.99       1.08           45.2                    0.0%           
-    Bologna         0.93       1.06           42.0                    0.0%           
-    Sassuolo        1.11       1.16           42.1                    0.0%           
-     Genoa          0.99       1.25           36.0                    0.0%           
-     Empoli         0.72       1.12           32.2                    0.0%           
-    Crotone         0.81       1.17           26.6                    0.0%           
-    Palermo         0.79       1.34           22.0                    0.0%           
-   US Pescara       0.91       1.43           20.1                    0.0%           
+    Juventus        1.66       0.64           92.0                   99.2%           
+    AS Roma         1.75       0.87           82.3                    0.7%           
+     Napoli         1.76       0.92           81.7                    0.1%           
+     Lazio          1.49       0.92           74.0                    0.0%           
+    Atalanta        1.37       0.93           71.0                    0.0%           
+    AC Milan        1.24       0.95           64.5                    0.0%           
+ Internazionale     1.44       1.13           62.2                    0.0%           
+   Fiorentina       1.36       1.06           60.9                    0.0%           
+     Torino         1.51       1.14           54.4                    0.0%           
+   Sampdoria        1.05       0.99           50.8                    0.0%           
+    Udinese         1.08       1.09           48.1                    0.0%           
+    Cagliari        1.20       1.32           45.6                    0.0%           
+ Chievo Verona      1.01       1.09           45.7                    0.0%           
+    Sassuolo        1.15       1.16           43.9                    0.0%           
+    Bologna         1.00       1.06           43.0                    0.0%           
+     Genoa          0.97       1.29           34.0                    0.0%           
+     Empoli         0.75       1.12           33.4                    0.0%           
+    Crotone         0.83       1.15           28.9                    0.0%           
+    Palermo         0.83       1.37           23.7                    0.0%           
+   US Pescara       0.89       1.44           18.5                    0.0%           
 
 ### Spanish La Liga {#laliga}
 
@@ -271,26 +271,26 @@ Table: (\#tab:laliga-sim)La Liga Championship Probabilities
 
         Club            Offense    Defense    Expected Points    Championship Probability 
 ---------------------  ---------  ---------  -----------------  --------------------------
-     Real Madrid         2.13       0.94           87.7                   70.9%           
-      Barcelona          2.23       0.84           84.6                   29.0%           
-     Sevilla FC          1.32       0.93           75.5                    0.1%           
-   Atletico Madrid       1.43       0.68           76.3                    0.0%           
-     Villarreal          1.12       0.83           62.8                    0.0%           
-   Athletic Bilbao       1.18       0.97           61.0                    0.0%           
-    Real Sociedad        1.28       1.05           61.5                    0.0%           
-        Eibar            1.31       1.06           58.3                    0.0%           
-      Espanyol           1.14       0.97           57.5                    0.0%           
-     Celta Vigo          1.33       1.00           53.3                    0.0%           
-       Alavés            0.95       0.88           51.3                    0.0%           
-      Valencia           1.24       1.24           47.5                    0.0%           
-     Las Palmas          1.32       1.25           45.6                    0.0%           
-     Real Betis          0.94       1.14           40.3                    0.0%           
-       Málaga            1.01       1.17           40.0                    0.0%           
- Deportivo La Coruña     1.00       1.14           37.7                    0.0%           
-       Leganes           0.80       1.12           33.2                    0.0%           
-   Sporting Gijón        0.95       1.33           28.5                    0.0%           
-       Granada           0.81       1.40           24.8                    0.0%           
-       Osasuna           0.88       1.44           22.7                    0.0%           
+      Barcelona          2.30       0.83           87.9                   65.6%           
+     Real Madrid         2.18       0.94           87.6                   34.4%           
+   Atletico Madrid       1.43       0.67           77.0                    0.0%           
+     Sevilla FC          1.33       0.94           72.8                    0.0%           
+     Villarreal          1.15       0.82           67.1                    0.0%           
+   Athletic Bilbao       1.21       0.93           66.1                    0.0%           
+    Real Sociedad        1.29       1.04           64.9                    0.0%           
+        Eibar            1.26       1.03           57.2                    0.0%           
+      Espanyol           1.09       0.98           54.8                    0.0%           
+       Alavés            0.97       0.86           52.4                    0.0%           
+     Celta Vigo          1.28       1.03           48.2                    0.0%           
+       Málaga            1.08       1.15           45.1                    0.0%           
+      Valencia           1.22       1.25           44.4                    0.0%           
+     Las Palmas          1.27       1.32           42.3                    0.0%           
+     Real Betis          0.94       1.17           40.2                    0.0%           
+ Deportivo La Coruña     1.02       1.19           35.6                    0.0%           
+       Leganes           0.83       1.12           33.5                    0.0%           
+   Sporting Gijón        0.96       1.35           27.6                    0.0%           
+       Granada           0.78       1.40           22.6                    0.0%           
+       Osasuna           0.91       1.51           21.8                    0.0%           
 
 ## UEFA Champions League
 
@@ -330,8 +330,8 @@ Table: (\#tab:ucl-sim)UEFA Champions League Probabilities
 
       Club          Offense    Defense    Quarterfinals    Semifinals    Final    Champion 
 -----------------  ---------  ---------  ---------------  ------------  -------  ----------
-    Juventus         1.61       0.66          100%            100%       51.9%     27.7%   
-   Real Madrid       2.13       0.94          100%            100%       54.3%     26.2%   
-    AS Monaco        2.11       0.89          100%            100%       48.1%     25.0%   
- Atletico Madrid     1.43       0.68          100%            100%       45.7%     21.1%   
+    Juventus         1.66       0.64          100%            100%       90.5%     48.7%   
+   Real Madrid       2.18       0.94          100%            100%       94.7%     43.6%   
+    AS Monaco        2.07       0.92          100%            100%       9.5%       5.0%   
+ Atletico Madrid     1.43       0.67          100%            100%       5.3%       2.7%   
 

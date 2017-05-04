@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Soccer Predictions Using Bayesian Mixed Effects Models</title>
   <meta name="description" content="A tutorial for creating a ranking system for soccer teams and making predictions.">
-  <meta name="generator" content="bookdown 0.3.18 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3.19 and GitBook 2.6.7">
 
   <meta property="og:title" content="Soccer Predictions Using Bayesian Mixed Effects Models" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Jake Thompson">
 
 
-<meta name="date" content="2017-04-21">
+<meta name="date" content="2017-05-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -258,23 +258,23 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  setting  value                       </span>
 <span class="co">#&gt;  version  R version 3.3.3 (2017-03-06)</span>
 <span class="co">#&gt;  system   x86_64, darwin13.4.0        </span>
-<span class="co">#&gt;  ui       RStudio (1.0.136)           </span>
+<span class="co">#&gt;  ui       RStudio (1.0.143)           </span>
 <span class="co">#&gt;  language (EN)                        </span>
 <span class="co">#&gt;  collate  en_US.UTF-8                 </span>
 <span class="co">#&gt;  tz       America/Chicago             </span>
-<span class="co">#&gt;  date     2017-04-21</span>
+<span class="co">#&gt;  date     2017-05-03</span>
 <span class="co">#&gt; Packages ------------------------------------------------------------------</span>
 <span class="co">#&gt;  package               * version    date      </span>
-<span class="co">#&gt;  assertthat              0.1        2013-12-06</span>
-<span class="co">#&gt;  backports               1.0.4      2016-10-24</span>
+<span class="co">#&gt;  assertthat              0.2.0      2017-04-11</span>
+<span class="co">#&gt;  backports               1.0.5      2017-01-18</span>
 <span class="co">#&gt;  base64enc               0.1-3      2015-07-28</span>
 <span class="co">#&gt;  BH                      1.62.0-1   2016-11-19</span>
 <span class="co">#&gt;  bitops                  1.0-6      2013-08-17</span>
-<span class="co">#&gt;  bookdown                0.3.7      2017-01-15</span>
+<span class="co">#&gt;  bookdown                0.3.19     2017-05-02</span>
 <span class="co">#&gt;  car                     2.1-3      2016-08-11</span>
 <span class="co">#&gt;  caTools                 1.17.1     2014-09-10</span>
 <span class="co">#&gt;  colorspace              1.2-6      2015-03-11</span>
-<span class="co">#&gt;  curl                    2.1        2016-09-22</span>
+<span class="co">#&gt;  curl                    2.3        2016-11-24</span>
 <span class="co">#&gt;  DBI                     0.5-1      2016-09-10</span>
 <span class="co">#&gt;  dichromat               2.0-0      2013-01-24</span>
 <span class="co">#&gt;  digest                  0.6.12     2017-01-27</span>
@@ -286,19 +286,19 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  gridExtra               2.2.1      2016-02-29</span>
 <span class="co">#&gt;  gtable                  0.2.0      2016-02-26</span>
 <span class="co">#&gt;  highr                   0.6        2016-05-09</span>
-<span class="co">#&gt;  htmltools               0.3.5      2016-03-21</span>
+<span class="co">#&gt;  htmltools               0.3.6      2017-04-28</span>
 <span class="co">#&gt;  htmlwidgets             0.7        2016-08-02</span>
 <span class="co">#&gt;  httr                    1.2.1      2016-07-03</span>
 <span class="co">#&gt;  inline                  0.3.14     2015-04-13</span>
-<span class="co">#&gt;  jsonlite                1.2        2016-12-31</span>
-<span class="co">#&gt;  knitr                   1.15.1     2016-11-22</span>
+<span class="co">#&gt;  jsonlite                1.4        2017-04-08</span>
+<span class="co">#&gt;  knitr                   1.15.20    2017-05-02</span>
 <span class="co">#&gt;  labeling                0.3        2014-08-23</span>
 <span class="co">#&gt;  lattice                 0.20-34    2016-09-06</span>
 <span class="co">#&gt;  lazyeval                0.2.0.9000 2016-09-19</span>
 <span class="co">#&gt;  lme4                    1.1-12     2016-04-16</span>
 <span class="co">#&gt;  lubridate             * 1.6.0.9009 2017-03-27</span>
 <span class="co">#&gt;  magrittr                1.5        2014-11-22</span>
-<span class="co">#&gt;  markdown                0.7.7      2015-04-22</span>
+<span class="co">#&gt;  markdown                0.8        2017-04-20</span>
 <span class="co">#&gt;  MASS                    7.3-45     2016-04-21</span>
 <span class="co">#&gt;  Matrix                  1.2-8      2017-01-20</span>
 <span class="co">#&gt;  MatrixModels            0.4-1      2015-08-22</span>
@@ -315,18 +315,18 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  portableParallelSeeds * 0.97       2016-11-14</span>
 <span class="co">#&gt;  prettyunits             1.0.2      2015-07-13</span>
 <span class="co">#&gt;  progress                1.1.2      2016-12-14</span>
-<span class="co">#&gt;  purrr                 * 0.2.2.9000 2017-03-27</span>
+<span class="co">#&gt;  purrr                 * 0.2.2.9000 2017-04-24</span>
 <span class="co">#&gt;  quantreg                5.29       2016-09-04</span>
 <span class="co">#&gt;  R6                      2.2.0      2016-10-05</span>
 <span class="co">#&gt;  RColorBrewer            1.1-2      2014-12-07</span>
-<span class="co">#&gt;  Rcpp                    0.12.10    2017-03-27</span>
+<span class="co">#&gt;  Rcpp                    0.12.10.2  2017-05-02</span>
 <span class="co">#&gt;  RcppEigen               0.3.2.9.0  2016-08-21</span>
 <span class="co">#&gt;  reshape                 0.8.6      2016-10-21</span>
 <span class="co">#&gt;  reshape2                1.4.2      2016-10-22</span>
-<span class="co">#&gt;  rlang                   0.0.0.9004 2017-03-27</span>
-<span class="co">#&gt;  rmarkdown               1.3        2016-12-21</span>
+<span class="co">#&gt;  rlang                   0.0.0.9018 2017-04-24</span>
+<span class="co">#&gt;  rmarkdown               1.5        2017-04-26</span>
 <span class="co">#&gt;  rockchalk               1.8.101    2016-02-25</span>
-<span class="co">#&gt;  rprojroot               1.1        2016-10-29</span>
+<span class="co">#&gt;  rprojroot               1.2        2017-01-16</span>
 <span class="co">#&gt;  rstan                 * 2.14.1     2016-12-28</span>
 <span class="co">#&gt;  rvest                 * 0.3.2      2016-06-17</span>
 <span class="co">#&gt;  scales                  0.4.1      2016-11-09</span>
@@ -335,20 +335,20 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  StanHeaders           * 2.14.0-1   2017-01-09</span>
 <span class="co">#&gt;  stringi                 1.1.3      2017-03-21</span>
 <span class="co">#&gt;  stringr                 1.2.0      2017-02-18</span>
-<span class="co">#&gt;  tibble                  1.2-15     2017-03-05</span>
-<span class="co">#&gt;  xml2                  * 1.0.0      2016-06-24</span>
+<span class="co">#&gt;  tibble                  1.3.0.9001 2017-04-24</span>
+<span class="co">#&gt;  xml2                  * 1.1.1      2017-01-24</span>
 <span class="co">#&gt;  yaml                    2.1.14     2016-11-12</span>
 <span class="co">#&gt;  source                           </span>
-<span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  cran (@1.0.4)                    </span>
+<span class="co">#&gt;  cran (@0.2.0)                    </span>
+<span class="co">#&gt;  cran (@1.0.5)                    </span>
 <span class="co">#&gt;  cran (@0.1-3)                    </span>
 <span class="co">#&gt;  cran (@1.62.0-)                  </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  Github (rstudio/bookdown@2211cd0)</span>
+<span class="co">#&gt;  Github (rstudio/bookdown@5907a5d)</span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  cran (@1.17.1)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
+<span class="co">#&gt;  cran (@2.3)                      </span>
 <span class="co">#&gt;  cran (@0.5-1)                    </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  cran (@0.6.12)                   </span>
@@ -360,19 +360,19 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  cran (@0.6)                      </span>
-<span class="co">#&gt;  cran (@0.3.5)                    </span>
+<span class="co">#&gt;  cran (@0.3.6)                    </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  cran (@1.2)                      </span>
-<span class="co">#&gt;  cran (@1.15.1)                   </span>
+<span class="co">#&gt;  cran (@1.4)                      </span>
+<span class="co">#&gt;  Github (yihui/knitr@f3a490b)     </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.3)                   </span>
 <span class="co">#&gt;  Github (hadley/lazyeval@c155c3d) </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  Github (hadley/lubridate@82dd6ba)</span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  cran (@0.7.7)                    </span>
+<span class="co">#&gt;  cran (@0.8)                      </span>
 <span class="co">#&gt;  CRAN (R 3.3.3)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.3)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
@@ -389,18 +389,18 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  CRAN (R 3.3.1)                   </span>
 <span class="co">#&gt;  cran (@1.0.2)                    </span>
 <span class="co">#&gt;  cran (@1.1.2)                    </span>
-<span class="co">#&gt;  Github (hadley/purrr@55d4dbe)    </span>
+<span class="co">#&gt;  Github (hadley/purrr@4ab056f)    </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  cran (@2.2.0)                    </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  Github (RcppCore/Rcpp@876d635)   </span>
+<span class="co">#&gt;  Github (RcppCore/Rcpp@c57b754)   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  cran (@0.8.6)                    </span>
 <span class="co">#&gt;  cran (@1.4.2)                    </span>
-<span class="co">#&gt;  Github (hadley/rlang@fbfc06c)    </span>
-<span class="co">#&gt;  cran (@1.3)                      </span>
+<span class="co">#&gt;  Github (hadley/rlang@b22ce1c)    </span>
+<span class="co">#&gt;  cran (@1.5)                      </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
-<span class="co">#&gt;  cran (@1.1)                      </span>
+<span class="co">#&gt;  cran (@1.2)                      </span>
 <span class="co">#&gt;  CRAN (R 3.3.2)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.0)                   </span>
 <span class="co">#&gt;  CRAN (R 3.3.2)                   </span>
@@ -409,8 +409,8 @@ devtools:::<span class="kw">print.session_info</span>(session_info)
 <span class="co">#&gt;  CRAN (R 3.3.2)                   </span>
 <span class="co">#&gt;  cran (@1.1.3)                    </span>
 <span class="co">#&gt;  cran (@1.2.0)                    </span>
-<span class="co">#&gt;  Github (hadley/tibble@4c32758)   </span>
-<span class="co">#&gt;  cran (@1.0.0)                    </span>
+<span class="co">#&gt;  Github (hadley/tibble@08af6b0)   </span>
+<span class="co">#&gt;  cran (@1.1.1)                    </span>
 <span class="co">#&gt;  cran (@2.1.14)</span></code></pre></div>
 
 </div>
@@ -466,7 +466,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(script.src))
       script.src  = script.src.replace(/^https?:/, '');
     document.getElementsByTagName("head")[0].appendChild(script);
